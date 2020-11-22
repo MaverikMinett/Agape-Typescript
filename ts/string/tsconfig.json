@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+      "target": "es6",
+      "module": "commonjs",
+      "declaration": true,
+      "outDir": "./build",
+      "emitDecoratorMetadata": true,
+      "experimentalDecorators": true,
+      "downlevelIteration": true,
+      "allowJs": true,
+      "types": ["jasmine"]
+    },
+    "include": ["src/**/*", "index.ts", ],
+    "exclude": ["node_modules", "**/__tests__/*"]
+  }
