@@ -1,0 +1,490 @@
+import { } from 'jasmine'
+
+import { MethodDescriptor, MethodDescriptorSet, ObjectDescriptor, PropertyDescriptor, PropertyDescriptorSet  } from './descriptors'
+
+
+let d, o, m;
+
+describe('MethodDescriptor', () => {
+    beforeEach( () => {
+        o = undefined
+        d = undefined
+    })
+
+    it('should instantiate', () => {
+        d = new MethodDescriptor()    
+        expect(d).toBeTruthy()
+    })
+
+    it('should set a default implementation', () => {
+        let o = {
+            called: false
+        }
+
+        d = new MethodDescriptor() 
+        d.default(function() { this.called = true })
+        d.call(o)
+
+        expect( o.called ).toBeTrue()
+    })
+
+    it('should override the implementation', () => {
+        let o = { called: false, overwritten: false }
+
+        d = new MethodDescriptor() 
+        d.default(function() { this.called = true })
+        d.override(function() { this.overwritten = true })
+        d.call(o)
+
+        expect( o.called ).toBeFalse()
+        expect( o.overwritten ).toBeTrue()
+    })
+
+
+    it('should run multiple before modifiers', () => {
+        let o = { called: false, before: 0 }
+
+        d = new MethodDescriptor() 
+        d.default(function() { this.called = true })
+        d.before(function() { this.before += this.called ? 0 : 1 })
+        d.before(function() { this.before += this.called ? 0 : 1 })
+        d.before(function() { this.before += this.called ? 0 : 1 })
+        d.call(o)
+
+        expect( o.called ).toBeTrue()
+        expect( o.before ).toBe(3)
+    })
+
+    it('should run the stacked modifiers', () => {
+        let o = { called: false, stacked: 0 }
+
+        d = new MethodDescriptor() 
+        d.default(function() { this.called = true })
+        d.stack(function() { this.stacked += this.called ? 1 : 0 })
+        d.stack(function() { this.stacked += this.called ? 1 : 0 })
+        d.stack(function() { this.stacked += this.called ? 1 : 0 })
+        d.call(o)
+
+        expect( o.called ).toBeTrue()
+        expect( o.stacked ).toBe(3)
+    })
+
+
+    it('should run multiple after modifiers', () => {
+        let o = { called: false, after: 0 }
+
+        d = new MethodDescriptor() 
+        d.default(function() { this.called = true })
+        d.after(function() { this.after += this.called ? 1 : 0 })
+        d.after(function() { this.after += this.called ? 1 : 0 })
+        d.after(function() { this.after += this.called ? 1 : 0 })
+        d.call(o)
+
+        expect( o.called ).toBeTrue()
+        expect( o.after ).toBe(3)
+    })
+
+    it('should run after modifiers after stacked', () => {
+        let o = { called: false, after: 0 }
+
+        d = new MethodDescriptor() 
+        d.stack(function() { this.called = true })
+        d.after(function() { this.after = this.called ? true : false })
+        d.call(o)
+
+        expect( o.called ).toBeTrue()
+        expect( o.after ).toBeTrue()
+    })
+
+
+    it('should include another descriptor', () => {
+        let o = { called: false, after: 0 }
+
+        d = new MethodDescriptor() 
+        d.default(function() { this.called = true })
+        
+
+        let e = new MethodDescriptor()
+        e.after(function() { this.after = this.called ? true : false })
+
+        e.include(d)
+
+        e.call(o)
+
+        expect( o.called ).toBeTrue()
+        expect( o.after ).toBeTrue()
+    })
+
+
+
+    // it('should call the around modifiers', () => {
+    //     let o = { called: false, after: 0 }
+
+    //     d = new MethodDescriptor() 
+    //     d.default(function() { console.log('Innest') })
+    //     d.around(function(orig, ...args) { 
+    //         console.log('Inner')
+    //     })
+    //     d.around(function(orig, ...args) { 
+    //         console.log('Outer')
+    //     })
+    //     d.call(o)
+
+    //     expect( o.called ).toBeTrue()
+    //     expect( o.after ).toBeTrue()
+    // })
+    
+})
+
+describe('MethodDescriptor', () => {
+    beforeEach( () => {
+        o = undefined
+        d = undefined
+    })
+
+    it('should instantiate', () => {
+        d = new MethodDescriptorSet()    
+        expect(d).toBeTruthy()
+    })
+
+    // it('should set a default implementation', () => {
+    //     let o = {
+    //         called: false
+    //     }
+
+    //     d = new MethodDescriptor() 
+    //     d.default(function() { this.called = true })
+    //     d.call(o)
+
+    //     expect( o.called ).toBeTrue()
+    // })
+
+
+})
+
+
+
+
+let b
+describe('PropertyDescriptor', () => {
+    beforeEach( () => {
+        o = undefined
+        d = undefined
+    })
+
+    it('should instantiate', () => {
+        o = { }
+        b = new ObjectDescriptor( o )
+        d = new PropertyDescriptor(b, 'foo')    
+        expect(d).toBeTruthy()
+    })
+
+
+    it('should should call the setter', () => {
+        o = {  }
+        b = new ObjectDescriptor( o )
+        d = new PropertyDescriptor(b, 'foo') 
+        d.set(o, true)
+
+        expect( o.ʘfoo ).toBeTrue()
+    })
+
+    it('should should call the getter', () => {
+        o = { ʘfoo: true }
+        b = new ObjectDescriptor( o )
+        d = new PropertyDescriptor(b, 'foo') 
+
+        expect( d.get(o) ).toBeTrue()
+    })
+    
+    it('should provide a default value', () => {
+        o = {  }
+        b = new ObjectDescriptor( o )
+        d = new PropertyDescriptor(b, 'foo')
+        d.default(32)
+
+        expect( d.get(o) ).toEqual(32) 
+    })
+
+    it('should provide a lazy default value', () => {
+        o = {  }
+        b = new ObjectDescriptor( o )
+        d = new PropertyDescriptor(b, 'foo')
+        d.default( o => ['hello'] )
+
+        expect( d.get(o) ).toEqual(['hello']) 
+    })
+
+    it('should be read only', () => {
+        o = {  }
+        b = new ObjectDescriptor( o )
+        d = new PropertyDescriptor(b, 'foo')
+        d.default( o => ['hello'] ).readonly(true)
+
+        expect( function () { d.set( o, ['test'] ) }).toThrowError()
+    })
+
+    it('should include a property descriptor', () => {
+        o = {  }
+        b = new ObjectDescriptor( o )
+        d = new PropertyDescriptor(b, 'foo')
+        d.default( o => 'bar' ).readonly(true)
+
+        o = {  }
+        b = new ObjectDescriptor( o )
+        let c = new PropertyDescriptor(b, 'foo')
+        c.include(d)
+
+        
+        expect( c.get(o) ).toBe('bar')
+    })
+
+
+    it('should inherit a value', () => {
+        let p: any = { foo: 'bar' }
+        let o: any = { boo: 'baz', parent: p }
+
+        b = new ObjectDescriptor( o )
+        d = new PropertyDescriptor(b, 'foo')
+        d.inherit( o => o.parent )
+        d.install_dispatcher()
+
+        expect(o.foo).toEqual('bar')
+
+        p.foo = 'baz'
+        expect(o.foo).toEqual('baz')
+    })
+
+    it('should over-ride an inherited value', () => {
+        let p: any = { foo: 'bar' }
+        let o: any = { boo: 'baz', parent: p }
+
+        b = new ObjectDescriptor( o )
+        d = new PropertyDescriptor(b, 'foo')
+        d.inherit( o => o.parent )
+        d.install_dispatcher()
+
+        expect(o.foo).toEqual('bar')
+
+        o.foo = 'baz'
+        expect(o.foo).toEqual('baz')
+        expect(p.foo).toEqual('bar')
+    })
+
+    it('should inherit from a property with a different name', () => {
+        let p: any = { foo: 'bar' }
+        let o: any = { parent: p }
+
+        b = new ObjectDescriptor( o )
+        d = new PropertyDescriptor(b, 'boo')
+        d.inherit( o => o.parent, 'foo' )
+        d.install_dispatcher()
+
+        expect(o.foo).toEqual(undefined)
+        expect(o.boo).toEqual('bar')
+
+        p.foo = 'baz'
+        expect(o.boo).toEqual('baz')
+    })
+
+    it('should delegate a property', () => {
+        let c: any = { foo: 'bar' }
+        let o: any = { child: c }
+        b = new ObjectDescriptor( o )
+        d = new PropertyDescriptor(b, 'foo')
+        d.delegate( o => o.child )
+        d.install_dispatcher()
+
+        expect(o.foo).toEqual('bar')
+
+        c.foo = 'baz'
+        expect(o.foo).toEqual('baz')
+    })
+    
+    it('should delegate to a property with a different name', () => {
+        let c: any = { bar: 'baz' }
+        let o: any = { child: c }
+        b = new ObjectDescriptor( o )
+
+        d = new PropertyDescriptor(b, 'foo')
+        d.delegate( o => o.child, 'bar' )
+        d.install_dispatcher()
+
+        expect(o.foo).toEqual('baz')
+
+        c.bar = 'biz'
+        expect(o.foo).toEqual('biz')
+    })
+
+    it('should create an enumerable property', () => {
+        let o: any = { }
+        b = new ObjectDescriptor( o )
+
+        d = new PropertyDescriptor(b, 'foo')
+        d.default(42)
+        d.install_dispatcher()
+
+        expect(o.foo).toEqual(42)
+        expect(o.ʘfoo).toEqual(42)
+
+        let inheritedEnumerables = []
+        for ( let field in o ) { inheritedEnumerables.push(field) }
+
+
+        expect(inheritedEnumerables.includes('foo')).toBeTrue()
+        expect(inheritedEnumerables.includes('ʘfoo')).toBeFalse()
+    })
+
+
+    it('should create non-enumerable property', () => {
+        let o: any = { }
+        b = new ObjectDescriptor( o )
+
+        d = new PropertyDescriptor(b, 'foo')
+        d.default(42).enumerable(false)
+        d.install_dispatcher()
+
+        expect(o.foo).toEqual(42)
+        expect(JSON.parse(JSON.stringify(o))).toEqual({})
+    })
+
+    it('should create a property and then change it to non-enumerable', () => {
+        let o: any = { }
+        b = new ObjectDescriptor( o )
+
+        d = new PropertyDescriptor(b, 'foo')
+        d.install_dispatcher()
+        d.default(42).enumerable(false)
+        
+
+        expect(o.foo).toEqual(42)
+        expect(JSON.parse(JSON.stringify(o))).toEqual({})
+    })
+
+})
+
+
+
+describe('ObjectDescriptor', () => {
+
+    beforeEach( () => {
+        o = undefined
+        m = undefined
+    })
+
+    it('should instantiate a new object', () => {
+
+        class SimpleObject {
+
+        }
+
+        o = new SimpleObject()
+        expect( o ).toBeTruthy()
+
+    })
+
+    it('should define a property on an onject', () => {
+
+        class SimpleObject { }
+
+        let p: any = SimpleObject.prototype
+
+        if ( ! p.Δmeta ) p.Δmeta = new ObjectDescriptor(p)
+
+        p.Δmeta.property('foo').default(32)
+
+        let o:any = new SimpleObject()
+
+        expect( o.foo ).toEqual(32)
+    })
+
+    it('should define a method on an object', () => {
+
+        class SimpleObject { called:boolean }
+
+        let p: any = SimpleObject.prototype
+        p.Δmeta = new ObjectDescriptor(p)
+
+        p.Δmeta.method('foo').default(function() {
+            this.called = true
+        })
+
+        let o:any = new SimpleObject()
+        expect( o.foo ).toBeTruthy()
+        o.foo()
+        expect( o.called ).toBeTrue()
+    })
+
+
+    it('should include the natively defined methods of another class', () => {
+
+        class SimpleTrait { 
+            foo() { return true }
+        }
+        let p: any = SimpleTrait.prototype
+        p.Δmeta = new ObjectDescriptor(p)
+
+
+        class SimpleObject  {
+            bar() { return true }
+        }
+        let q: any = SimpleObject.prototype
+        q.Δmeta = new ObjectDescriptor(q)
+        q.Δmeta.include( p )
+
+        let o:any = new SimpleObject()
+        expect( o.foo() ).toBeTrue()
+        expect( o.bar() ).toBeTrue()
+    })
+
+    it('should include the dynamic methods of another class', () => {
+
+        class SimpleTrait {}
+        let p: any = SimpleTrait.prototype
+        p.Δmeta = new ObjectDescriptor(p)
+        p.Δmeta.method('foo' ).default( o => true )
+
+
+        class SimpleObject  { }
+        let q: any = SimpleObject.prototype
+        q.Δmeta = new ObjectDescriptor(q)
+        q.Δmeta.include( p )
+
+        let o:any = new SimpleObject()
+        expect( o.foo() ).toBeTrue()
+        // expect( o.bar() ).toBeTrue()
+
+    })
+
+
+    it('should include the dynamic properties of another class', () => {
+
+        class SimpleTrait { }
+        let p: any = SimpleTrait.prototype
+        p.Δmeta = new ObjectDescriptor(p)
+        p.Δmeta.property('foo').default(32)
+
+        class SimpleObject  {}
+        let q: any = SimpleObject.prototype
+        q.Δmeta = new ObjectDescriptor(q)
+        q.Δmeta.include( p )
+
+        let o:any = new SimpleObject()
+        expect( o.foo ).toBe(32)
+
+    })
+
+    it('should create a new descriptor from an existing descriptor', () => {
+
+        // o = {}
+        // m = new ObjectDescriptor()
+        // m.property(o, 'foo').default(32)
+
+        // let ʘ = {}
+        // let n = new ObjectDescriptor(ʘ,m)
+        // n. 
+        // expect(c).toBeTruthy()
+    })
+
+
+} )
