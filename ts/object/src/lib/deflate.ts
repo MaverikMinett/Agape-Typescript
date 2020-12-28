@@ -2,37 +2,22 @@
 
 import { ObjectDescriptor } from '../lib/descriptors'
 
-/**
- * Serializes an instance as a simple JSON object. Properties
- * managed by agape will not contain the special character
- * in the serialized version.
- * 
- * @param object Object to deflate
- * @retuns JSON object
- */
-// export function deflate( object:Object ):{[key:string]:any} {
-//     object = JSON.parse(JSON.stringify(object))
+export function deflate( item:any, params?:any ) {
 
-//     function _deflate( object ) {
-//         let r:any = {}
-//         for ( let field in object ) {
-//             let key = field
-//             if ( field.startsWith('ʘ') ) key = field.substring(1)
+    if ( item instanceof Object ) { return deflateObject( item ) }
 
-//             let value = object[field]
-//             if ( value instanceof Object ) value = _deflate(value)
-//             r[key] = value
-//         }
-//         return r
-//     }
+    else if ( item instanceof Array ) { return deflateArray(item) }
 
-//     return _deflate( object )
-// }
+    else return item
+}
+
+
 
 function deflateObject( item:Object, params?:any ) {
     let r:any = {}
 
     let m:ObjectDescriptor = 'Δmeta' in item ? <ObjectDescriptor>item['Δmeta'] : null
+
 
     for ( let field in item ) {
 
@@ -44,9 +29,14 @@ function deflateObject( item:Object, params?:any ) {
             if ( m.property(field)['ʘinherit'] ) continue
         }
 
-        let value = deflate( item[field] )
-
-        r[field] = value
+        let value = item[field]
+        
+        /* get the deflated value, skip method definitions, this is required when exporting 
+        to ES5, because method definitions show up in for .. in, however as of ES6 and later
+        methods are consider enumerable. We will check if the value is a function here, if it
+        is, the field will not be serialized */
+        if ( typeof value != "function" )  r[field] = deflate( value )
+        
     }
 
     return r
@@ -55,14 +45,5 @@ function deflateObject( item:Object, params?:any ) {
 
 function deflateArray(  items:Array<any>, params?:any ) {
     return items.map( item => deflate(item) )
-}
-
-export function deflate( item:any, params?:any ) {
-
-    if ( item instanceof Object ) { return deflateObject( item ) }
-
-    else if ( item instanceof Array ) { return deflateArray(item) }
-
-    else return item
 }
 

@@ -96,4 +96,21 @@ describe('deflate', () => {
 
     })
 
+
+    it('should not include methods', () => {
+        class SimpleObject {
+            foo: string = "bar"
+
+            baz():string {
+                return "biz"
+            }
+        }
+
+        o = new SimpleObject()
+
+        d = deflate( o )
+
+        expect(d).toEqual({'foo': 'bar'})
+    })
+
 })

@@ -1,5 +1,9 @@
 import {  } from "jasmine"
 
+/**
+ * Describes a method and all associated modifiers and provides the
+ * method dispatcher.
+ */
 export class MethodDescriptor {
 
     ʘafter    : Array< () => void >
@@ -125,7 +129,9 @@ export class MethodDescriptor {
 }
 
 
-
+/**
+ * A set containing the managed methods that exist on an object.
+ */
 export class MethodDescriptorSet {
     private ʘ: { [key: string]: MethodDescriptor  }
 
@@ -162,6 +168,10 @@ export class MethodDescriptorSet {
     }
 }
 
+
+/**
+ * Describes an object, holding information about methods, properties, and traits.
+ */
 export class ObjectDescriptor {
 
     public methods: MethodDescriptorSet
@@ -284,10 +294,11 @@ export class ObjectDescriptor {
 }
 
 
-
+/**
+ * Describes the property of an object any associated modifiers. Provides
+ * the property dispatcher.
+ */
 export class PropertyDescriptor {
-
-    
 
     public ʘdelegate: { to?: Object|Function, property?: string }
     public ʘdefault: any
@@ -308,7 +319,7 @@ export class PropertyDescriptor {
     }
 
     default( value:any ) {
-        this.ʘdefault = value
+        this['ʘdefault'] === undefined && ( this['ʘdefault'] = value )
         return this
     }
 
@@ -415,7 +426,9 @@ export class PropertyDescriptor {
 
 
 
-
+/**
+ * A set containing the managed properties that exist on an object.
+ */
 export class PropertyDescriptorSet {
     private ʘ: { [key: string]: PropertyDescriptor  }
 

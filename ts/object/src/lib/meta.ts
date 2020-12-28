@@ -1,8 +1,10 @@
 import { ObjectDescriptor } from './descriptors'
 
 /**
- * Get the ObjectDescriptor for an object or class
- * @param target Object to get descriptor for
+ * Get the ObjectDescriptor for an object or class, creates a new
+ * ObjectDescriptor if one does not already exist.
+ * 
+ * @param target Object or class to get descriptor for
  */
 export function meta( target:any ):ObjectDescriptor {
     if ( typeof target === "function" ) target = target.prototype

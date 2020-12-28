@@ -1,6 +1,7 @@
 
 export * from './lib/decorators/after'
 export * from './lib/decorators/before'
+export * from './lib/decorators/build'
 export * from './lib/decorators/delegate'
 export * from './lib/decorators/nonenumerable'
 export * from './lib/decorators/include'
