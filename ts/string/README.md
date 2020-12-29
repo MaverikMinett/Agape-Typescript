@@ -49,9 +49,9 @@ words that end in 'us' are changed to 'i'.
 - titalize
 
 The first letter of each word is capitalized with the exception of
-`a, an, and, if, in, of, on, the` which are only capitalized if they
-are the first word in the string, otherwise they are converted to
-lowercase.
+`a, an, and, at, be, but, by, for, if, in, of, on, the, to` which are only 
+capitalized if they are the first word in the string, otherwise they 
+are converted to lowercase.
 
 - tokenize
 

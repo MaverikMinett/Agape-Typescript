@@ -1,9 +1,9 @@
-import {} from "jasmine"
+import {} from "jasmine";
 import { camelize, tokenize, verbalize, classify, pluralize, titalize } from './string'
 
 
 
-fdescribe('camelize', () => {
+describe('camelize', () => {
 
     it('should camelize a string', () => {
         expect( camelize('foo bar') ).toEqual('fooBar')
@@ -13,7 +13,7 @@ fdescribe('camelize', () => {
 
 
 
-fdescribe('classify', () => {
+describe('classify', () => {
 
     it('should classify a string', () => {
         expect( classify('foo bar') ).toEqual('FooBar')
@@ -25,7 +25,7 @@ fdescribe('classify', () => {
 
 })
 
-fdescribe('pluralize', () => {
+describe('pluralize', () => {
 
     it('should pluralize a string', () => {
         expect( pluralize('foo') ).toEqual('foos')
@@ -47,7 +47,7 @@ fdescribe('pluralize', () => {
 })
 
 
-fdescribe('titalize', () => {
+describe('titalize', () => {
 
     it('should titalize the string', () => {
         expect( titalize('foo bar') ).toEqual('Foo Bar')
@@ -64,7 +64,7 @@ fdescribe('titalize', () => {
 
 })
 
-fdescribe('tokenize', () => {
+describe('tokenize', () => {
 
     it('should tokenize the string', () => {
         expect( tokenize('Foo Bar') ).toEqual('foo-bar')
@@ -73,7 +73,7 @@ fdescribe('tokenize', () => {
 })
 
 
-fdescribe('verbalize', () => {
+describe('verbalize', () => {
     
     it('should verbalize the string', () => {
         expect( verbalize('foo-bar') ).toEqual('Foo bar')

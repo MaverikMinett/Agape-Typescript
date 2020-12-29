@@ -1,14 +1,14 @@
 {
   "name": "@agape/string",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "String and token manipulation",
-  "main": "public_api.ts",
+  "main": "dist/cjs/public_api.js",
+  "module": "dist/esm/public_api.js",
   "private": false,
   "scripts": {
     "start": "tsc -w",
-    "build": "",
-    "test": "jasmine-ts",
-    "prepare": "npm run build"
+    "build": "tsc && tsc -p tsconfig-cjs.json",
+    "test": "jasmine-ts"
   },
   "keywords": [
     "agape",
@@ -26,8 +26,7 @@
   "author": "Maverik Minett",
   "license": "MIT",
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/MaverikMinett/Agape"
+    "type": "git",
+    "url": "https://github.com/MaverikMinett/Agape"
   }
-  
 }

@@ -112,4 +112,10 @@ export function titalize( string?:string ) {
         .replace(/(?!^)\b(A)\b/, 'a')
         .replace(/(?!^)\b(An)\b/, 'an')
         .replace(/(?!^)\b(And)\b/, 'and')
+        .replace(/(?!^)\b(At)\b/, 'at')
+        .replace(/(?!^)\b(By)\b/, 'by')
+        .replace(/(?!^)\b(Be)\b/, 'be')
+        .replace(/(?!^)\b(To)\b/, 'to')
+        .replace(/(?!^)\b(But)\b/, 'but')
+        .replace(/(?!^)\b(For)\b/, 'for')
 }

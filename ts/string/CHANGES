@@ -1,0 +1,7 @@
+
+
+1.0.1 Dec 29, 2021
+Now building as CommonJS and ESM module
+Added at, by, be, to, but, for to list of words not capitlized in titalize
+
+
