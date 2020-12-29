@@ -1,6 +1,12 @@
 # Agape
 
-Application toolkit
+A collection of Python and TypeScript modules for creating DRY applications
+
+## Packages
+
+[@agape/object](ts/object/README.md)
+
+[@agape/string](ts/string/README.md)
 
 ## Author
 
