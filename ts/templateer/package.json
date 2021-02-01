@@ -1,0 +1,33 @@
+{
+  "name": "@agape/templateer",
+  "version": "1.0.0",
+  "description": "Template rendering",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "scripts": {
+    "start": "tsc -w",
+    "build": "tsc && tsc -p tsconfig-cjs.json",
+    "test": "jasmine-ts && exit 0",
+    "release": "npm run build && npm publish --access public"
+  },
+  "keywords": [
+    "agape",
+    "template",
+    "handlebars"
+  ],
+  "author": "Maverik Minett",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/jasmine": "^3.5.14",
+    "@types/node": "^14.14.10",
+    "jasmine": "^3.6.1",
+    "jasmine-spec-reporter": "^6.0.0",
+    "jasmine-ts": "^0.3.0",
+    "ts-node": "^8.10.2",
+    "typescript": "^4.0.3"
+  },
+  "dependencies": {
+    "fs-extra": "^9.0.1",
+    "handlebars": "^4.7.6"
+  }
+}

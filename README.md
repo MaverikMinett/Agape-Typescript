@@ -2,11 +2,17 @@
 
 A collection of Python and TypeScript modules for creating DRY applications
 
-## Packages
+## TypeScript Packages
 
 [@agape/object](ts/object/README.md)
 
 [@agape/string](ts/string/README.md)
+
+[@agape/templateer](ts/templateer/README.md)
+
+## Python Pakages
+
+Coming soon.
 
 ## Author
 
@@ -14,7 +20,7 @@ Maverik Minett  maverik.minett@gmail.com
 
 ## Copyright
 
-© 2020 Maverik Minett
+© 2020-2021 Maverik Minett
 
 ## License
 
