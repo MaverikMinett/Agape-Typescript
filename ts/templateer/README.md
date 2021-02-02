@@ -39,11 +39,11 @@ Accepts a template name and returns the full path to a matching template file.
 Return all available templates in a given directory relative to any source
 
 
-`renderFile( templatePath, outputPath, data, callback )`
+`renderFile( templatePath, outputPath, data )`
 
 Render a single template to an output destination
 
-`renderPath( templatePath, outputPath, data, callback )`
+`renderPath( templatePath, outputPath, data )`
 
 Render an entire directory and subdirectories to an output destination
 

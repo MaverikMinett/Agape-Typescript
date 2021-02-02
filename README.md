@@ -10,7 +10,7 @@ A collection of Python and TypeScript modules for creating DRY applications
 
 [@agape/templateer](ts/templateer/README.md)
 
-## Python Pakages
+## Python Packages
 
 Coming soon.
 

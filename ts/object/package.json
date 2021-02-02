@@ -1,14 +1,14 @@
 {
   "name": "@agape/object",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Extensible objects",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "scripts": {
     "start": "tsc -w",
     "build": "tsc && tsc -p tsconfig-cjs.json",
-    "test": "jasmine-ts && exit 0"
-
+    "test": "jasmine-ts && exit 0",
+    "release": "npm run build && npm publish --access public"
   },
   "keywords": [
     "agape",

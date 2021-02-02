@@ -14,6 +14,10 @@ export class MethodDescriptor {
     ʘoverride   : any
     ʘstack    : Array< () => void >
 
+    /**
+     * Add a method to be called after the primary method
+     * @param value Function or method to be called
+     */
     after( value: () => void ) {
         this.ʘafter || ( this.ʘafter = [] )
         this.ʘafter.push( value )
@@ -28,38 +32,56 @@ export class MethodDescriptor {
     //     return this
     // }
 
+    /**
+     * Add a method to be called before the primary method
+     * @param value Function or method to be called
+     */
     before( value: () => void ) {
         this.ʘbefore || ( this.ʘbefore = [] )
         this.ʘbefore.push( value )
         return this
     }
 
-    // value( value: () => void ) {
-    //     this.ʘvalue = value
-    //     return this
-    // }
-
+    /**
+     * Set the default value for the primary method. This is the primary
+     * method which will be called, unless it has been over-ridden.
+     * @param value 
+     */
     default( value: () => void ) {
         this.ʘdefault = value
         return this
     }
 
+    /**
+     * Set the over-ride value for the primary method. This will be
+     * called instead of the default value.
+     */
     override( value: () => void ) {
         this.ʘoverride = value
         return this
     }
 
+    /**
+     * Add a method to be called after the primary method but before
+     * any after methods
+     * @param value 
+     */
     stack( value: () => void ) {
         this.ʘstack || ( this.ʘstack = [] )
         this.ʘstack.push( value )
+        return this
     }
 
+    /**
+     * Has a modified been set on the descriptor, returns true or false.
+     * @param modifier 
+     */
     does ( modifier:string ) {
         return this[`ʘ${modifier}`] ? true : false
     }
 
     /**
-     * Execute the method all method modifiers.
+     * Execute the method and all method modifiers
      * @param target The object to call the method on
      * @param args The arguments to pass to the object
      */
@@ -79,7 +101,7 @@ export class MethodDescriptor {
     }
 
     /**
-     * Call a stack of methods.
+     * Call a stack of methods
      * @param modifier The name of the stack to execute
      * @param target The object on which to act
      * @param args The arguments to pass
@@ -91,7 +113,8 @@ export class MethodDescriptor {
     }
 
     /**
-     * Include the definitions from another method descriptor into this descriptor.
+     * Include the definitions from another method descriptor into this descriptor,
+     * used to merge descriptors when applying traits to a class
      * @param from Descriptor to include
      */
     include( from:MethodDescriptor ) {
@@ -112,6 +135,12 @@ export class MethodDescriptor {
         }
     }
 
+    /**
+     * Install the method dispatcher which handles calling of any modifiers 
+     * into the target object
+     * @param target Target object to install the dispatcher
+     * @param name Name of the method to replace
+     */
     install_dispatcher( target:any, name: string ) {
         let descriptor = this
 
@@ -140,27 +169,52 @@ export class MethodDescriptorSet {
         if ( from ) this.merge( from )
     }
 
+    /**
+     * Merge descriptors from another set into this set
+     * @param from 
+     */
     merge ( from: MethodDescriptorSet ) {
         Object.assign( this.ʘ, from.ʘ )
     }
 
+    /**
+     * Does a descriptor with the given name exist in the set
+     * @param name 
+     */
     public has( name: string ): boolean {
         return name in this.ʘ;
     }
 
+    /**
+     * Get a descriptor for the given name, creates a descriptor if 
+     * one does not exist.
+     * @param name 
+     */
     public get( name: string ): MethodDescriptor {
         if ( ! this.has(name) ) this.ʘ[name] = new MethodDescriptor()
         return this.ʘ[name]
     }
 
+    /**
+     * Get names of all descriptors which exist in the set.
+     */
     get names( ): Array<string> {
         return Object.getOwnPropertyNames(this.ʘ)
     }
 
+    /**
+     * Set the descriptor for the given name
+     * @param name 
+     * @param descriptor 
+     */
     public set( name: string, descriptor: MethodDescriptor ) {
         return this.ʘ[name] = descriptor
     }
 
+    /**
+     * Execute a function on each item in the set
+     * @param callback 
+     */
     public forEach( callback: ( methodName:string, definition: MethodDescriptor ) => void ) {
         for ( let methodName in this.ʘ ) {
             callback( methodName, this.ʘ[methodName] )
@@ -185,7 +239,13 @@ export class ObjectDescriptor {
         this.methods = new MethodDescriptorSet()
     }
 
-    public property( name:string ) {
+    /**
+     * Returns a PropertyDescriptor for the property with the given name. If
+     * a descriptor does not exist for the property, one will be created for it
+     * and the dispatcher will be installed to the object.
+     * @param name R
+     */
+    public property( name:string ):PropertyDescriptor {
 
         let descriptor
 
@@ -207,6 +267,11 @@ export class ObjectDescriptor {
     }
 
 
+    /** 
+     * Returns a MethodDescriptor the method with the given name. If a desriptor
+     * does not exist for the method, one will be created for it and the dispatcher
+     * will be created for it and the dispatcher will be installed to the object.
+     */
     public method( name:string ) {
 
         let descriptor
@@ -229,7 +294,12 @@ export class ObjectDescriptor {
 
 
     
-
+    /**
+     * Include traits the specified traits into the ObjectDescriptor, copying 
+     * over default method definitions and merging all property and method 
+     * descriptors as applicable.
+     * @param traits 
+     */
     public include( ...traits ) {
         this.traits || ( this.traits = [ ] )
 
@@ -255,16 +325,18 @@ export class ObjectDescriptor {
                 if ( target.Δmeta?.properties.has(propertyName) )  continue;
 
                 /* don't copy anything that is managed by agape meta data */
-                if ( trait.Δmeta?.properties.has(propertyName) )  continue;
                 if ( trait.Δmeta?.methods.has(propertyName) )  continue;
+                if ( trait.Δmeta?.properties.has(propertyName) )  continue;
+
+                /* don't copy over anything that is already defined in the target */
+                if ( propertyName in target ) continue;
                 
-                if ( ! ( propertyName in target ) ) {
-                    Object.defineProperty( target, propertyName, { 
-                        value: Object.getOwnPropertyDescriptor( trait, propertyName ).value
-                    })
-                }
+                Object.defineProperty( target, propertyName, { 
+                    value: Object.getOwnPropertyDescriptor( trait, propertyName ).value
+                })
             }
 
+            /* copy over managed methods */
             if ( trait.Δmeta?.methods ) {
                 for ( let name of trait.Δmeta.methods.names ) {
 
@@ -276,6 +348,7 @@ export class ObjectDescriptor {
                 }
             }
 
+            /* copy over managed properties */
             if ( trait.Δmeta?.properties ) {
                 for ( let name of trait.Δmeta.properties.names ) {
 
@@ -308,51 +381,98 @@ export class PropertyDescriptor {
     public ʘoverride: boolean
     public ʘinherit: { from?: Object|Function, property?: string }
 
+    /**
+     * @param progenitor The object to which the property belongs
+     * @param name The name of the property
+     */
     constructor( public progenitor: ObjectDescriptor, public name:string ) {
 
     }
 
+
+    /**
+     * Delegate getting and setting of the property to that of another object
+     * @param to The object to delegate the property to
+     * @param property The name of the property to delegate to
+     */
     delegate( to:Object, property:string ) {
         this.ʘdelegate || ( this.ʘdelegate = {} )
         this.ʘdelegate.to = to
         if ( property != undefined) this.ʘdelegate.property = property
+        return this
     }
 
+    /**
+     * Set default value for the property, can be a primitive value or a callback
+     * function which returns any value type, such as a data structure or object
+     * @param value Default value
+     */
     default( value:any ) {
         this['ʘdefault'] === undefined && ( this['ʘdefault'] = value )
         return this
     }
 
+    /**
+     * By setting enumerable to false the property will not be included when
+     * iterating over the properties of the object. The property will also
+     * not be included when printing using console.log()
+     * @param value True or false
+     */
     enumerable( value:boolean ) {
         if ( this.ʘenumerable != value ) {
             this.ʘenumerable = value
             this.install_dispatcher()
         }
+        return this
     }
 
-    readonly( value:any=true ) {
+    /**
+     * Readonly properties will throw an exception when attempting to set the value
+     * @param value True or false
+     */
+    readonly( value:boolean=true ) {
         this.ʘreadonly = value
         return this
     }
 
+    /**
+     * Override the default value of the property
+     * @param value 
+     */
     override( value:any ) {
         this.ʘoverride = value
         return this
     }
 
-
+    /**
+     * Include the definitions from another property descriptor into this descriptor,
+     * used to merge descriptors when applying traits to a class
+     * @param from Descriptor to include
+     */
     include( from: PropertyDescriptor ) {
         if ( this.ʘdefault === undefined || from.ʘoverride === true ) this.ʘdefault = from.ʘdefault
         if ( ! ( from.ʘoverride === undefined ) ) this.ʘoverride = from.ʘoverride
         if ( ! ( from.ʘreadonly === undefined ) ) this.ʘreadonly = from.ʘreadonly
+        return this
     }
 
+    /**
+     * Inherit the value from another object
+     * @param from 
+     * @param property 
+     */
     inherit( from: Object|Function, property?:string ) {
         this.ʘinherit || ( this.ʘinherit = {} )
         this.ʘinherit.from = from
         if ( property != undefined) this.ʘinherit.property = property
+        return this
     }
 
+    /**
+     * Get the value of the property on the given object, delegating or building
+     * the property value as necessary
+     * @param instance The object on which to act
+     */
     get( instance:any ) {
 
         /* delegate */
@@ -382,6 +502,11 @@ export class PropertyDescriptor {
         return instance['ʘ' + this.name]
     }
 
+    /**
+     * Set the value of the property on the given instance, delegating if needed
+     * @param instance The object on which to act
+     * @param value The new value
+     */
     set( instance:any, value:any ) {
 
         /* read only */
@@ -395,18 +520,18 @@ export class PropertyDescriptor {
         }
 
         Object.defineProperty(instance, `ʘ${this.name}`, { value: value, configurable: true, enumerable: false } )
-
-        
     }
 
+
+    /**
+     * Install the property dispatcher into the target object. The dispatcher handles
+     * any property modifiers which have been applied.
+     * @param target Target object to install the dispatcher
+     * @param name Name of the method to replace
+     */
     install_dispatcher( ) {
-
-        // console.log( `Install dispatcher for ${this.name} to`, this.progenitor.target )
-        // console.log(this.ʘenumerable)
-
         let descriptor = this
         let target = this.progenitor.target
-        // console.log( target, target.prototype )
         
         Object.defineProperty( target, descriptor.name, {
             set: function(value:any) { return descriptor.set(this, value) },
@@ -414,14 +539,15 @@ export class PropertyDescriptor {
             enumerable: this.ʘenumerable === false ? false : true,
             configurable: true
         } )
+
         Object.defineProperty( target, 'ʘ' + descriptor.name, {
             enumerable: false,
             configurable: true,
             writable: true
         } )
-
-
     }
+
+
 }
 
 
@@ -437,29 +563,53 @@ export class PropertyDescriptorSet {
         if ( from ) this.merge( from )
     }
 
+    /**
+     * Merge descriptors from another set into this set
+     * @param from 
+     */
     merge ( from: PropertyDescriptorSet ) {
         Object.assign( this.ʘ, from.ʘ )
     }
 
-    public has( name: string ): boolean {
+    /**
+     * Does a descriptor with the given name exist in the set
+     * @param name 
+     */
+    has( name: string ): boolean {
         return name in this.ʘ;
     }
 
-
-    public get( name: string ): PropertyDescriptor {
+    /**
+     * Get a descriptor for the given name, creates a descriptor if 
+     * one does not exist.
+     * @param name 
+     */
+    get( name: string ): PropertyDescriptor {
         if ( ! this.has(name) ) this.ʘ[name] = new PropertyDescriptor(this.progenitor, name)
         return this.ʘ[name]
     }
 
+    /**
+     * Get names of all descriptors which exist in the set.
+     */
     get names( ): Array<string> {
         return Object.getOwnPropertyNames(this.ʘ)
     }
 
-    public set( name: string, descriptor: PropertyDescriptor ) {
+    /**
+     * Set the descriptor of the given name
+     * @param name 
+     * @param descriptor 
+     */
+    set( name: string, descriptor: PropertyDescriptor ) {
         return this.ʘ[name] = descriptor
     }
 
-    public forEach( callback: ( propertyName:string, definition: PropertyDescriptor ) => void ) {
+    /**
+     * Execute a function on each item in the set
+     * @param callback 
+     */
+    forEach( callback: ( propertyName:string, definition: PropertyDescriptor ) => void ) {
         for ( let propertyName in this.ʘ ) {
             callback( propertyName, this.ʘ[propertyName] )
         }

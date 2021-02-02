@@ -33,31 +33,31 @@ Translate strings between different representations.
 
 ## Functions
 
-- camelize
+`camelize`
 
 Convert to camel case.
 
-- classify
+`classify`
 
 Remove all symbols and spaces, captialize words.
 
-- pluralize
+`pluralize`
 
 Adds an 's' to most words. Words that end in 'y' are changed to 'ies', 
 words that end in 'us' are changed to 'i'.
 
-- titalize
+`titalize`
 
 The first letter of each word is capitalized with the exception of
 `a, an, and, at, be, but, by, for, if, in, of, on, the, to` which are only 
 capitalized if they are the first word in the string, otherwise they 
 are converted to lowercase.
 
-- tokenize
+`tokenize`
 
 Converted to lower case, word boundaries replaced with dashes. 
 
-- verbalize
+`verbalize`
 
 First character capitalized, word boundaries replaced with spaces.
 
@@ -69,7 +69,7 @@ Maverik Minett  maverik.minett@gmail.com
 
 ## Copyright
 
-© 2020 Maverik Minett
+© 2020-2021 Maverik Minett
 
 ## License
 

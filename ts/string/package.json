@@ -1,6 +1,6 @@
 {
   "name": "@agape/string",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "String and token manipulation",
   "main": "dist/cjs/public_api.js",
   "module": "dist/esm/public_api.js",
@@ -8,7 +8,8 @@
   "scripts": {
     "start": "tsc -w",
     "build": "tsc && tsc -p tsconfig-cjs.json",
-    "test": "jasmine-ts"
+    "test": "jasmine-ts",
+    "release": "npm run build && npm publish --access public"
   },
   "keywords": [
     "agape",

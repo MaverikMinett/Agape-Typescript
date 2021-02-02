@@ -11,7 +11,8 @@ export function meta( target:any ):ObjectDescriptor {
     if ( ! target.hasOwnProperty('Δmeta') ) {
         Object.defineProperty(target, 'Δmeta', {
             value: new ObjectDescriptor(target),
-            writable: false
+            writable: false,
+            enumerable: false
         })
     }
     return target['Δmeta'];
