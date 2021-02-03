@@ -1,6 +1,6 @@
 {
   "name": "@agape/templateer",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Template rendering",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -8,7 +8,7 @@
     "start": "tsc -w",
     "build": "tsc && tsc -p tsconfig-cjs.json",
     "test": "jasmine-ts && exit 0",
-    "release": "npm run build && npm publish --access public"
+    "release": "rm agape-templateer-*.tgz && npm run build && npm pack && npm publish --access public"
   },
   "keywords": [
     "agape",

@@ -1,1 +1,1 @@
-
+export { Templateer } from './lib/templateer'

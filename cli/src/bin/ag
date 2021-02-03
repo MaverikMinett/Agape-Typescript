@@ -1,0 +1,16 @@
+#!/usr/bin/env node
+'use strict';
+
+const { requiredOption } = require("commander");
+
+try {
+    process.title = 'ag ' + Array.from(process.argv).slice(2).join(' ')
+}
+catch (_) {
+    process.title = 'ag'
+}
+
+// require('../main')
+
+
+
