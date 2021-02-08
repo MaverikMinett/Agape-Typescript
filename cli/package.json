@@ -1,5 +1,5 @@
 {
-  "name": "agape-cli",
+  "name": "@agape/cli",
   "version": "0.0.1",
   "description": "Agape CLI",
   "main": "index.js",
@@ -7,16 +7,20 @@
     "start": "webpack --watch",
     "launch": "node dist/main.js",
     "build": "tsc && cp ./src/ag ./build && cp -r src/templates build",
-    "pack": "rm *.tgz && npm run build && npm pack",
+    "pack": "rm -f *.tgz && npm run build && npm pack",
     "release": "npm run pack && npm publish --access public",
     "test": "jasmine-ts && exit 0"
+  },
+  "bin": {
+    "ag": "build/ag"
   },
   "author": "Maverik Minett",
   "license": "ISC",
   "dependencies": {
     "@agape/object": "file:../ts/object/agape-object-1.0.2.tgz",
     "@agape/string": "file:../ts/string/agape-string-1.0.2.tgz",
-    "@agape/templateer": "file:../ts/templateer/agape-templateer-1.0.3.tgz",
+    "@agape/templateer": "^1.0.4",
+    "@fontsource/material-icons": "^4.1.0",
     "chalk": "^4.1.0",
     "clear": "^0.1.0",
     "clui": "^0.3.6",
@@ -30,11 +34,12 @@
     "inquirer": "^7.3.3",
     "lodash": "^4.17.20",
     "minimist": "^1.2.5",
+    "node-fetch": "^2.6.1",
     "touch": "^3.1.0"
   },
   "devDependencies": {
     "@types/jasmine": "^3.6.2",
-    "@types/node": "^14.14.10",
+    "@types/node": "^14.14.25",
     "copy-webpack-plugin": "^6.2.0",
     "jasmine": "^3.6.3",
     "jasmine-spec-reporter": "^6.0.0",

@@ -14,7 +14,7 @@ describe('Settings', () => {
         o = new Settings()
     })
 
-    fit('should return the path to the appdata directory', () => {
+    it('should return the path to the appdata directory', () => {
         o = new Settings()
         if ( process.platform == "linux" ) {
             expect(o.appDataDir).toEqual( path.join('/home', os.userInfo().username, '.local', 'share', 'agape' ) )

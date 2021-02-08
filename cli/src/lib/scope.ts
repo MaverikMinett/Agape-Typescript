@@ -33,9 +33,9 @@ export class Scope {
     _build_templateer() {
         let t = new Templateer()
 
-        t.addSource( path.join( this.settings.appDataDir, 'templates' ) )
+        // t.addSource( path.join( this.settings.appDataDir, 'templates' ) )
 
-        t.addSource( path.join( path.dirname(__dirname), 'templates' ) )
+        // t.addSource( path.join( path.dirname(__dirname), 'templates' ) )
 
         return t
     }

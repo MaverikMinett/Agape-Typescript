@@ -74,6 +74,12 @@ class InitSandboxCommand extends command_1.Command {
                 }
             },
             {
+                name: 'port',
+                type: 'input',
+                message: 'Port',
+                default: "00",
+            },
+            {
                 name: 'description',
                 type: 'input',
                 message: 'Description:',
@@ -109,6 +115,7 @@ class InitSandboxMacro extends macro_1.Macro {
             d.parent = this.scope.project;
             d.path = process.cwd();
             d.childrenPath = "src";
+            d.type = "sandbox";
             yield this.writeProjectFile(d);
             yield this.writeReadmeFile(d);
             /* create readme */

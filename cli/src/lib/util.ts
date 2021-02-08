@@ -2,8 +2,19 @@
 import * as fs from 'fs'
 import * as path from 'path'
 
+import { AngularProject } from '../projects/angular/project'
 
 import { AuthorDescriptor, ProjectDescriptor } from './descriptors'
+
+const system_appdata_dir = process.env.APPDATA 
+        || ( process.platform == 'darwin' 
+                ? process.env.HOME + '/Library/Preferences' 
+                : process.env.HOME + "/.local/share" )
+
+export const appDataDir =  path.join( system_appdata_dir, 'agape' );
+
+
+
 
 /**
  * Load the project file in the given directory. Will also load
@@ -13,10 +24,25 @@ import { AuthorDescriptor, ProjectDescriptor } from './descriptors'
  */
 export function load_project( dir:string="." ) {
     dir = path.resolve(dir)
+
+    let project
+
+    console.log( "CWD", dir )
+
     let filepath = path.join( dir, 'project.json' );
     let params = JSON.parse(<any>fs.readFileSync( filepath ))
     params.path = dir
-    let project = new ProjectDescriptor( params )
+
+    if ( params.type === "angular" ) {
+        project = new AngularProject( params )
+    }
+    else {
+        project = new ProjectDescriptor( params ) 
+    }
+
+
+
+
     let returnValue = project
 
     while ( project.type != 'sandbox' && dir != "/" ) {

@@ -12,6 +12,7 @@ const descriptors_1 = require("./descriptors");
  */
 function load_project(dir = ".") {
     dir = path.resolve(dir);
+    console.log("CWD", dir);
     let filepath = path.join(dir, 'project.json');
     let params = JSON.parse(fs.readFileSync(filepath));
     params.path = dir;

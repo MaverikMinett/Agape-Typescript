@@ -90,6 +90,12 @@ export class InitSandboxCommand extends Command {
                 }
             },
             {
+                name: 'port',
+                type: 'input',
+                message: 'Port',
+                default: "00",
+            },
+            {
                 name: 'description',
                 type: 'input',
                 message: 'Description:',
@@ -129,6 +135,7 @@ class InitSandboxMacro extends Macro {
         d.parent = this.scope.project
         d.path   = process.cwd()
         d.childrenPath = "src"
+        d.type   = "sandbox"
 
         await this.writeProjectFile( d )
         await this.writeReadmeFile( d )
