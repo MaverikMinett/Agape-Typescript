@@ -1,6 +1,6 @@
 {
   "name": "@agape/templateer",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "Template rendering",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -8,7 +8,8 @@
     "start": "tsc -w",
     "build": "tsc && tsc -p tsconfig-cjs.json",
     "test": "jasmine-ts && exit 0",
-    "release": "rm agape-templateer-*.tgz && npm run build && npm pack && npm publish --access public"
+    "pack": "rm agape-templateer-*.tgz && npm run build && npm pack",
+    "release": "npm run test && npm run pack && npm publish --access public"
   },
   "keywords": [
     "agape",
@@ -20,14 +21,15 @@
   "devDependencies": {
     "@types/jasmine": "^3.5.14",
     "@types/node": "^14.14.10",
+    "fs-extra": "^9.0.1",
     "jasmine": "^3.6.1",
     "jasmine-spec-reporter": "^6.0.0",
     "jasmine-ts": "^0.3.0",
     "ts-node": "^8.10.2",
-    "typescript": "^4.0.3"
+    "typescript": "^4.0.3",
+    "uuid": "^8.3.2"
   },
   "dependencies": {
-    "fs-extra": "^9.0.1",
     "handlebars": "^4.7.6"
   }
 }

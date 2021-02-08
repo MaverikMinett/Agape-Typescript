@@ -5,13 +5,18 @@ import * as util from 'util';
 
 import * as handlebars from 'handlebars'
 
+const writeFile = util.promisify( fs.writeFile )
+const lstat     = util.promisify( fs.lstat )
+
+// export Templat
+
 export class Templateer {
 
 	public sources: Array<string>
 
 	constructor( ...sources ) {
 
-		this.sources = [ ]
+		this.sources = [ ...Templateer.prototype.sources ]
 
 		this.sources = this.sources.concat( sources )
 
@@ -29,8 +34,7 @@ export class Templateer {
 	 * Find a template by path relative to any source directory
 	 * @param template Relative path to the template
 	 */
-	find( template:string ) {
-
+	findSync( template:string ):string {
 		for ( let source of this.sources.reverse() ) {
 
 			let sourcefile = path.join( source, template ) 
@@ -38,8 +42,24 @@ export class Templateer {
 			if ( fs.existsSync(sourcefile) ) return sourcefile
 
 		}
+	}
+
+	async find( template:string ):Promise<string> {
+
+		for ( let source of this.sources.reverse() ) {
+
+			let sourcefile = path.join( source, template ) 
+
+			if ( fs.existsSync(sourcefile) ) {
+				return sourcefile
+			}
+
+		}
+
+		throw new Error(`Could not find template ${template} in any sources`)
 
 	}
+
 
 	/**
 	 * Render an entire directory and subdirectories to an output destination
@@ -47,9 +67,9 @@ export class Templateer {
 	 * @param outputPath Destination to render files
 	 * @param data Template data
 	 */
-	renderPath( templatePath:string, outputPath:string, data:{[key:string]:any} ) {
+	renderPathSync( templatePath:string, outputPath:string, data:{[key:string]:any} ) {
 
-		const templates = this.gather( templatePath )
+		const templates = this.gatherSync( templatePath )
 
 		for ( let shortpath in templates ) {
 
@@ -60,11 +80,27 @@ export class Templateer {
 				fs.mkdirSync(dirpath, { recursive: true });
 			}
 
-			this.renderFile( shortpath, outfile, data )
+			this.renderFileSync( shortpath, outfile, data )
 			
 		}
 
 	}
+
+
+	async renderFile( templatePath:string, outputPath:string, data:{[key:string]:any} ) {
+
+		let sourcePath = await this.find( templatePath )
+
+		if ( ! sourcePath ) {
+			throw new Error(`Cannot find template ${templatePath} to render ${outputPath}`)
+		}
+
+		const source = fs.readFileSync( sourcePath, "utf-8" );
+		const template = handlebars.compile(source);
+		return await writeFile( outputPath, template(data) )
+	
+	}
+
 
 	/**
 	 * Render a single file to an output destination
@@ -72,9 +108,9 @@ export class Templateer {
 	 * @param outputPath Destination to render file
 	 * @param data Template data 
 	 */
-	renderFile( templatePath:string, outputPath:string, data:{[key:string]:any} ) {
+	renderFileSync( templatePath:string, outputPath:string, data:{[key:string]:any} ) {
 
-		let sourcePath = this.find( templatePath )
+		let sourcePath = this.findSync( templatePath )
 		if ( ! sourcePath ) {
 			throw new Error(`Cannot find template ${templatePath} to render ${outputPath}`)
 		}
@@ -84,15 +120,45 @@ export class Templateer {
 		const template = handlebars.compile(source);
 
 		fs.writeFileSync( outputPath, template(data) );
-
 	}
+
 
 
 	/**
 	 * Return all available templates in a given directory relative to any source
 	 * @param templateDirectory Relative path to return templates for
 	 */
-	gather( templateDirectory:string = "." ) {
+	async gather( templateDirectory:string = "." ) {
+
+		var results = {}
+
+		for ( let source of this.sources ) {
+			let sourceDir = path.join( source, templateDirectory ) 
+
+			if ( fs.existsSync( sourceDir ) ) {
+
+				let globbed = await glob.sync( sourceDir + '/**/*' )
+
+				for ( let fullPath of globbed ) {
+					if ( ( await lstat(fullPath) ).isFile() ) {
+						let shortPath = fullPath.substring(sourceDir.length + 1);
+						results[shortPath] = fullPath
+					}
+				}
+			}	
+		}
+
+		return results
+
+	}
+
+
+
+	/**
+	 * Return all available templates in a given directory relative to any source
+	 * @param templateDirectory Relative path to return templates for
+	 */
+	gatherSync( templateDirectory:string = "." ) {
 
 		var results = {}
 
@@ -103,12 +169,13 @@ export class Templateer {
 
 				let globbed = glob.sync( sourceDir + '/**/*' )
 
-				globbed.map( (fullPath:string)  => {
-					if ( fs.lstatSync(fullPath).isFile()  ) {
+				for ( let fullPath of globbed ) {
+					if ( fs.lstatSync(fullPath).isFile() ) {
 						let shortPath = fullPath.substring(sourceDir.length + 1);
 						results[shortPath] = fullPath
 					}
-				})
+				}
+
 			}	
 		}
 
@@ -121,3 +188,4 @@ export class Templateer {
 	
 }
 
+Templateer.prototype.sources = []

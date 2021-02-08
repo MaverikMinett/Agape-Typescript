@@ -29,15 +29,16 @@ times to specify multiple sources. When rendering a template, templateer while s
 source directories in reverse order that they were added. This has the affect that templates
 can be over-ridden.
 
+### Asynchronous
 
-```find( template )```
 
-Accepts a template name and returns the full path to a matching template file.
+`find( template )`
+
+Accepts a template name and returns the full path to a matching template file. 
 
 `gather( path )`
 
 Return all available templates in a given directory relative to any source
-
 
 `renderFile( templatePath, outputPath, data )`
 
@@ -47,6 +48,38 @@ Render a single template to an output destination
 
 Render an entire directory and subdirectories to an output destination
 
+
+### Synchronous
+
+
+`findSync( template )`
+
+Accepts a template name and returns the full path to a matching template file. 
+
+
+`gatherSync( path )`
+
+Return all available templates in a given directory relative to any source
+
+
+`renderFileSync( templatePath, outputPath, data )`
+
+Render a single template to an output destination
+
+`renderPathSync( templatePath, outputPath, data )`
+
+Render an entire directory and subdirectories to an output destination
+
+
+## Default Sources
+
+You can set the default source directories for all `Templateer` objects by modifying the prototype:
+
+```
+Templateer.prototype.sources =  [ 'default/templates' ]
+
+o = new Templateer( 'override/templates' )
+```
 
 
 ## Author
