@@ -255,6 +255,18 @@ describe('PropertyDescriptor', () => {
         expect(o.foo).toEqual('baz')
     })
 
+    it('should return undefined if the object to inherit from does not exist', () => {
+        let o: any = { boo: 'baz', parent: undefined }
+
+        b = new ObjectDescriptor( o )
+        d = new PropertyDescriptor(b, 'foo')
+        d.inherit( o => o.parent )
+        d.install_dispatcher()
+
+        expect(o.foo).toEqual(undefined)
+
+    })
+
     it('should over-ride an inherited value', () => {
         let p: any = { foo: 'bar' }
         let o: any = { boo: 'baz', parent: p }

@@ -486,9 +486,13 @@ export class PropertyDescriptor {
 
             /* inherit */
             if ( this.ʘinherit ) {
-                return typeof this.ʘinherit.from === "function"
-                ? this.ʘinherit.from.call(instance,instance)[this.ʘinherit.property || this.name]
-                : this.ʘinherit.from[ this.ʘinherit.property || this.name ]
+                if ( typeof this.ʘinherit.from === "function" ) {
+                    let from = this.ʘinherit.from.call(instance,instance)
+                    return from !== undefined ? from[ this.ʘinherit.property || this.name ] : undefined
+                }
+                else {
+                    return this.ʘinherit.from ? this.ʘinherit.from[ this.ʘinherit.property || this.name ] : undefined
+                }
             }
 
             /* default (lazy) */

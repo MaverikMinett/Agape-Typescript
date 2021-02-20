@@ -1,4 +1,6 @@
 
+1.0.3  Feb 19, 2021
+- bug fix: return undefined retrieving inherited property from non-existent object
 
 1.0.2  Feb 2, 2021
 - updates to documentation
