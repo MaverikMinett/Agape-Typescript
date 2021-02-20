@@ -20,33 +20,20 @@ describe('SandboxProject', () => {
         expect(p).toBeTruthy()
     })
 
-    it('should create the project.json file', async () => {
+    it('should initialize a new sandbox', async() => {
         const sourcePath = path.join( os.tmpdir(), uuidv4(), 'foobar' )
         fs.mkdirSync( sourcePath, { recursive: true } )
 
-
         p = new SandboxProject()
+        p.name = "Foo Bar"
+        p.slug = "foo-bar"
         p.path = sourcePath
 
-        // await p.create( 'ui', sourcePath )
+        await p.init(  )
+        expect( fs.existsSync( path.join(sourcePath, "project.json") ) ).toBeTrue()
+        expect( fs.existsSync( path.join(sourcePath, "README.md") ) ).toBeTrue()
 
-        // expect( fs.existsSync(p.path) ).toBeTrue()
-        // expect( fs.existsSync( path.join( p.path, 'angular.json' ) ) ).toBeTrue()
     })
 
 })
 
-
-
-
-
-
-// describe('AngularTypography', () => {
-//     afterEach( () => {
-//         d = undefined;
-//     })
-
-//     it('should instantiate', () => {
-//         d = new AuthorDescriptor()
-//     })
-// })

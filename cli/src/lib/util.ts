@@ -2,9 +2,12 @@
 import * as fs from 'fs'
 import * as path from 'path'
 
+import { Project } from '../projects/project'
+import { SandboxProject } from '../projects/sandbox/project'
 import { AngularProject } from '../projects/angular/project'
+import { DjangoProject } from '../projects/django/project'
 
-import { AuthorDescriptor, ProjectDescriptor } from './descriptors'
+import { AuthorDescriptor } from './descriptors'
 
 const system_appdata_dir = process.env.APPDATA 
         || ( process.platform == 'darwin' 
@@ -27,44 +30,60 @@ export function load_project( dir:string="." ) {
 
     let project
 
-    console.log( "CWD", dir )
-
     let filepath = path.join( dir, 'project.json' );
-    let params = JSON.parse(<any>fs.readFileSync( filepath ))
-    params.path = dir
+    let params   = JSON.parse(<any>fs.readFileSync( filepath ))
+    params.path  = dir
 
-    if ( params.type === "angular" ) {
-        project = new AngularProject( params )
-    }
-    else {
-        project = new ProjectDescriptor( params ) 
-    }
-
-
-
-
-    let returnValue = project
-
-    while ( project.type != 'sandbox' && dir != "/" ) {
-        dir = path.dirname( dir )
-        filepath = path.join( dir, 'project.json' )
+    switch( params.type ) {
+        case "angular":
+            project = new AngularProject( params )
+            break;
+        case "django":
+            project = new DjangoProject( params )
+            break
+        case "sandbox":
+            project = new SandboxProject( params )
+            break
+        default:
+            project = new Project( params )
         
-        if ( fs.existsSync(filepath) ) {
-            params = JSON.parse(<any>fs.readFileSync( filepath ))
-            params.path = dir
-            project.parent = new ProjectDescriptor( params )
-            project = project.parent
-        }
     }
 
-    if ( ! project.sandbox ) {
-        throw Error("Cannot load a project outside of a sandbox.")
-    }
+    project.parent = load_closest_project( path.dirname(dir) )
 
-    return returnValue
+    return project
+    
+    // dir = path.dirname( dir )
+    // if ( dir != "/" ) {
+    //     project.parent = load_closest_project( )
+    // }
+
+    // return project
+    
+
+
+    // let returnValue = project
+
+    // while ( project.type != 'sandbox' && dir != "/" ) {
+    //     dir = path.dirname( dir )
+    //     filepath = path.join( dir, 'project.json' )
+        
+    //     if ( fs.existsSync(filepath) ) {
+    //         // params = JSON.parse(<any>fs.readFileSync( filepath ))
+    //         // params.path = dir
+    //         // project.parent = new ProjectDescriptor( params )
+    //         // project = project.parent
+    //     }
+    // }
+
+    // if ( ! project.sandbox ) {
+    //     throw Error("Cannot load a project outside of a sandbox.")
+    // }
+
+    // return returnValue
 }
 
-export function load_closest_project(  dir?:string ):ProjectDescriptor {
+export function load_closest_project(  dir?:string ):Project {
 
     if ( dir === undefined ) dir = process.cwd()
 

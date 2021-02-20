@@ -1,14 +1,6 @@
 
 import * as fs from 'fs'
-
-
-import { lazy } from '@agape/object'
-
 import { Project } from '../project'
-
-import * as util from 'util'
-const all       = util.promisify( Promise.all )
-
 
 
 
@@ -25,26 +17,32 @@ export class SandboxProject extends Project {
     //     this.path = path.join( sourcePath, slug )
     // }
 
-    @lazy('src')
-    childrenPath: string
-
-    @lazy('sandbox')
-    type: string
+    childrenPath: string = "src"
+    type: string         = "sandbox"
 
 
-    async init( sourcePath:string ) {
+    async init(  ) {
+
+        /* check for required variables */
+        if ( this.name === undefined ) throw new Error("Cannot initialize sandbox without a name")
+        if ( this.slug === undefined ) throw new Error("Cannot initialize sandbox without a slug")
+        if ( this.path === undefined ) throw new Error("Cannot initialize sandbox without a path")
 
         /* directory must be empty to call this command */
-        if ( fs.readdirSync( sourcePath ).length > 0 ) {
-            throw new Error(`Cannot initialize sanbox in ${sourcePath}, directory is not empty`)
+        if ( fs.readdirSync( this.path ).length > 0 ) {
+            throw new Error(`Cannot initialize sanbox in ${this.path}, directory is not empty`)
         }
 
-        this.path = sourcePath
+        // this.writeProjectFile()
+        // this.writeReadmeFile()
 
-        await all( [this.writeProjectFile(), this.writeReadmeFile()] )
+
+        await Promise.all( [this.writeProjectFile(), this.writeReadmeFile()] )
         
-
     }
+
+
+
 
 
 

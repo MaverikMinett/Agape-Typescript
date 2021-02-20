@@ -7,11 +7,14 @@ import { tokenize } from '@agape/string'
 import { Templateer } from '@agape/templateer'
 
 const writeFile = util.promisify( fs.writeFile )
-const all       = util.promisify( Promise.all )
 
 export class Project {
 
     name: string
+
+    author: string
+
+    email: string
 
     @lazy( o => o.name ? tokenize( o.name ) : undefined )
     slug: string
@@ -22,8 +25,7 @@ export class Project {
 
     port: string
 
-    @nonenumerable
-    parent: Project
+    @nonenumerable parent: Project
     
     @nonenumerable
     path: string
@@ -35,7 +37,7 @@ export class Project {
 
     year: number
 
-    constructor( params?:any ) {
+    constructor( params?:{[key:string]:any}  ) {
         if ( params ) Object.assign(this, params)
         this.year || ( this.year = new Date().getFullYear() )
     }
@@ -48,13 +50,13 @@ export class Project {
         return this.parent ? this.parent.toplevel : this
     }
 
-    writeProjectFile() {
+    async writeProjectFile() {
         return writeFile( path.join(this.path, 'project.json'), JSON.stringify( deflate(this) ) )
     }
 
-    writeReadmeFile( template:string="README.md" ) {
+    async writeReadmeFile( template:string="README.md" ) {
         const tt = new Templateer()
-        tt.renderFile( template, path.join(this.path, "README.md"), deflate(this) )
+        return tt.renderFile( template, path.join(this.path, "README.md"), deflate(this) )
     }
 
 }

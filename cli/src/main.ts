@@ -15,13 +15,14 @@ import { appDataDir } from './lib/util'
 
 Templateer.prototype.sources = [ path.join(__dirname, 'templates'), appDataDir ]
 
+try {
 
 /* Create a new sandbox */
 commander.command('init')
             .description('Create a sandbox')
             .action( async () => {
                     let command = new InitCommand()
-                    command.run( )
+                    await command.run( )
                 });
 
 /* Create a new project in an existing sandbox */
@@ -29,7 +30,7 @@ commander.command('new')
             .description('Create a new project')
             .action( async () => {
                     let command = new NewCommand()
-                    command.run( )
+                    await command.run( commander.args.slice(1) )
                 });
 
 /* Add resources to an existing project */
@@ -37,7 +38,7 @@ commander.command('add')
             .description("Add resource to a project")
             .action( async () => {
                 let command = new AddCommand()
-                command.run()
+                await command.run( commander.args.slice(1) )
             })
 
 
@@ -48,7 +49,10 @@ commander.command('start')
                     let command = new StartCommand()
                     await command.run( )
                 });
-
+}
+catch (e) {
+    console.log( "Error:" + e )
+}
 
 
 commander.parse( process.argv );

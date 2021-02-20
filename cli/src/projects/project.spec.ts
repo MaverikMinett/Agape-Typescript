@@ -14,7 +14,7 @@ import * as fs from 'fs'
 import { v4 as uuidv4 } from 'uuid';
 
 let p, t;
-fdescribe('Project', () => {
+describe('Project', () => {
 
     afterEach( () => {
         p = undefined;
@@ -46,12 +46,13 @@ fdescribe('Project', () => {
         fs.mkdirSync( sourcePath, { recursive: true } )
 
         p = new Project()
-        p.path = sourcePath
-        p.name = "Foo Bar"
-        p.author = "Maverik Minett"
-        p.email  = ""
+        p.path    = sourcePath
+        p.name    = "Foo Bar"
+        p.author  = "Maverik Minett"
+        p.email   = ""
+        p.license = "MIT"
 
-        p.writeReadmeFile()
+        await p.writeReadmeFile()
 
         expect( fs.existsSync( path.join(p.path, "README.md") ) ).toBeTrue()
     })

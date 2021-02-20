@@ -25,7 +25,9 @@ describe('AngularProject', () => {
         fs.mkdirSync( sourcePath, { recursive: true } )
 
         p = new AngularProject()
-        await p.create( 'ui', sourcePath )
+        p.name = "FooBar"
+        p.slug = 'ui'
+        await p.create(  sourcePath )
 
         expect( fs.existsSync(p.path) ).toBeTrue()
         expect( fs.existsSync( path.join( p.path, 'angular.json' ) ) ).toBeTrue()
@@ -58,7 +60,9 @@ describe('AngularProject', () => {
         fs.mkdirSync( sourcePath, { recursive: true } )
 
         p = new AngularProject()
-        await p.create( 'ui', sourcePath )
+        p.slug = "ui"
+        p.name = "foobar"
+        await p.create( sourcePath )
 
         let ng = p.readAngularFile()
         expect( ng ).toBeTruthy()
@@ -69,7 +73,9 @@ describe('AngularProject', () => {
         fs.mkdirSync( sourcePath, { recursive: true } )
 
         p = new AngularProject()
-        await p.create( 'ui', sourcePath )
+        p.slug = "ui"
+        p.name = "foobar"
+        await p.create( sourcePath )
 
         let ng = p.readPackageFile()
         expect( ng ).toBeTruthy()
@@ -81,7 +87,9 @@ describe('AngularProject', () => {
         fs.mkdirSync( sourcePath, { recursive: true } )
 
         p = new AngularProject()
-        await p.create( 'ui', sourcePath )
+        p.slug = "ui"
+        p.name = "foobar"
+        await p.create( sourcePath )
         await p.installMaterial()
 
         expect( fs.existsSync(p.path) ).toBeTrue()
@@ -109,7 +117,9 @@ describe('AngularProject', () => {
         fs.mkdirSync( sourcePath, { recursive: true } )
 
         p = new AngularProject()
-        await p.create( 'ui', sourcePath )
+        p.slug = "ui"
+        p.name = "foobar"
+        await p.create( sourcePath )
         await p.installMoment()
 
         expect( fs.existsSync(p.path) ).toBeTrue()
@@ -122,7 +132,9 @@ describe('AngularProject', () => {
         fs.mkdirSync( sourcePath, { recursive: true } )
 
         p = new AngularProject()
-        await p.create( 'ui', sourcePath )
+        p.slug = "ui"
+        p.name = "foobar"
+        await p.create( sourcePath )
         await p.installMaterial()
         await p.installMoment()
         await p.installMaterialMomentAdapter()

@@ -3,117 +3,52 @@
 import * as fs from 'fs'
 import * as path from 'path'
 
-import { lazy } from '@agape/object'
-import { tokenize } from '@agape/string'
+// import { lazy } from '@agape/object'
+// import { tokenize } from '@agape/string'
 
 import { spawnSync } from 'child_process'
-import * as chalk from 'chalk'
-
-import { ProjectDescriptor } from '../../lib/descriptors'
-import { Scope } from '../../lib/scope'
 
 
-
-export class AngularTypography {
-
-    
-    constructor( public project: AngularProject ) {
-
-    }
+import { Project } from '../project'
 
 
-    get typographyFile() {
-        return path.join(this.project.path, 'src/styles/_typography.scss')
-    }
-
-    createTyopgraphyFile() {
-        fs.writeFileSync( this.typographyFile, "" )
-    }
-
-    typographyFileExists() {
-        return fs.existsSync( this.typographyFile )
-    }
-
-    installFont( token:string ) {
-        let cmd = spawnSync('npm', [ 'install', '@fontsource/${token}' ], { cwd: this.project.path });
-    }
-
-    importFont( token: string ) {
-        fs.appendFileSync( this.typographyFile, "@import '@fontsource/${token}'\n")
-    }
-
-    addFont( fontName: string ) {
-        const token = tokenize( fontName )
-
-        this.installFont( token )
-
-        if ( ! this.typographyFileExists() ) this.createTyopgraphyFile
-
-        this.importFont( token )
-    }
-
-
-
-
-    // public async addMaterialIconsToAngularProject( ) {
-    //     console.log("Adding material icons to project")
-    //     this.addFontToAngularProject("material-icons")
-    // }
-
-
-    // public async addFontToAngularProject ( fontName:string ) {
-
-    //     let cmd
-    //     let token = tokenize( fontName )
-
-    //     let p = this.scope.project
-
-    //     process.stdout.write( chalk.blue(`Installing font ${fontName}... `) )
-    //     cmd = spawnSync('npm', [ 'install', '@fontsource/${token}' ], { cwd: p.path });
-    //     process.stdout.write( chalk.blue("done\n") )
-
-    //     try {
-    //         fs.appendFileSync( path.join(p.path, 'src', 'styles.scss'), "\n" + `import "@fontsource/${token}"` + "\n");
-    //         process.stdout.write( chalk.blue("done\n") )
-    //     }
-    //     catch (error) {
-    //         process.stdout.write( chalk.red("error\n") )
-    //         process.stdout.write( chalk.red(`  ${error}error\n`) )
-    //     }
-
-    // }
-
-}
-
-
-export class AngularProject extends ProjectDescriptor {
+export class AngularProject extends Project {
 
     // @lazy( o => new AngularTypography( o ) )
     // typography: AngularTypography
 
+    type: string = "angular"
 
-    async create( slug:string, sourcePath:string ) {
 
-        if ( fs.existsSync( path.join( sourcePath, slug) ) ) {
-            throw new Error(`Cannot create project ${slug} in ${sourcePath}, directory already exists` )
+    async create( targetDirectory:string ) {
+
+        if ( this.name === undefined ) throw new Error("Cannot initialize project without a name")
+        if ( this.slug === undefined ) throw new Error("Cannot initialize project without a slug")
+
+        if ( fs.existsSync( path.join( targetDirectory, this.slug) ) ) {
+            throw new Error(`Cannot create project ${this.slug} in ${targetDirectory}, directory already exists` )
         }
 
-        const cmd = spawnSync(`ng`, ['new', slug, '--routing', '--style=scss' ], { cwd: sourcePath });
+        // create target directory if it does not exist
+        fs.mkdirSync(targetDirectory, { recursive: true } )
 
-        this.path = path.join( sourcePath, slug )
+        spawnSync(`ng`, ['new', this.slug, '--routing', '--style=scss' ], { cwd: targetDirectory });
+        this.path = path.join( targetDirectory, this.slug )
+
+        await Promise.all( [this.writeProjectFile(), this.writeReadmeFile()] )
     }
 
 
     async installMaterial() {
-        const cmd = spawnSync('npm', [ 'install', '@angular/material',  '@angular/cdk', '--save' ], { cwd: this.path });
+        return spawnSync('npm', [ 'install', '@angular/material',  '@angular/cdk', '--save' ], { cwd: this.path });
     }
 
     async installMoment() {
-        const cmd = spawnSync('npm', [ 'install', 'moment', '--save' ], { cwd: this.path });
+        return spawnSync('npm', [ 'install', 'moment', '--save' ], { cwd: this.path });
     }
 
     async installMaterialMomentAdapter() {
-        const cmd = spawnSync('npm', [ 'install', '@angular/material-moment-adapter', '--save' ], { cwd: this.path });
+        return spawnSync('npm', [ 'install', '@angular/material-moment-adapter', '--save' ], { cwd: this.path });
     }
 
 

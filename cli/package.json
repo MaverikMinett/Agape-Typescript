@@ -7,6 +7,7 @@
     "start": "webpack --watch",
     "launch": "node dist/main.js",
     "build": "tsc && cp ./src/ag ./build && cp -r src/templates build",
+    "localInstall": "npm run pack && sudo npm install -g  *.tgz",
     "pack": "rm -f *.tgz && npm run build && npm pack",
     "release": "npm run pack && npm publish --access public",
     "test": "jasmine-ts && exit 0"
@@ -17,10 +18,11 @@
   "author": "Maverik Minett",
   "license": "ISC",
   "dependencies": {
-    "@agape/object": "file:../ts/object/agape-object-1.0.2.tgz",
+    "@agape/object": "^1.0.3",
     "@agape/string": "file:../ts/string/agape-string-1.0.2.tgz",
-    "@agape/templateer": "^1.0.4",
+    "@agape/templateer": "^1.1.0",
     "@fontsource/material-icons": "^4.1.0",
+    "await-spawn": "^4.0.1",
     "chalk": "^4.1.0",
     "clear": "^0.1.0",
     "clui": "^0.3.6",
@@ -49,6 +51,7 @@
     "ts-node": "^9.0.0",
     "tsc": "^1.20150623.0",
     "typescript": "^4.1.2",
+    "uuid": "^8.3.2",
     "webpack": "^4.44.2",
     "webpack-cli": "^3.3.12",
     "webpack-node-externals": "^2.5.2"
