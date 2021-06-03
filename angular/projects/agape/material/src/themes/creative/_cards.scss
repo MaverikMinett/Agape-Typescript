@@ -1,0 +1,41 @@
+
+@import "./cards_mixins";
+
+/* increase font sizes for card headers */
+.ag-card, .ag-panel, .ag-tile {
+	.mat-card-title {
+		font-size: 1.5rem;
+	}
+}
+
+
+.ag-card {
+	padding: 16px;
+
+	.mat-card-content {
+		padding: 0px 16px;
+		display: flex;
+		flex-direction: column;
+	}
+}
+
+
+
+/* the first child of a card always fills */
+.ag-card .mat-card-content > div:first-child {
+	flex: 1;
+}
+
+
+.ag-card.cascade {
+	@include cascade;
+}
+
+
+/* Select boxes are acting funny, displaying smaller than usual font inside
+cards... This is a hack to fix it, need to figure out the real issue... */
+
+.mat-card-subtitle, .mat-card-content {
+    font-size: 18px;
+}
+

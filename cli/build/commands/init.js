@@ -10,15 +10,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.InitCommand = void 0;
-const init_1 = require("../projects/sandbox/init");
+const init_1 = require("../projects/sandbox/commands/init");
 /**
  * Initialize a new sandbox.
  */
 // @command('init', 'Create a sandbox')
 class InitCommand {
-    run(scope) {
+    run() {
         return __awaiter(this, void 0, void 0, function* () {
-            let command = new init_1.InitSandboxCommand(scope);
+            let command = new init_1.InitSandboxCommand();
             command.run();
         });
     }

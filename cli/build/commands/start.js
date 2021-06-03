@@ -10,32 +10,32 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.StartCommand = void 0;
-/* Text */
-const chalk = require("chalk");
-const figlet = require("figlet");
-const command_1 = require("../lib/command");
-const project_runner_1 = require("../lib/project-runner");
-class StartCommand extends command_1.Command {
-    run() {
+const util_1 = require("../lib/util");
+const project_1 = require("../projects/angular/project");
+const start_1 = require("../projects/angular/commands/start");
+const project_2 = require("../projects/django/project");
+const start_2 = require("../projects/django/commands/start");
+class StartCommand {
+    run(args = []) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!this.scope.project) {
-                console.log(chalk.red("Must be run inside an existing project"));
-                return;
-            }
-            // else {
-            //     console.log( this.scope.project )
-            // }
-            this.displayBanner();
-            console.log("\n");
-            console.log(chalk.blueBright("Starting ") + chalk.cyanBright(this.scope.project.token));
-            console.log("\n");
-            // this.scope.project.start()
-            let runner = new project_runner_1.ProjectRunner(this.scope);
-            yield runner.run();
+            const project = util_1.load_closest_project();
+            console.log("START--->", project);
+            if (!project)
+                throw new Error("Must be run inside an existing project");
+            const command = this.getHandler(project);
+            command.run(args);
         });
     }
-    displayBanner() {
-        console.log(chalk.blueBright(figlet.textSync('Agape', { horizontalLayout: 'full' })));
+    getHandler(project) {
+        if (project instanceof project_1.AngularProject) {
+            return new start_1.StartAngularProjectCommand(project);
+        }
+        else if (project instanceof project_2.DjangoProject) {
+            return new start_2.StartDjangoProjectCommand(project);
+        }
+        else {
+            throw new Error(`Project of type ${project.type} has no handler for start command`);
+        }
     }
 }
 exports.StartCommand = StartCommand;

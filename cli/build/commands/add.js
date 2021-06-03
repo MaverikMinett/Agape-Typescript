@@ -10,84 +10,26 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AddCommand = void 0;
-const chalk = require("chalk");
-const figlet = require("figlet");
-const path = require("path");
-const fs = require("fs");
-const commander = require("commander");
-const child_process_1 = require("child_process");
-const command_1 = require("../lib/command");
-const string_1 = require("@agape/string");
-class AddCommand extends command_1.Command {
-    run() {
+const util_1 = require("../lib/util");
+const project_1 = require("../projects/angular/project");
+const add_1 = require("../projects/angular/commands/add");
+class AddCommand {
+    run(args = []) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!this.scope.project) {
-                console.log(chalk.red("Must be run inside an existing project"));
-                return;
-            }
-            this.displayBanner();
-            // console.log( "\n" )
-            // console.log( chalk.blueBright( "Create a new project in " ) + chalk.cyanBright(this.scope.project.slug) );
-            // console.log( "\n" )
-            // const response = await this.promptForProjectType()
-            let args = commander.args;
-            args.pop();
-            const arg = commander.args[1];
-            try {
-                let cmd;
-                switch (this.scope.project.type) {
-                    // case 'django':
-                    // cmd = new NewDjangoProjectCommand( this.scope )
-                    // return cmd.run()
-                    // break;
-                    case 'angular':
-                        switch (arg) {
-                            case 'material-icons':
-                                return yield this.addMaterialIconsToAngularProject();
-                        }
-                }
-                console.log(chalk.red("Could not add ")
-                    + chalk.cyan(arg)
-                    + chalk.red(" to ")
-                    + chalk.cyan(this.scope.project.token), +chalk.red(", no handler exists."));
-            }
-            catch (error) {
-                console.log(chalk.red("Error: " + error));
-            }
-            return;
+            const project = util_1.load_closest_project();
+            if (!project)
+                throw new Error("Must be run inside an existing project");
+            const command = this.getHandler(project);
+            command.run(args);
         });
     }
-    // public async prompt() {
-    //     const questions = [
-    //     ]
-    //     return { }
-    // }
-    displayBanner() {
-        console.log(chalk.blueBright(figlet.textSync('Agape', { horizontalLayout: 'full' })));
-    }
-    addFontToAngularProject(fontName) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let cmd;
-            let token = string_1.tokenize(fontName);
-            let p = this.scope.project;
-            process.stdout.write(chalk.blue(`Installing font ${fontName}... `));
-            cmd = child_process_1.spawnSync('npm', ['install', '@fontsource/${token}'], { cwd: p.path });
-            process.stdout.write(chalk.blue("done\n"));
-            try {
-                fs.appendFileSync(path.join(p.path, 'src', 'styles.scss'), "\n" + `import "@fontsource/${token}"` + "\n");
-                process.stdout.write(chalk.blue("done\n"));
-            }
-            catch (error) {
-                process.stdout.write(chalk.red("error\n"));
-                process.stdout.write(chalk.red(`  ${error}error\n`));
-            }
-        });
-    }
-    addMaterialIconsToAngularProject() {
-        return __awaiter(this, void 0, void 0, function* () {
-            console.log("Adding material icons to project");
-            this.addFontToAngularProject("material-icons");
-        });
+    getHandler(project) {
+        if (project instanceof project_1.AngularProject) {
+            return new add_1.AddToAngularProjectCommand(project);
+        }
+        else {
+            throw new Error(`Project of type ${project.type} has no handler for add command`);
+        }
     }
 }
 exports.AddCommand = AddCommand;

@@ -1,0 +1,22 @@
+
+
+
+/* Tight */
+.fab-container.float-br {
+    position: fixed;
+    bottom: 12px;
+    right: 16px;
+}
+
+.fab-container.float-bl {
+    position: fixed;
+    bottom: 12px;
+    left: 16px;
+}
+
+.fab-container.float-bc {
+    position: fixed;
+    bottom: 12px;
+    left: 50%;
+    transform: translate(-50%, 0%);
+}

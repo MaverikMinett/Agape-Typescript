@@ -21,6 +21,8 @@ const object_1 = require("@agape/object");
 const descriptors_1 = require("../../lib/descriptors");
 const scope_1 = require("../../lib/scope");
 class NewAngularProjectCommand extends command_1.Command {
+    // async prompt() {
+    // }
     run() {
         return __awaiter(this, void 0, void 0, function* () {
             let cmd;

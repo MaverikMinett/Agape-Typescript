@@ -1,0 +1,28 @@
+body.fixed-appbar {
+    .ag-appbar {
+      position: absolute;
+      width: 100vw;
+      z-index: 1000;
+    }
+  }
+  
+  .floating-appbar {
+    .ag-appbar {
+      position: fixed;
+      width: 100vw;
+      z-index: 1000;
+    }
+  }
+  
+  .transparent-appbar {
+    .ag-appbar {
+      background-color: transparent;
+      box-shadow: none;
+    }
+  }
+
+
+  // .ag-appbar {
+  //   -webkit-app-region: drag;
+  // }
+  

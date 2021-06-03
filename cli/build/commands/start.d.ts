@@ -1,5 +1,7 @@
-import { Command } from '../lib/command';
-export declare class StartCommand extends Command {
-    run(): Promise<void>;
-    displayBanner(): void;
+import { Project } from '../projects/project';
+import { StartAngularProjectCommand } from '../projects/angular/commands/start';
+import { StartDjangoProjectCommand } from '../projects/django/commands/start';
+export declare class StartCommand {
+    run(args?: Array<string>): Promise<void>;
+    getHandler(project: Project): StartAngularProjectCommand | StartDjangoProjectCommand;
 }

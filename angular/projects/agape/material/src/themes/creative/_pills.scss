@@ -1,0 +1,51 @@
+
+.pill {
+	background: white;
+	// height: 40px;
+	border-radius: 15px;
+	border: 1px solid black;
+	line-height: 32px;
+	padding: 4px 20px;
+
+	.mat-icon {
+		height: 32px;
+		width: 32px;
+		line-height: 32px;
+	}
+}
+
+/**
+ * Todo: Where was this being used??
+ */
+.large-pill {
+	// border: 1px solid blue; 
+	border-radius: 30px;
+	display: flex;
+	flex-direction: row;
+	padding: 15px;
+	// box-shadow: $z-depth-4;
+
+	&.pill-primary {
+		background: rgb(33,150,243);
+		background: radial-gradient(circle, rgba(33,150,243,1) 0%, rgba(30,136,229,1) 29%, rgba(66,165,245,1) 100%);
+		color: white;
+	}
+
+	&.pill-nuetral {
+		// background: rgb(96,125,139);
+		// background: radial-gradient(circle, rgba(96,125,139,1) 0%, rgba(84,110,122,1) 29%, rgba(120,144,156,1) 100%);
+background: #BDBDBD;
+// background: radial-gradient(circle, rgba(158,158,158,1) 0%, rgba(117,117,117,1) 29%, rgba(189,189,189,1) 100%); 
+		color: white;	
+	}
+
+	.pill-content {
+		display: flex;
+		flex-direction: column;
+
+		> * {
+			flex: 1;
+		}
+	}
+}
+

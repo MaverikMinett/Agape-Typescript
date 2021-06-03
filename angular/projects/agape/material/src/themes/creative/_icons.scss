@@ -1,0 +1,67 @@
+
+
+/**
+ * Toggle Password Display
+ * 
+ * Positions the icon over the form input. Used to display
+ * an eye icon on password inputs to toggle the password
+ * visibility.
+ */
+mat-icon.toggle-display-password {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  cursor: pointer;
+}
+
+
+
+
+
+
+
+
+
+
+.mat-icon.mat-icon-lg {
+	font-size: 42px;
+	width: 42px;
+	height: 42px;
+}
+
+.mat-icon.mat-icon-xl {
+	font-size: 54px;
+	width: 54px;
+	height: 54px;
+}
+
+.mat-icon.mat-icon-xxl {
+	font-size: 128px;
+	width: 128px;
+	height: 128px;
+}
+
+.mat-icon.dialog-icon {
+	font-size: 72px;
+	width: 72px;
+	height: 72px;
+}
+
+.mat-icon.dialog-icon-lg {
+	font-size: 128px;
+	width: 128px;
+	height: 128px;
+}
+
+.mat-icon.float-right {
+	position: absolute;
+	right: 0px;
+}
+
+.mat-icon.color-primary {
+
+}
+
+.mat-icon.colory-nuetral {
+
+}

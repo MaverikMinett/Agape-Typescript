@@ -1,0 +1,16 @@
+{
+  "name": "@agape/material",
+  "version": "0.0.3",
+  "access": "public",
+  "peerDependencies": {
+    "@angular/common": "^10.2.4",
+    "@angular/core": "^10.2.4",
+    "@angular/material": "^10.2.7",
+    "moment": "^2.29.1",
+    "@angular/material-moment-adapter": "11.1.2"
+  },
+  "dependencies": {
+    "tslib": "^2.0.0"
+  },
+  "keywords": ["angular", "material", "agape", "styles", "themes"]
+}

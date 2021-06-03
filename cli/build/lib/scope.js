@@ -10,8 +10,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Scope = void 0;
-/* Files */
-const path = require("path");
 const object_1 = require("@agape/object");
 const templateer_1 = require("@agape/templateer");
 const util_1 = require("../lib/util");
@@ -31,8 +29,8 @@ class Scope {
     }
     _build_templateer() {
         let t = new templateer_1.Templateer();
-        t.addSource(path.join(this.settings.appDataDir, 'templates'));
-        t.addSource(path.join(path.dirname(__dirname), 'templates'));
+        // t.addSource( path.join( this.settings.appDataDir, 'templates' ) )
+        // t.addSource( path.join( path.dirname(__dirname), 'templates' ) )
         return t;
     }
     renderFile(filepath, outpath) {

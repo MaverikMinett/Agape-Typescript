@@ -1,0 +1,101 @@
+
+/**
+ * Add the .no-stepper-header modifier which removes
+ * the steps from the top of the stepper.
+ */
+.mat-stepper-horizontal.no-stepper-header {
+	.mat-horizontal-stepper-header-container {
+		display: none;
+	}
+}
+
+
+// .stepper-content {
+// 	flex: 1;
+// 	display: flex;
+// 	flex-direction: row;
+// 	justify-content: center;
+// }
+
+
+
+/**
+ * TODO: Clean this up. This is being used by the New User dialog.
+ * Make it reusable. Stepper buttons and action buttons are probably
+ * the same thing.
+ */
+// .ag-dialog .dialog-content  {
+// 	display: flex;
+// 	flex-direction: column;
+
+// 	.mat-stepper-horizontal {
+// 		flex: 1;
+// 		display: flex;
+// 		flex-direction: column;
+// 		width: 100%;
+
+// 		.mat-horizontal-content-container {
+// 			flex: 1;
+// 			display: flex;
+// 			flex-direction: column;
+// 			.mat-horizontal-stepper-content {
+// 				height: 100%;
+// 				display: flex;
+// 				flex-direction: column;
+
+// 				form {
+// 					flex: 1;
+// 					display: flex;
+// 					flex-direction: column;
+
+// 					.mat-list {
+// 						flex: 1;
+// 					}
+
+
+
+// 					.ag-stepper-content {
+// 						flex: 1;
+// 					}
+// 				}
+
+// 			}
+// 			.mat-horizontal-stepper-content[aria-expanded=false] {
+// 			    height: 0;
+// 			    overflow: hidden;
+// 			}
+// 		}
+
+// 		.stepper-buttons {
+// 			text-align: right;
+// 			display: flex;
+// 			justify-content: space-between;
+// 			direction: rtl;
+
+// 			.mat-button {
+// 				padding: 12px 24px;
+// 				font-size: 24px;				
+// 			}
+
+// 			.mat-button.btn-primary {
+// 				background: rgb(33,150,243);
+// 				background: radial-gradient(circle, rgba(33,150,243,1) 0%, rgba(30,136,229,1) 29%, rgba(66,165,245,1) 100%);
+// 				color: white;
+// 			}
+
+// 			.mat-button.btn-nuetral {
+// 				color: gray;
+// 			}
+
+// 			.mat-button.btn-back {
+// 				color: gray;
+// 				padding-left: 48px;
+// 				padding-right: 48px;
+// 			}
+
+// 			.mat-button.btn-action {
+
+// 			}
+// 		}
+// 	}
+// }

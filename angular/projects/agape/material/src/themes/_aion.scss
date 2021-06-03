@@ -1,0 +1,35 @@
+
+@import '~@angular/material/theming';
+
+@include mat-core();
+ 
+@import './aion/colors/indigo';
+
+@import './aion/styles';
+
+// $app-brand-typo: mat-typography-config(
+//   $font-family:  'Ubuntu',
+//   $display-1: mat-typography-level(64px, 72px, 100),
+//   $display-2: mat-typography-level(48px, 52px, 100),
+//   $display-4: mat-typography-level(14px, 18px, 100),
+// );
+
+// $app-brand-accent-typo: mat-typography-config(
+//   $font-family:  'Comfortaa',
+//   $display-4: mat-typography-level(16px, 18px, 100),
+// );
+
+// /* to change the default styling of all material components */
+// $app-base-typo: mat-typography-config(
+//   $font-family:  'Montserrat',
+//   $body-1: mat-typography-level(18px, 1.125, 100),
+//   // $input: mat-typography-level(32px, 48px, 700),
+// );
+
+// @include angular-material-typography($app-base-typo);
+
+ 
+ 
+
+
+

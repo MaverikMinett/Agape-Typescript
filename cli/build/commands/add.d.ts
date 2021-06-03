@@ -1,7 +1,6 @@
-import { Command } from '../lib/command';
-export declare class AddCommand extends Command {
-    run(): Promise<void>;
-    displayBanner(): void;
-    addFontToAngularProject(fontName: string): Promise<void>;
-    addMaterialIconsToAngularProject(): Promise<void>;
+import { Project } from '../projects/project';
+import { AddToAngularProjectCommand } from '../projects/angular/commands/add';
+export declare class AddCommand {
+    run(args?: Array<string>): Promise<void>;
+    getHandler(project: Project): AddToAngularProjectCommand;
 }
