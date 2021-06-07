@@ -427,6 +427,24 @@ describe('ObjectDescriptor', () => {
         expect( o.called ).toBeTrue()
     })
 
+    it('should allow a spy to be installed on method defined via the descriptor', () => {
+
+        class SimpleObject { called:boolean }
+
+        let p: any = SimpleObject.prototype
+        p.Δmeta = new ObjectDescriptor(p)
+
+        p.Δmeta.method('foo').default(function() {
+            this.called = true
+        })
+
+        let o:any = new SimpleObject()
+        spyOn( o, 'foo' )
+        o.foo()
+        expect( o.foo ).toHaveBeenCalled()
+
+    })
+
 
     it('should include the natively defined methods of another class', () => {
 
@@ -447,6 +465,30 @@ describe('ObjectDescriptor', () => {
         let o:any = new SimpleObject()
         expect( o.foo() ).toBeTrue()
         expect( o.bar() ).toBeTrue()
+    })
+
+    it('should allow a spy to be installed on the natively defined methods of another class', () => {
+        class SimpleTrait { 
+            foo() { return true }
+        }
+        let p: any = SimpleTrait.prototype
+        p.Δmeta = new ObjectDescriptor(p)
+
+
+        class SimpleObject  {
+            bar() { return true }
+        }
+        let q: any = SimpleObject.prototype
+        q.Δmeta = new ObjectDescriptor(q)
+        q.Δmeta.include( p )
+
+        let o:any = new SimpleObject()
+        expect( o.foo() ).toBeTrue()
+        expect( o.bar() ).toBeTrue()
+
+        spyOn(o, 'foo')
+        o.foo()
+        expect( o.foo ).toHaveBeenCalled();
     })
 
     it('should include the dynamic methods of another class', () => {
