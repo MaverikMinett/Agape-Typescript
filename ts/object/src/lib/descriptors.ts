@@ -151,7 +151,9 @@ export class MethodDescriptor {
         Object.defineProperty( target, name, {
             value: function( ...args ) {
                 return descriptor.call(this, ...args)
-            }
+            },
+            writable: true,
+            configurable: true
         } )
     }
 
@@ -332,7 +334,7 @@ export class ObjectDescriptor {
                 if ( propertyName in target ) continue;
                 
                 Object.defineProperty( target, propertyName, { 
-                    value: Object.getOwnPropertyDescriptor( trait, propertyName ).value
+                    ...Object.getOwnPropertyDescriptor( trait, propertyName )
                 })
             }
 
