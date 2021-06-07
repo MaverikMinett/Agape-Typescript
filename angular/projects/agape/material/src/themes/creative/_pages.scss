@@ -1,0 +1,17 @@
+/* Landing Page */
+.landing-page {
+	background: rgb(33,150,243);
+	background: linear-gradient(159deg, rgba(33,150,243,1) 0%, rgba(21,101,192,1) 64%);
+
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.page, .ag-page {
+  padding: 66px;
+}
+
+
+

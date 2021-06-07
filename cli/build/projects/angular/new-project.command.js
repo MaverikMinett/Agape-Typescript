@@ -17,9 +17,12 @@ const fs = require("fs");
 const child_process_1 = require("child_process");
 const inquirer = require("inquirer");
 const create_readme_macro_1 = require("../../macros/create-readme.macro");
+const object_1 = require("@agape/object");
 const descriptors_1 = require("../../lib/descriptors");
 const scope_1 = require("../../lib/scope");
 class NewAngularProjectCommand extends command_1.Command {
+    // async prompt() {
+    // }
     run() {
         return __awaiter(this, void 0, void 0, function* () {
             let cmd;
@@ -39,38 +42,64 @@ class NewAngularProjectCommand extends command_1.Command {
             d.parent = this.scope.project;
             d.path = projectPath;
             d.type = "angular";
+            fs.mkdirSync(sourcePath, { recursive: true });
             /* Create the angular application */
             process.stdout.write(chalk.blue("Creating angular workspace... "));
             cmd = child_process_1.spawnSync(`ng`, ['new', stash.slug, '--routing', '--style=scss'], { cwd: sourcePath });
             fs.renameSync(path.join(sourcePath, stash.slug), projectPath);
             process.stdout.write(chalk.blue("done\n"));
-            // update package.json
-            // update environment file
-            /* Install Agape */
-            // process.stdout.write( chalk.blue("Installing agape...") )
-            // cmd = spawnSync('npm', [ 'install', '@agape/core', '@agape/auth', '--save' ], { cwd: projectPath });
-            // process.stdout.write( chalk.blue("done\n") )
             /* Install Material */
-            // process.stdout.write( chalk.blue("Installing material...") )
-            // cmd = spawnSync('npm', [ 'install', '@angular/cdk', '@angular/material', '--save' ], { cwd: projectPath });
-            // process.stdout.write( chalk.blue("done\n") )ls
+            if (this.scope.stash.material) {
+                process.stdout.write(chalk.blue("Installing material..."));
+                cmd = child_process_1.spawnSync('ag', ['add', '@angular/material', '--save'], { cwd: projectPath });
+                process.stdout.write(chalk.blue("done\n"));
+            }
             /* Install Moment */
-            // process.stdout.write( chalk.blue("Installing moment...") )
-            // cmd = spawnSync('npm', [ 'install', 'moment', '@angular/material-moment-adapter', '--save' ], { cwd: projectPath });
-            // process.stdout.write( chalk.blue("done\n") )
-            /* Create .gitignore file */
-            // process.stdout.write( chalk.blue("Creating .gitignore file... ") )
-            // fs.writeFileSync( path.join(projectPath, '.gitignore'), "venv\napp/local_settings.py\n" )
-            // process.stdout.write( chalk.blue("done\n") )
-            /* Create the agape.json file */
-            this.writeProjectFile(d);
+            if (this.scope.stash.moment) {
+                process.stdout.write(chalk.blue("Installing moment..."));
+                cmd = child_process_1.spawnSync('npm', ['install', 'moment', '--save'], { cwd: projectPath });
+                process.stdout.write(chalk.blue("done\n"));
+            }
+            /* Install Material/Moment Adapter */
+            if (this.scope.stash.moment && this.scope.stash.material) {
+                process.stdout.write(chalk.blue("Installing moment..."));
+                cmd = child_process_1.spawnSync('npm', ['install', '@angular/material-moment-adapter', '--save'], { cwd: projectPath });
+                process.stdout.write(chalk.blue("done\n"));
+            }
+            console.log(this.scope.stash);
+            /* Add Material Icons */
+            if (this.scope.stash.materialIcons) {
+                process.stdout.write(chalk.blue("Installing material icons... "));
+                cmd = child_process_1.spawnSync('npm', ['install', 'fontsource', 'material-icons'], { cwd: projectPath });
+                process.stdout.write(chalk.blue("done\n"));
+                process.stdout.write(chalk.blue("Addinng material icons to styles.scss... "));
+                try {
+                    fs.appendFileSync(path.join(d.path, 'src', 'styles.scss'), 'import "@fontsource/material-icons"' + "\n");
+                    process.stdout.write(chalk.blue("done\n"));
+                }
+                catch (error) {
+                    process.stdout.write(chalk.red("error\n"));
+                    process.stdout.write(chalk.red(`  ${error}error\n`));
+                }
+            }
             /* Create a new scope for the new project */
             let s = new scope_1.Scope(d);
+            /* Create the agape.json file */
+            this.writeProjectFile(d);
+            /* Over-write the app.component.html with the agape version */
+            let templateData = object_1.deflate(s.project);
+            this.scope.templateer.renderFile("ui/app.component.html", path.join(projectPath, 'src/app/app.component.html'), templateData);
             /* create readme */
             process.stdout.write(chalk.blue("Creating README.md file... "));
             const macro = new create_readme_macro_1.CreateReadmeMacro(s);
             yield macro.run();
             process.stdout.write(chalk.blue("done\n"));
+            /* Install Agape */
+            // process.stdout.write( chalk.blue("Installing agape...") )
+            // cmd = spawnSync('npm', [ 'install', '@agape/core', '@agape/auth', '--save' ], { cwd: projectPath });
+            // process.stdout.write( chalk.blue("done\n") )
+            // update package.json
+            // update environment file
             console.log("\n" + chalk.blue("Successfully created project ") + chalk.cyanBright(d.token) + "\n");
         });
     }
@@ -126,9 +155,31 @@ class NewAngularProjectCommand extends command_1.Command {
                     type: 'input',
                     message: 'Port for development server',
                     default: stash.port
+                },
+                {
+                    name: 'material',
+                    type: 'confirm',
+                    message: 'Use material',
+                    default: true
+                },
+                {
+                    name: 'materialIcons',
+                    type: 'confirm',
+                    message: 'Use material icons',
+                    default: true,
+                },
+                {
+                    name: 'moment',
+                    type: 'confirm',
+                    message: 'Use moment.js',
+                    default: false
                 }
             ];
             return inquirer.prompt(questions);
+        });
+    }
+    addMaterialIcons() {
+        return __awaiter(this, void 0, void 0, function* () {
         });
     }
     writeProjectFile(projectDescriptor) {

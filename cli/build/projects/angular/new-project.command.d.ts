@@ -12,5 +12,6 @@ export declare class NewAngularProjectCommand extends Command {
         port: string;
     }>;
     promptForAngularOptions(): Promise<any>;
+    addMaterialIcons(): Promise<void>;
     writeProjectFile(projectDescriptor: ProjectDescriptor): Promise<void>;
 }

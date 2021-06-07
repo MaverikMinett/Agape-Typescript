@@ -1,7 +1,7 @@
-import { Command } from '../lib/command';
-export declare class NewCommand extends Command {
-    run(): Promise<void>;
-    prompt(): Promise<{}>;
-    displayBanner(): void;
-    promptForProjectType(): Promise<object>;
+import { NewAngularProjectCommand } from '../projects/angular/commands/new';
+import { NewDjangoProjectCommand } from '../projects/django/commands/new';
+export declare class NewCommand {
+    run(args?: Array<string>): Promise<void>;
+    getHandler(projectType: string): NewAngularProjectCommand | NewDjangoProjectCommand;
+    promptForProjectType(): Promise<string>;
 }

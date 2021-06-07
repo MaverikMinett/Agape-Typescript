@@ -1,6 +1,6 @@
 {
   "name": "@agape/object",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Extensible objects",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",

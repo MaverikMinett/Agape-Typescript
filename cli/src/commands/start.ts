@@ -2,55 +2,43 @@
 import * as chalk from 'chalk'
 import * as figlet from 'figlet'
 
+import { load_closest_project } from '../lib/util'
 
-import { Command } from '../lib/command'
-import { ProjectRunner } from '../lib/project-runner'
-
-// import { NewDjangoProjectCommand } from '../projects/django/new-project.command'
-
-// import * as Enquirer from 'enquirer';
-
-
-import * as child_process from 'child_process';
+import { Project } from '../projects/project'
+import { AngularProject } from '../projects/angular/project'
+import { StartAngularProjectCommand } from '../projects/angular/commands/start'
+import { DjangoProject } from '../projects/django/project'
+import { StartDjangoProjectCommand } from '../projects/django/commands/start'
 
 
-export class StartCommand extends Command {
+export class StartCommand  {
 
-    async run( ) {
+    async run( args:Array<string> = [ ] ) {
 
-        if ( ! this.scope.project ) {
-            console.log( chalk.red("Must be run inside an existing project") )
-            return
+        const project = load_closest_project()
+
+        console.log("START--->", project )
+
+        if ( ! project ) throw new Error("Must be run inside an existing project")
+
+        const command = this.getHandler( project )
+
+        command.run( args )
+
+    }
+
+    getHandler( project:Project ) {
+
+        if (  project instanceof AngularProject ) {
+            return  new StartAngularProjectCommand( project )  
         }
-        // else {
-        //     console.log( this.scope.project )
-        // }
-
-
-        this.displayBanner()
-
-        console.log( "\n" )
-        console.log( chalk.blueBright( "Starting " ) + chalk.cyanBright(this.scope.project.token) );
-        console.log( "\n" )
-
-
-
-        // this.scope.project.start()
-
-
-        let runner = new ProjectRunner( this.scope )
-        await runner.run()
-
+        else if ( project instanceof DjangoProject ) {
+            return new StartDjangoProjectCommand( project )
+        }
+        else {
+            throw new Error(`Project of type ${project.type} has no handler for start command`)
+        }
     }
-
-
-
-    public displayBanner() {
-        console.log(
-            chalk.blueBright( figlet.textSync('Agape', { horizontalLayout: 'full' }) )
-        );
-    }
-
 
 
 }

@@ -1,0 +1,16 @@
+.ag-app-container {
+
+    .mat-toolbar {
+    //    display: none; 
+       position: relative;
+       z-index: 999;
+    }
+
+    .mat-sidenav-content {
+        padding: 12px 6px;
+    }
+
+    .mat-sidenav {
+        width: 300px;
+    }
+}

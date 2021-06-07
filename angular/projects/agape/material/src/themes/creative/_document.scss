@@ -1,0 +1,44 @@
+
+
+
+/**
+ * Ensure that the application always fills
+ * the entire browser window.
+//  */
+// html, body {
+//   margin: 0px;
+// }
+
+// body {
+//   min-height: 100vh;
+//   display: flex;
+//   flex-direction: column;
+// }
+
+// app-root {
+//   display: flex;
+//   flex-direction: column; 
+//   flex: 1;
+// }
+
+
+// app-root > *:nth-child(3) {
+//   display: flex;
+//   flex-direction: column;
+//   flex: 1;
+// }
+
+
+
+// /* router outlets and their children fill the page vertically */
+// .router-outlet-container.primary-router {
+//   flex: 1;
+//   display: flex;
+//   flex-direction: column;
+
+//   > :nth-child(2) {
+//     flex: 1;
+//     display: flex;
+//     flex-direction: column;
+//   }
+// }

@@ -10,54 +10,37 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.NewCommand = void 0;
-/* Text */
-const chalk = require("chalk");
-const figlet = require("figlet");
-const command_1 = require("../lib/command");
-const new_project_command_1 = require("../projects/angular/new-project.command");
-const new_project_command_2 = require("../projects/django/new-project.command");
+const new_1 = require("../projects/angular/commands/new");
+const new_2 = require("../projects/django/commands/new");
 const Enquirer = require("enquirer");
-class NewCommand extends command_1.Command {
-    run() {
+class NewCommand {
+    run(args = []) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!this.scope.project) {
-                console.log(chalk.red("Must be run inside an existing project"));
-                return;
-            }
-            this.displayBanner();
-            console.log("\n");
-            console.log(chalk.blueBright("Create a new project in ") + chalk.cyanBright(this.scope.project.slug));
-            console.log("\n");
-            const response = yield this.promptForProjectType();
-            let cmd;
-            switch (response['projectType']) {
-                case 'django':
-                    cmd = new new_project_command_2.NewDjangoProjectCommand(this.scope);
-                    return cmd.run();
-                case 'angular':
-                    cmd = new new_project_command_1.NewAngularProjectCommand(this.scope);
-                    return cmd.run();
-            }
+            // const project = load_closest_project()
+            // console.log( args )
+            let projectType = args.length > 0 ? args.pop() : yield this.promptForProjectType();
+            const command = this.getHandler(projectType);
+            command.run();
         });
     }
-    prompt() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const questions = [];
-            return {};
-        });
-    }
-    displayBanner() {
-        console.log(chalk.blueBright(figlet.textSync('Agape', { horizontalLayout: 'full' })));
+    getHandler(projectType) {
+        switch (projectType) {
+            case 'django':
+                return new new_2.NewDjangoProjectCommand();
+            case 'angular':
+                return new new_1.NewAngularProjectCommand();
+        }
     }
     promptForProjectType() {
         return __awaiter(this, void 0, void 0, function* () {
             const p = new Enquirer();
-            return p.prompt([{
+            const response = yield p.prompt([{
                     name: 'projectType',
                     type: 'select',
                     message: 'Select a project type',
                     choices: ['angular', 'django', 'sandbox', 'node', 'typescript']
                 }]);
+            return response['projectType'];
         });
     }
 }

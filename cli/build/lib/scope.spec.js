@@ -1,15 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var scope_1 = require("./scope");
-var o;
-describe('Scope', function () {
-    afterEach(function () {
+const scope_1 = require("./scope");
+let o;
+describe('Scope', () => {
+    afterEach(() => {
         o = undefined;
     });
-    it('should instantiate', function () {
+    it('should instantiate', () => {
         o = new scope_1.Scope();
     });
-    it('should load the project.json file in the current directory', function () {
+    it('should load the project.json file in the current directory', () => {
         process.chdir('test-project');
         o = new scope_1.Scope();
         expect(o.project.name).toEqual('Test');

@@ -1,0 +1,30 @@
+
+.ag-table {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+
+	table {
+		width: 100%;
+
+		th {
+			font-size: 1.3rem;
+		}
+		
+		td {
+			font-size: 1.1rem;
+		}
+
+		td.item-actions  {
+			text-align: right;
+
+			* {
+				visibility: hidden;
+			}
+		}
+
+		tr:hover td.item-actions * {
+			visibility: visible;
+		};
+	}
+}

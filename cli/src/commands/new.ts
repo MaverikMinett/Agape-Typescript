@@ -2,68 +2,56 @@
 import * as chalk from 'chalk'
 import * as figlet from 'figlet'
 
+import { load_closest_project } from '../lib/util'
 
-import { Command } from '../lib/command'
-import { NewAngularProjectCommand } from '../projects/angular/new-project.command'
-import { NewDjangoProjectCommand } from '../projects/django/new-project.command'
+import { NewAngularProjectCommand } from '../projects/angular/commands/new'
+import { NewDjangoProjectCommand } from '../projects/django/commands/new'
 
 import * as Enquirer from 'enquirer';
 
 
-export class NewCommand extends Command {
+export class NewCommand  {
 
-    public async run( ) {
+    public async run( args:Array<string> = [ ] ) {
 
-        if ( ! this.scope.project ) {
-            console.log( chalk.red("Must be run inside an existing project") )
-            return
-        }
+        // const project = load_closest_project()
 
+        // console.log( args )
 
-        this.displayBanner()
+        let projectType = args.length > 0 ? args.pop() : await this.promptForProjectType()
+        
+        const command = this.getHandler( projectType )
 
-        console.log( "\n" )
-        console.log( chalk.blueBright( "Create a new project in " ) + chalk.cyanBright(this.scope.project.slug) );
-        console.log( "\n" )
-        const response = await this.promptForProjectType()
+        command.run()
 
-        let cmd:Command
-        switch( response['projectType'] ) {
+    }
+
+    getHandler( projectType:string ) {
+
+        switch( projectType ) {
+
             case 'django':
-                cmd = new NewDjangoProjectCommand( this.scope )
-                return cmd.run()
+                return new NewDjangoProjectCommand( )
+
             case 'angular':
-                cmd = new NewAngularProjectCommand( this.scope )
-                return cmd.run()
+                return new NewAngularProjectCommand(  )
+
+            
         }
 
-
     }
 
-    public async prompt() {
-        const questions = [
-
-        ]
-
-        return { }
-    }
-
-    public displayBanner() {
-        console.log(
-            chalk.blueBright( figlet.textSync('Agape', { horizontalLayout: 'full' }) )
-        );
-    }
-
-    public async promptForProjectType() {
+    public async promptForProjectType():Promise<string> {
         const p = new Enquirer()
 
-        return p.prompt([{
+        const response = await p.prompt([{
             name: 'projectType',
             type: 'select',
             message: 'Select a project type',
             choices: [ 'angular', 'django', 'sandbox', 'node', 'typescript' ]
         }])
         
+        return response['projectType']
     }
 
 }

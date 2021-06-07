@@ -1,0 +1,79 @@
+
+@mixin cascade {
+    
+	margin-top: 44px;
+
+    .mat-card > .mat-card-header,
+    .mat-card > .mat-card-title {
+        margin-top: -44px;
+    }
+
+    .mat-card-content {
+        margin-top: 22px;
+    }
+
+    .mat-card-header {
+        text-align: center;
+        display: block;
+        position: relative;
+
+        background-color: #329EF4;
+        margin-top: -44px;
+        border-radius: 4px;
+        
+        color: white;
+        font-family: "Comfortaa";
+        box-shadow: $z-depth-1;
+
+        .card-header-icon {
+            display: inline-block;
+            padding: 0px 16px;
+            display: none;
+
+            .mat-icon {
+                width: 44px;
+                height: 44px;
+                font-size: 44px;
+                color: white;
+            }
+
+        }
+
+        .card-header-content {
+            display: inline-block;
+            padding-left: 0px;
+            .primary-text {
+                color: white;
+                text-align: center;
+                font-size: 24px;
+            }
+            
+        }
+    }
+
+    .mat-card-title {
+		background-color: #329EF4;
+		margin-top: -44px;
+		border-radius: 4px;
+		
+		color: white;
+		font-family: "Comfortaa";
+		box-shadow: $z-depth-1;
+
+		.title-icon {
+			display: inline-block;
+			position: absolute;
+			padding: 11px;
+			.mat-icon {
+				font-size: 44px;
+				width: 44px;
+				height: 44px;
+			}
+		}
+
+		.title-text {
+			text-align: center;
+			padding: 22px 11px;
+		}
+	}
+}

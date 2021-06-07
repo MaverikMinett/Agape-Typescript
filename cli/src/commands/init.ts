@@ -1,8 +1,6 @@
 
 
-// import { command } from '../commander'
-import { Scope } from '../lib/scope'
-import { InitSandboxCommand } from '../projects/sandbox/init'
+import { InitSandboxCommand } from '../projects/sandbox/commands/init'
 
 
 /**
@@ -11,11 +9,9 @@ import { InitSandboxCommand } from '../projects/sandbox/init'
 // @command('init', 'Create a sandbox')
 export class InitCommand {
 
-    public async run( scope?:Scope ) {
-
-        let command = new InitSandboxCommand( scope )
+    public async run( ) {
+        let command = new InitSandboxCommand(  )
         command.run(  )
-
     }
 
 }
