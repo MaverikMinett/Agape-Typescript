@@ -161,6 +161,13 @@ If called without arguments, `methodName` will default to the property
 name pre prefixed with `_build_`. For example the
 builder method for property `foo` will default to `_build_foo`.
 
+
+`coerce( to:Class|[Class] )`
+
+For use with `inflate`. Specify the concrete classes to create from
+serialized data.
+
+
 `@delegate( o => to )`, `@delegate( o => to, propertyName )`
 
 Delegate to the property of another object. Both reading or writing of the 
@@ -194,12 +201,6 @@ the `this` variable when not inside a fat-arrow function.
 
 Can be used in conjunction with `build`.
 
-`@readonly`
-
-This property will be read only. Attempting to set this property will
-raise an exception. Use in conjunction with another decorator which 
-provides a value such as `lazy`, `delegate`, or `build`.
-
 `@nonenumeral`
 
 The property will not be included when iterating over the object using
@@ -213,6 +214,15 @@ or when printing the object using `console.log`. <a href="https://developer.mozi
 Override the value in an existing property descriptor. This allows traits 
 to over-ride properties defined in consumers.
 
+
+`@readonly`
+
+This property will be read only. Attempting to set this property will
+raise an exception. Use in conjunction with another decorator which 
+provides a value such as `lazy`, `delegate`, or `build`.
+
+
+
 ## Functions
 
 `deflate( object )`
@@ -220,6 +230,22 @@ to over-ride properties defined in consumers.
 Deflate a constructed object to an object literal. Use for serializing objects
 to be passed through APIs or stringified as JSON.  Delegated and inheritied 
 properties are not serialized. Returns a javascript object literal.
+
+`inflate( to:Class|[Class], data:Dictionary|Dictionary[] )`
+
+Instantiate an object or array of objects of the specified class type using
+the provided data. Properties which have been decoratored with `@coerce` will
+also be inflated to allow for deserialization of nested objects.
+
+## Types
+
+`Class`
+
+A type definition for a class symbol.
+
+`Dictionary`
+
+Represents an object literal which has strings for keys with any type of value.
 
 
 ## Caveats

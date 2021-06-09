@@ -1,4 +1,5 @@
 import {  } from "jasmine"
+import { Class } from "./types"
 
 /**
  * Describes a method and all associated modifiers and provides the
@@ -375,6 +376,8 @@ export class ObjectDescriptor {
  */
 export class PropertyDescriptor {
 
+    public ʘcoerce: Class|[Class]
+
     public ʘdelegate: { to?: Object|Function, property?: string }
     public ʘdefault: any
     public ʘenumerable: boolean
@@ -389,6 +392,15 @@ export class PropertyDescriptor {
      */
     constructor( public progenitor: ObjectDescriptor, public name:string ) {
 
+    }
+
+    /**
+     * Declare the type to coerce to when inflating objects
+     * @param to The class to instantiate with the data
+     */
+    coerce( to:Class|[Class] ) {
+        this.ʘcoerce = to
+        return this
     }
 
 
