@@ -1,3 +1,10 @@
+1.1.1  Jun 9, 2021
+- added documentatio for Class and Dictionary types
+
+1.1.0  Jun 9, 2021
+- added @coerce decorator
+- added inflate method
+- added Class and Dictionary types
 
 1.0.4  Jun 3, 2021
 - bug fix: dynamically defined methods are now writable to allow spys to be installed
