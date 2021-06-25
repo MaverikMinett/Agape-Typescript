@@ -1,5 +1,10 @@
+
+1.1.2 Jun 25, 2021
+- bug fix: inflate was replacing all properties on an object with the Agape property dispatcher,
+           this has been fixed so that regular properties remain as regular properties
+
 1.1.1  Jun 9, 2021
-- added documentatio for Class and Dictionary types
+- added documentation for Class and Dictionary types
 
 1.1.0  Jun 9, 2021
 - added @coerce decorator
