@@ -17,7 +17,12 @@ export function inflateObject(to:Class, from:Dictionary ) {
     const m = meta(to)
     
     for ( let key in from ) {
-        o[key] = m.property(key).ʘcoerce ? inflate( m.property(key).ʘcoerce, from[key] ) : from[key]
+        if ( m.properties.has(key) &&  m.property(key).ʘcoerce ) {
+            o[key] =  inflate( m.property(key).ʘcoerce, from[key] ) 
+        }
+        else {
+            o[key] = from[key]
+        }
     }
 
     return o
