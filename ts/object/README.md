@@ -162,10 +162,11 @@ name pre prefixed with `_build_`. For example the
 builder method for property `foo` will default to `_build_foo`.
 
 
-`coerce( to:Class|[Class] )`
+`@coerce( to:Class|[Class] )`
+`@coerce( to:Serializer|[Serializer])`
 
-For use with `inflate`. Specify the concrete classes to create from
-serialized data.
+For use with `inflate` and `deflate`. Specify the concrete classes to create
+from serialized data.
 
 
 `@delegate( o => to )`, `@delegate( o => to, propertyName )`
