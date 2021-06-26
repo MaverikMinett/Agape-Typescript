@@ -1,6 +1,6 @@
 import { coerce } from "./decorators/coerce"
 import { ObjectDescriptor } from "./descriptors"
-import { inflate } from "./inflate"
+import { inflate, Serializer } from "./serializer"
 import { Dictionary } from "./types"
 
 describe('inflate', () => {
@@ -128,6 +128,77 @@ describe('inflate', () => {
         expect( o.foo ).toBeTruthy()
         expect( o.foo.baz ).toEqual('string value')
     })
+
+
+    it('should use a serializer to inflate', () => {
+
+        class AFoo {
+
+        }
+
+        class BFoo {
+
+        }
+
+        class FooSerializer extends Serializer {
+            inflate( data:Dictionary ) {
+                const type = data.type;
+                delete data.type;
+                if ( type == "a" ) {
+                    return inflate( AFoo, data )
+                }
+               else if ( type == "b" ) {
+                   return inflate( BFoo, data )
+               }
+            }
+        }
+
+        const s = new FooSerializer()
+        const d = { type: "a" } 
+        spyOn( s, 'inflate' ).and.callThrough()
+
+
+        const a = inflate( s, d )
+        
+        expect( s.inflate ).toHaveBeenCalledWith( d )
+        expect( a ).toBeInstanceOf( AFoo )
+    })
+
+    it('should use a serializer to inflate an array', () => {
+
+        class AFoo {
+
+        }
+
+        class BFoo {
+
+        }
+
+        class FooSerializer extends Serializer {
+            inflate( data:Dictionary ) {
+                const type = data.type;
+                delete data.type;
+                if ( type == "a" ) {
+                    return inflate( AFoo, data )
+                }
+               else if ( type == "b" ) {
+                   return inflate( BFoo, data )
+               }
+            }
+        }
+
+        const s = new FooSerializer()
+        const d = [{ type: "a" }, { type: "b" }] 
+        spyOn( s, 'inflate' ).and.callThrough()
+
+
+        const a = inflate( [s], d )
+        
+        expect( s.inflate ).toHaveBeenCalledTimes(2)
+        expect( a[0] ).toBeInstanceOf( AFoo )
+        expect( a[1] ).toBeInstanceOf( BFoo )
+    })
+
 
 
 })

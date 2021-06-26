@@ -1,4 +1,5 @@
 import {  } from "jasmine"
+import { Serializer } from "./serializer"
 import { Class } from "./types"
 
 /**
@@ -376,7 +377,7 @@ export class ObjectDescriptor {
  */
 export class PropertyDescriptor {
 
-    public ʘcoerce: Class|[Class]
+    public ʘcoerce: Class|[Class]|Serializer|[Serializer]
 
     public ʘdelegate: { to?: Object|Function, property?: string }
     public ʘdefault: any
@@ -398,7 +399,7 @@ export class PropertyDescriptor {
      * Declare the type to coerce to when inflating objects
      * @param to The class to instantiate with the data
      */
-    coerce( to:Class|[Class] ) {
+    coerce( to:Class|[Class]|Serializer|[Serializer] ) {
         this.ʘcoerce = to
         return this
     }

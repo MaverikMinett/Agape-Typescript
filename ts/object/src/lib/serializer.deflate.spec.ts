@@ -1,7 +1,7 @@
 
 import {} from 'jasmine'
 
-import { deflate } from './deflate'
+import { deflate } from './serializer'
 import { meta } from './meta'
 
 import { lazy } from './decorators/lazy'
@@ -63,17 +63,17 @@ describe('deflate', () => {
         expect(d).toEqual({'foo': 32, 'bar': 42})
     })
 
-    it('should not deflate nonenumerable properties', () => {
+    xit('should not deflate nonenumerable properties', () => {
 
 
     })
 
-    it('should not deflate unpopulated lazy properties', () => {
+    xit('should not deflate unpopulated lazy properties', () => {
 
 
     })
 
-    it('should not deflate inheritied properties', () => {
+    xit('should not deflate inheritied properties', () => {
 
 
     })

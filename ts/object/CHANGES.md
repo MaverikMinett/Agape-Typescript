@@ -1,4 +1,10 @@
 
+1.2.1 June 26, 2021
+- inflate will now accept a customer serializer in place of class (original behavior still funcations as before)
+
+1.2.0 Jun 25, 2021
+- added ability to use custom serializer with @coerce decorator
+
 1.1.2 Jun 25, 2021
 - bug fix: inflate was replacing all properties on an object with the Agape property dispatcher,
            this has been fixed so that regular properties remain as regular properties

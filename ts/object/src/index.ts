@@ -15,7 +15,6 @@ export * from './lib/decorators/stack'
 
 export * from './lib/descriptors'
 
-export * from './lib/inflate'
-export * from './lib/deflate'
+export * from './lib/serializer'
 export * from './lib/meta'
 export * from './lib/types'
