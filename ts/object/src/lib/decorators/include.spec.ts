@@ -1,5 +1,6 @@
 import {} from "jasmine"
 import { meta } from "../meta";
+import { Class } from "../types";
 
 import { include } from './include'
 
@@ -53,6 +54,34 @@ describe('include decorator', () => {
         o = new SimpleClass()
         o.foo()
         expect( o.called ).toBeTrue()
+    })
+
+    it('should allow traits to "decorate" the class', () => {
+
+        class ATrait {
+            Δdecorate( target:Class ) {
+                return class extends target {
+                    constructor( ...args ) {
+                        super(...args)
+                        this.calls = ( this.calls ?? 0 ) + 1
+                        console.log("Hello from the trait")
+                    }   
+                }
+            }
+        }
+
+        @include( ATrait )
+        class AClass {
+
+            calls: number
+
+            constructor() {
+                this.calls = ( this.calls ?? 0 ) + 1
+            }
+        }
+
+        let o = new AClass()
+        expect( o.calls ).toBe(2)
     })
 
 })

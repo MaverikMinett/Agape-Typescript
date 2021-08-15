@@ -298,25 +298,31 @@ export class ObjectDescriptor {
 
 
     
-    /**
+
+     /**
      * Include traits the specified traits into the ObjectDescriptor, copying 
      * over default method definitions and merging all property and method 
      * descriptors as applicable.
      * @param traits 
      */
-    public include( ...traits ) {
+     public include( ...traits ) {
         this.traits || ( this.traits = [ ] )
 
-        let target = this.target
-
-        // console.log("include", target, trait )
+        let targetConstructor, target
+        if ( typeof this.target === "function" ) {
+            targetConstructor = this.target
+            target = this.target.prototype
+        }
+        else {
+            target = this.target
+            targetConstructor = this.target.constructor
+        }
 
         this.traits.push( ...traits )
 
         for ( let trait of traits ) {
 
-            if ( typeof target === "function" ) target = target.prototype
-            if ( typeof trait === "function" )  trait  = trait.prototype
+            if ( typeof trait === "function" ) trait  = trait.prototype
 
             /* copy over default method implementations */
             for ( let propertyName of Object.getOwnPropertyNames( trait ) ) {
@@ -362,10 +368,18 @@ export class ObjectDescriptor {
                     target.Δmeta.property( name ).include( trait.Δmeta.property(name) )
                 }  
             }
+
+            
+            /* apply Δdecorator */
+            if ( trait.Δdecorate ) {
+                targetConstructor = trait.Δdecorate( targetConstructor )
+                target = targetConstructor.prototype
+            }
         }
 
-        return this
+        return targetConstructor
     }
+
 
 
 }
