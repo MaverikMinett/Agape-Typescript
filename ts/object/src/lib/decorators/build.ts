@@ -9,6 +9,7 @@ export function build( method?:string|Object, ...args ):any {
         meta(target).property(name).default( o => o[<string>method].call(o,o) )
     }
 
+    
     if ( method instanceof Object ) {
         let [target, name, descriptor] = [method, ...args]
 

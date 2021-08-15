@@ -238,9 +238,12 @@ export class ObjectDescriptor {
     
     public traits: Array<any>
 
+    buildDispatcherInstalled: boolean = false
+
     constructor( public target: any ) {
         this.properties = new PropertyDescriptorSet( this )
         this.methods = new MethodDescriptorSet()
+        // this.installBuildDispatcher()
     }
 
     /**
@@ -307,16 +310,28 @@ export class ObjectDescriptor {
     public include( ...traits ) {
         this.traits || ( this.traits = [ ] )
 
-        let target = this.target
 
-        // console.log("include", target, trait )
+        console.log( "Traits", traits )
+
+        let targetConstructor, target
+        if ( typeof this.target === "function" ) {
+            targetConstructor = this.target
+            target = this.target.prototype
+        }
+        else {
+            target = this.target
+            targetConstructor = this.target.constructor
+        }
 
         this.traits.push( ...traits )
 
         for ( let trait of traits ) {
 
-            if ( typeof target === "function" ) target = target.prototype
-            if ( typeof trait === "function" )  trait  = trait.prototype
+            console.log( trait )
+
+            if ( typeof trait === "function" ) trait  = trait.prototype
+
+            console.log( trait )
 
             /* copy over default method implementations */
             for ( let propertyName of Object.getOwnPropertyNames( trait ) ) {
@@ -362,10 +377,55 @@ export class ObjectDescriptor {
                     target.Δmeta.property( name ).include( trait.Δmeta.property(name) )
                 }  
             }
+
+            
+            /* apply Δdecorator */
+            if ( trait.Δdecorate ) {
+                targetConstructor = trait.Δdecorate( targetConstructor )
+                target = targetConstructor.prototype
+            }
         }
 
-        return this
+        return targetConstructor
     }
+
+
+    buildProperties: PropertyDescriptor[] = [ ]
+    // beforeBuild: Array< () => void> = []
+
+
+    public build( instance ) {
+        this.buildProperties.map( p => p.build_value(instance) )
+
+        // this.buildMethods.map( m => m.call(this) )
+    }
+
+    public addBuildProperty( property:PropertyDescriptor ) {
+        if ( this.buildProperties.includes(property) ) return
+        this.buildProperties.push( property )
+        // this.installBuildDispatcher()
+    }
+
+    // public installBuildDispatcher() {
+
+    //     if ( this.buildDispatcherInstalled == true ) return
+
+    //     const original = this.target.constructor;
+
+    //     const o = new this.target.constructor()
+
+    //     console.log( o )
+
+    //     this.target.constructor = function(...args) {
+    //         original.call( this, ...args )
+
+    //         this.buildProperties.map( p => p.build_value(this) )
+
+    //         this.buildMethods.map( m => m.call(this) )
+    //     }
+
+    //     this.buildDispatcherInstalled = true
+    // }
 
 
 }
@@ -378,6 +438,9 @@ export class ObjectDescriptor {
 export class PropertyDescriptor {
 
     public ʘcoerce: Class|[Class]|Serializer|[Serializer]
+
+    public ʘbuild: boolean
+    public ʘlazy: boolean
 
     public ʘdelegate: { to?: Object|Function, property?: string }
     public ʘdefault: any
@@ -393,6 +456,34 @@ export class PropertyDescriptor {
      */
     constructor( public progenitor: ObjectDescriptor, public name:string ) {
 
+    }
+
+    /**
+     * Instructs that the default value of the property should be constructed
+     * using a builder method. Will be called during build time unless the 
+     * property is also lazy.
+     * @param value 
+     */
+    build( builder:string ):void
+    build( builder:(o:any) => any ):void
+    build( builder:any ):void {
+        this.default( builder )
+        this.ʘbuild = true
+
+        this.progenitor.addBuildProperty( this )
+    }
+
+    /**
+     * Instructs that the default value of the property should be constructed
+     * lazily, meaning it will be constructed the first time the property is
+     * accessed.
+     * @param value 
+     */
+     lazy( builder:string ):void
+     lazy( builder:(o:any) => any ):void
+     lazy( builder:any ):void {
+        this.default( builder )
+        this.ʘlazy = true
     }
 
     /**
@@ -510,12 +601,11 @@ export class PropertyDescriptor {
                 }
             }
 
-            /* default (lazy) */
-            let value = typeof this.ʘdefault === "function" 
-                ? this.ʘdefault.call(instance, instance)
-                : this.ʘdefault
+            /* build lazy value */
+            if ( this.ʘlazy ) {
+                this.build_value(instance)
+            }
 
-            Object.defineProperty(instance, `ʘ${this.name}`, { value: value, configurable: true, enumerable: false } )
         }
 
         return instance['ʘ' + this.name]
@@ -548,7 +638,7 @@ export class PropertyDescriptor {
      * @param target Target object to install the dispatcher
      * @param name Name of the method to replace
      */
-    install_dispatcher( ) {
+     install_dispatcher( ) {
         let descriptor = this
         let target = this.progenitor.target
         
@@ -564,6 +654,18 @@ export class PropertyDescriptor {
             configurable: true,
             writable: true
         } )
+
+        // if ( this.ʘbuild && ! this.ʘlazy ) {
+        //     this.progenitor.addBuildProperty( this )
+        // }
+    }
+
+    build_value( instance ) {
+        let value = typeof this.ʘdefault === "function" 
+        ? this.ʘdefault.call(instance, instance)
+        : this.ʘdefault
+
+        Object.defineProperty(instance, `ʘ${this.name}`, { value: value, configurable: true, enumerable: false } )
     }
 
 
@@ -580,6 +682,14 @@ export class PropertyDescriptorSet {
     constructor( public progenitor: ObjectDescriptor, from?: PropertyDescriptorSet ) { 
         this.ʘ = {}
         if ( from ) this.merge( from )
+    }
+
+    /**
+     * Return all properties in the set
+     * @returns All properties in the set
+     */
+    all( ):PropertyDescriptor[] {
+        return Object.values(this.ʘ)
     }
 
     /**

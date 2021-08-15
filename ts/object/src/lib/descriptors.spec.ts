@@ -373,6 +373,33 @@ describe('PropertyDescriptor', () => {
         expect(JSON.parse(JSON.stringify(o))).toEqual({})
     })
 
+
+    it('should create a build property', () => {
+
+        class MyClass {
+
+            constructor() {
+                console.log("Construct my class")
+            }
+
+            value = 5
+
+        }
+
+        b = new ObjectDescriptor( MyClass.prototype )
+
+        d = new PropertyDescriptor( b, 'foo')
+        d.build( o => 42 )
+        d.install_dispatcher()
+
+        // console.log( b.buildProperties )
+
+        let o:any = new MyClass()
+        expect(o.foo).toBe(42)
+
+
+    })
+
 })
 
 
