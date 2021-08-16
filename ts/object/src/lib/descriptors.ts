@@ -243,6 +243,38 @@ export class ObjectDescriptor {
         this.methods = new MethodDescriptorSet()
     }
 
+    public does( trait:any ) {
+
+        // if ( typeof trait === "function" ) trait = trait.prototype
+        if ( this.traits?.includes( trait ) ) return true
+
+        let iter = this.target
+
+        while( iter = Object.getPrototypeOf(iter) ) {
+            if ( iter === Object ) return false
+            if ( iter.Δmeta?.does(trait) ) return true
+        }
+
+        return false
+    }
+
+    // public get super( ):ObjectDescriptor {
+
+    //     let parent = Object.getPrototypeOf(this.target)
+
+    //     if ( ! parent ) return
+
+    //     if ( ! parent.hasOwnProperty('Δmeta') ) {
+    //         Object.defineProperty(parent, 'Δmeta', {
+    //             value: new ObjectDescriptor(parent),
+    //             writable: false,
+    //             enumerable: false
+    //         })
+    //     }
+
+    //     return parent['Δmeta']
+    // }
+
     /**
      * Returns a PropertyDescriptor for the property with the given name. If
      * a descriptor does not exist for the property, one will be created for it
@@ -321,8 +353,13 @@ export class ObjectDescriptor {
         this.traits.push( ...traits )
 
         for ( let trait of traits ) {
+            console.log(`Adding ${trait.name} to ${this.target.constructor.name}` )
 
             if ( typeof trait === "function" ) trait  = trait.prototype
+
+            /* copy traits which have been applied to the incoming trait in to
+               the applied traits tracking array */
+            if( trait.Δmeta?.traits ) this.traits.push(...trait.Δmeta.traits)
 
             /* copy over default method implementations */
             for ( let propertyName of Object.getOwnPropertyNames( trait ) ) {

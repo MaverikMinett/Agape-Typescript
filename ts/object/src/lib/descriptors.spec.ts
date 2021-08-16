@@ -1,4 +1,5 @@
 import { } from 'jasmine'
+import { include } from './decorators/include';
 
 import { MethodDescriptor, MethodDescriptorSet, ObjectDescriptor, PropertyDescriptor, PropertyDescriptorSet  } from './descriptors'
 
@@ -528,17 +529,110 @@ describe('ObjectDescriptor', () => {
 
     })
 
-    it('should create a new descriptor from an existing descriptor', () => {
+    describe('does', () => {
+        it('should find a trait on the same class', () => {
+            class ATrait {
 
-        // o = {}
-        // m = new ObjectDescriptor()
-        // m.property(o, 'foo').default(32)
+            }
+            class AClass {
 
-        // let ʘ = {}
-        // let n = new ObjectDescriptor(ʘ,m)
-        // n. 
-        // expect(c).toBeTruthy()
+            }
+            let q: any = AClass.prototype
+            q.Δmeta = new ObjectDescriptor(q)
+            q.Δmeta.include( ATrait.prototype )
+
+            expect( q.Δmeta.does(ATrait.prototype) ).toBeTrue()
+        })
+        it('should find a trait on a parent class', () => {
+            class ATrait {
+
+            }
+            class AClass {
+
+            }
+            class BClass extends AClass {
+
+            }
+            let q: any = AClass.prototype
+            q.Δmeta = new ObjectDescriptor(q)
+            q.Δmeta.include( ATrait )
+
+            let r: any = BClass.prototype
+            r.Δmeta = new ObjectDescriptor(r)
+
+            expect( r.Δmeta.does(ATrait) ).toBeTrue()
+        })
+        it('should find a trait on an ancestor class', () => {
+            class ATrait {
+
+            }
+            class AClass {
+
+            }
+            class BClass extends AClass {
+
+            }
+            let q: any = AClass.prototype
+            q.Δmeta = new ObjectDescriptor(q)
+            q.Δmeta.include( ATrait )
+
+            let r: any = BClass.prototype
+            r.Δmeta = new ObjectDescriptor(r)
+
+            let s: any = BClass.prototype
+            s.Δmeta = new ObjectDescriptor(s)
+
+            expect( s.Δmeta.does(ATrait) ).toBeTrue()
+        })
+        it('should not find the trait', () => {
+            class ATrait {
+
+            }
+            class AClass {
+
+            }
+            let q: any = AClass.prototype
+            q.Δmeta = new ObjectDescriptor(q)
+
+            expect( q.Δmeta.does(ATrait.prototype) ).toBeFalse()
+        })
+        it('should find traits included via other traits', () => {
+            class ATrait {
+
+            }
+
+            class BTrait {
+
+            }
+
+            class AClass {
+
+            }
+
+            let bt: any = BTrait.prototype
+            bt.Δmeta = new ObjectDescriptor(bt)
+            bt.Δmeta.include(ATrait)
+
+            let ac: any = AClass.prototype
+            ac.Δmeta = new ObjectDescriptor(ac)
+            ac.Δmeta.include(BTrait)
+
+            expect( ac.Δmeta.does(ATrait) ).toBeTrue()
+        })
     })
+
+
+    // it('should create a new descriptor from an existing descriptor', () => {
+
+    //     // o = {}
+    //     // m = new ObjectDescriptor()
+    //     // m.property(o, 'foo').default(32)
+
+    //     // let ʘ = {}
+    //     // let n = new ObjectDescriptor(ʘ,m)
+    //     // n. 
+    //     // expect(c).toBeTruthy()
+    // })
 
 
 } )
