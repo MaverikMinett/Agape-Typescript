@@ -64,7 +64,6 @@ describe('include decorator', () => {
                     constructor( ...args ) {
                         super(...args)
                         this.calls = ( this.calls ?? 0 ) + 1
-                        console.log("Hello from the trait")
                     }   
                 }
             }
