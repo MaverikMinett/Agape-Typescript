@@ -26,6 +26,6 @@
     "ts-node": "^8.10.2"
   },
   "dependencies": {
-    "@agape/string": "^1.0.0" 
+    "@agape/string": "^1.0.0"
   }
 }
