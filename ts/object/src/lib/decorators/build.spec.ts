@@ -7,7 +7,7 @@ import { lazy } from './lazy'
 
 
 let o;
-describe('build decorator', () => {
+fdescribe('build decorator', () => {
 
     beforeEach( () => {
         o = undefined;
