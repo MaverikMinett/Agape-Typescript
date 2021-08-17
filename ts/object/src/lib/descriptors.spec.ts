@@ -2,6 +2,7 @@ import { } from 'jasmine'
 import { include } from './decorators/include';
 
 import { MethodDescriptor, MethodDescriptorSet, ObjectDescriptor, PropertyDescriptor, PropertyDescriptorSet  } from './descriptors'
+import { meta } from './meta';
 
 
 let d, o, m;
@@ -167,7 +168,7 @@ describe('MethodDescriptor', () => {
 
 
 let b
-fdescribe('PropertyDescriptor', () => {
+describe('PropertyDescriptor', () => {
     beforeEach( () => {
         o = undefined
         d = undefined
@@ -723,13 +724,28 @@ describe('ObjectDescriptor', () => {
         describe('addBuildProperty', () => {
             it('should add the property to the build properties', () => {
                 class AClass {
-
+                    
                 }    
+                const p = meta(AClass).property('foo')
+                meta(AClass).addBuildProperty( p )
+                expect( meta(AClass).properties.all() ).toEqual([p])
             })
         })
         describe('performBuild', () => {
-            it('should build the properties', () => {
+            it('should build a property', () => {
+                class AClass {
+                    
+                }    
 
+                const p = meta(AClass).property('foo').default(42)
+                meta(AClass).addBuildProperty( p )
+
+                spyOn( meta(AClass), 'performBuild' ).and.callThrough()
+                const o = new AClass()
+                meta(AClass).performBuild(o)
+
+                expect( meta(AClass).performBuild ).toHaveBeenCalled()
+                expect( o['foo'] ).toEqual(42)
             })
         })
     })
