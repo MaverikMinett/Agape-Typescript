@@ -4,8 +4,8 @@ import { before } from './before'
 
 
 
-let o;
-fdescribe('before decorator', () => {
+let o:any
+describe('before decorator', () => {
 
     beforeEach( () => {
         o = undefined;

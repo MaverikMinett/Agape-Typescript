@@ -204,6 +204,7 @@ describe('PropertyDescriptor', () => {
         b = new ObjectDescriptor( o )
         d = new PropertyDescriptor(b, 'foo')
         d.default(32)
+        d.performBuild(o)
 
         expect( d.get(o) ).toEqual(32) 
     })
@@ -212,7 +213,7 @@ describe('PropertyDescriptor', () => {
         o = {  }
         b = new ObjectDescriptor( o )
         d = new PropertyDescriptor(b, 'foo')
-        d.default( o => ['hello'] )
+        d.default( o => ['hello'] ).lazy()
 
         expect( d.get(o) ).toEqual(['hello']) 
     })
@@ -230,7 +231,7 @@ describe('PropertyDescriptor', () => {
         o = {  }
         b = new ObjectDescriptor( o )
         d = new PropertyDescriptor(b, 'foo')
-        d.default( o => 'bar' ).readonly(true)
+        d.default( o => 'bar' ).lazy().readonly(true)
 
         o = {  }
         b = new ObjectDescriptor( o )
@@ -335,7 +336,7 @@ describe('PropertyDescriptor', () => {
         b = new ObjectDescriptor( o )
 
         d = new PropertyDescriptor(b, 'foo')
-        d.default(42)
+        d.default(42).lazy()
         d.install_dispatcher()
 
         expect(o.foo).toEqual(42)
@@ -355,7 +356,7 @@ describe('PropertyDescriptor', () => {
         b = new ObjectDescriptor( o )
 
         d = new PropertyDescriptor(b, 'foo')
-        d.default(42).enumerable(false)
+        d.default(42).enumerable(false).lazy()
         d.install_dispatcher()
 
         expect(o.foo).toEqual(42)
@@ -368,7 +369,7 @@ describe('PropertyDescriptor', () => {
 
         d = new PropertyDescriptor(b, 'foo')
         d.install_dispatcher()
-        d.default(42).enumerable(false)
+        d.default(42).enumerable(false).lazy()
         
 
         expect(o.foo).toEqual(42)
@@ -495,7 +496,7 @@ describe('ObjectDescriptor', () => {
 
     })
 
-    it('should define a property on an onject', () => {
+    it('should define a property on an object', () => {
 
         class SimpleObject { }
 
@@ -503,7 +504,7 @@ describe('ObjectDescriptor', () => {
 
         if ( ! p.Δmeta ) p.Δmeta = new ObjectDescriptor(p)
 
-        p.Δmeta.property('foo').default(32)
+        p.Δmeta.property('foo').default(32).lazy()
 
         let o:any = new SimpleObject()
 
@@ -616,7 +617,7 @@ describe('ObjectDescriptor', () => {
         class SimpleTrait { }
         let p: any = SimpleTrait.prototype
         p.Δmeta = new ObjectDescriptor(p)
-        p.Δmeta.property('foo').default(32)
+        p.Δmeta.property('foo').default(32).lazy()
 
         class SimpleObject  {}
         let q: any = SimpleObject.prototype

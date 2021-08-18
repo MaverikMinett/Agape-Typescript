@@ -260,8 +260,8 @@ export class ObjectDescriptor {
 
     buildProperties:PropertyDescriptor[]
 
-    public performBuild( instance ) {
-        this.buildProperties.map( p => p.performBuild(instance) )
+    public performBuild( instance:any ) {
+        this.buildProperties && this.buildProperties.map( p => p.performBuild(instance) )
     }
 
     public addBuildProperty( property:PropertyDescriptor ) {
@@ -480,6 +480,8 @@ export class PropertyDescriptor {
         this.progenitor.addBuildProperty( this )
         
         this.ʘbuild = true
+
+        return this
     }
 
     lazy( value?: any ):void
@@ -487,6 +489,7 @@ export class PropertyDescriptor {
         const [ method ] = args
         if ( args.length > 0 ) this.default( method )
         this.ʘlazy = true
+        return this
     }
 
     performBuild( instance:any ) {
@@ -570,6 +573,7 @@ export class PropertyDescriptor {
         if ( this.ʘdefault === undefined || from.ʘoverride === true ) this.ʘdefault = from.ʘdefault
         if ( ! ( from.ʘoverride === undefined ) ) this.ʘoverride = from.ʘoverride
         if ( ! ( from.ʘreadonly === undefined ) ) this.ʘreadonly = from.ʘreadonly
+        if ( ! ( from.ʘlazy === undefined) ) this.ʘlazy = from.ʘlazy
         return this
     }
 

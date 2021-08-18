@@ -6,7 +6,7 @@ import { after } from './after'
 
 
 let o;
-fdescribe('after decorator', () => {
+describe('after decorator', () => {
 
     afterEach( () => {
         o = undefined;
