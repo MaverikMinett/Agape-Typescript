@@ -18,3 +18,8 @@ export function meta( target:any ):ObjectDescriptor {
     return target['Δmeta'];
 }
 
+
+export function $( target: any):ObjectDescriptor {
+    if ( typeof target === "function" ) target = target.prototype
+    return target['Δmeta']
+}

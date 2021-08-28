@@ -8,19 +8,28 @@ import { Class } from "./types"
  */
 export class MethodDescriptor {
 
-    ʘafter    : Array< () => void >
-    ʘaround   : Array< () => void >
-    ʘbefore   : Array< () => void >
+    ʘafter    : Array< Function >
+    ʘaround   : Array< Function >
+    ʘbefore   : Array< Function >
+
     // ʘvalue    : any
     ʘdefault    : any
     ʘoverride   : any
-    ʘstack    : Array< () => void >
+    ʘstack    : Array< Function >
+
+    /**
+     * @param progenitor The object to which the property belongs
+     * @param name The name of the property
+     */
+     constructor( public progenitor: ObjectDescriptor, public name:string ) {
+
+    }
 
     /**
      * Add a method to be called after the primary method
      * @param value Function or method to be called
      */
-    after( value: () => void ) {
+    after( value: Function ) {
         this.ʘafter || ( this.ʘafter = [] )
         this.ʘafter.push( value )
         return this
@@ -38,9 +47,17 @@ export class MethodDescriptor {
      * Add a method to be called before the primary method
      * @param value Function or method to be called
      */
-    before( value: () => void ) {
+    before( value: Function ) {
         this.ʘbefore || ( this.ʘbefore = [] )
         this.ʘbefore.push( value )
+        return this
+    }
+
+    build( value?:boolean):void
+    build( ...args:boolean[] ) {
+        let value = args.length ? args[0] : true
+        if ( value ) this.progenitor.addBuildMethod(this.name)
+        else this.progenitor.removeBuildMethod(this.name)
         return this
     }
 
@@ -68,7 +85,7 @@ export class MethodDescriptor {
      * any after methods
      * @param value 
      */
-    stack( value: () => void ) {
+    stack( value: Function ) {
         this.ʘstack || ( this.ʘstack = [] )
         this.ʘstack.push( value )
         return this
@@ -91,6 +108,8 @@ export class MethodDescriptor {
 
         this.ʘbefore && this.callStack( 'before', target, ...args )
 
+        console.log("-------->Call ", this.name, this.ʘoverride, this.ʘdefault  )
+
         /* call the 'primary' function */
         let f = this.ʘoverride || this.ʘdefault || function() {}
         let r = f.call( target, ...args )
@@ -109,6 +128,7 @@ export class MethodDescriptor {
      * @param args The arguments to pass
      */
     callStack( modifier:string, target:any, ...args ) {
+        console.log(modifier, this.name)
         for ( let func of this['ʘ' + modifier] ) {
             func.call( target, ...args )
         }
@@ -168,10 +188,11 @@ export class MethodDescriptor {
 export class MethodDescriptorSet {
     private ʘ: { [key: string]: MethodDescriptor  }
 
-    constructor( from?: MethodDescriptorSet ) { 
+    constructor( public progenitor: ObjectDescriptor, from?: MethodDescriptorSet ) { 
         this.ʘ = {}
         if ( from ) this.merge( from )
     }
+
 
     /**
      * Merge descriptors from another set into this set
@@ -195,7 +216,7 @@ export class MethodDescriptorSet {
      * @param name 
      */
     public get( name: string ): MethodDescriptor {
-        if ( ! this.has(name) ) this.ʘ[name] = new MethodDescriptor()
+        if ( ! this.has(name) ) this.ʘ[name] = new MethodDescriptor( this.progenitor, name )
         return this.ʘ[name]
     }
 
@@ -240,7 +261,7 @@ export class ObjectDescriptor {
 
     constructor( public target: any ) {
         this.properties = new PropertyDescriptorSet( this )
-        this.methods = new MethodDescriptorSet()
+        this.methods = new MethodDescriptorSet( this )
     }
 
     public does( trait:any ) {
@@ -262,12 +283,35 @@ export class ObjectDescriptor {
 
     public performBuild( instance:any ) {
         this.buildProperties && this.buildProperties.map( p => p.performBuild(instance) )
+        this.buildMethods && this.buildMethods.map( m => instance[m]() )
+        return this
     }
 
     public addBuildProperty( property:PropertyDescriptor ) {
         if ( this.buildProperties?.includes(property) ) return
         this.buildProperties || ( this.buildProperties = [ ] )
         this.buildProperties.push( property )
+        return this
+    }
+
+    buildMethods:string[]
+
+    public addBuildMethod( method:string ) {
+
+        ! this.buildMethods && ( this.buildMethods = [ ] )
+        if ( ! this.buildMethods.includes(method) ) 
+            this.buildMethods.push(method)
+        
+        return this
+        
+    }
+
+    public removeBuildMethod( method:string ) {
+        if ( this.buildMethods ) {
+            const i = this.buildMethods.indexOf( method )
+            if ( i >= 0 ) this.buildMethods.splice(i,1)
+        }
+        return this
     }
 
 
@@ -296,7 +340,7 @@ export class ObjectDescriptor {
      */
     public property( name:string ):PropertyDescriptor {
 
-        let descriptor
+        let descriptor:PropertyDescriptor
 
         if ( ! this.properties.has(name) ) {
 
@@ -321,12 +365,12 @@ export class ObjectDescriptor {
      * does not exist for the method, one will be created for it and the dispatcher
      * will be created for it and the dispatcher will be installed to the object.
      */
-    public method( name:string ) {
+    public method( name:string ):MethodDescriptor {
 
-        let descriptor
+        let descriptor:MethodDescriptor
 
         if ( ! this.methods.has(name) ) {
-            descriptor = new MethodDescriptor();
+            descriptor = new MethodDescriptor( this, name );
 
             this.methods.set(name,descriptor)
 
@@ -423,6 +467,16 @@ export class ObjectDescriptor {
             if ( trait.Δmeta?.buildProperties ) {
                 target.Δmeta.buildProperties || ( target.Δmeta.buildProperties = [ ] )
                 target.Δmeta.buildProperties.push( ...trait.Δmeta.buildProperties )
+            }
+
+            /* copy over buildMethods */
+            if ( trait.Δmeta?.buildMethods ) {
+                target.Δmeta.buildMethods || ( target.Δmeta.buildMethods = [ ] )
+                target.Δmeta.buildMethods.push( ...trait.Δmeta.buildMethods )
+                /* de-duplicate */
+                target.Δmeta.buildMethods = 
+                    target.Δmeta.buildMethods
+                    .filter((item,index) => target.Δmeta.buildMethods.indexOf(item) === index)
             }
             
             /* apply Δdecorator */

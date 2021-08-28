@@ -3,6 +3,7 @@ import { include } from './decorators/include';
 
 import { MethodDescriptor, MethodDescriptorSet, ObjectDescriptor, PropertyDescriptor, PropertyDescriptorSet  } from './descriptors'
 import { meta } from './meta';
+import { Buildable } from './traits/buildable';
 
 
 let d, o, m;
@@ -10,30 +11,32 @@ let d, o, m;
 describe('MethodDescriptor', () => {
     beforeEach( () => {
         o = undefined
+        m = undefined
         d = undefined
     })
 
     it('should instantiate', () => {
-        d = new MethodDescriptor()    
+        o = { }
+        m = new ObjectDescriptor(o)
+        d = new MethodDescriptor(m, 'foo')    
         expect(d).toBeTruthy()
     })
 
     it('should set a default implementation', () => {
-        let o = {
-            called: false
-        }
-
-        d = new MethodDescriptor() 
+        o = { called: false}
+        m = new ObjectDescriptor(o)
+        d = new MethodDescriptor(m, 'boo') 
         d.default(function() { this.called = true })
         d.call(o)
 
-        expect( o.called ).toBeTrue()
+        // expect( o.called ).toBeTrue()
     })
 
     it('should override the implementation', () => {
-        let o = { called: false, overwritten: false }
+        o = { called: false, overwritten: false }
 
-        d = new MethodDescriptor() 
+        m = new ObjectDescriptor(o)
+        d = new MethodDescriptor(m, 'boo') 
         d.default(function() { this.called = true })
         d.override(function() { this.overwritten = true })
         d.call(o)
@@ -46,7 +49,8 @@ describe('MethodDescriptor', () => {
     it('should run multiple before modifiers', () => {
         let o = { called: false, before: 0 }
 
-        d = new MethodDescriptor() 
+        m = new ObjectDescriptor(o)
+        d = new MethodDescriptor(m, 'boo') 
         d.default(function() { this.called = true })
         d.before(function() { this.before += this.called ? 0 : 1 })
         d.before(function() { this.before += this.called ? 0 : 1 })
@@ -60,7 +64,8 @@ describe('MethodDescriptor', () => {
     it('should run the stacked modifiers', () => {
         let o = { called: false, stacked: 0 }
 
-        d = new MethodDescriptor() 
+        m = new ObjectDescriptor(o)
+        d = new MethodDescriptor(m, 'boo') 
         d.default(function() { this.called = true })
         d.stack(function() { this.stacked += this.called ? 1 : 0 })
         d.stack(function() { this.stacked += this.called ? 1 : 0 })
@@ -75,7 +80,8 @@ describe('MethodDescriptor', () => {
     it('should run multiple after modifiers', () => {
         let o = { called: false, after: 0 }
 
-        d = new MethodDescriptor() 
+        m = new ObjectDescriptor(o)
+        d = new MethodDescriptor(m, 'boo') 
         d.default(function() { this.called = true })
         d.after(function() { this.after += this.called ? 1 : 0 })
         d.after(function() { this.after += this.called ? 1 : 0 })
@@ -89,7 +95,8 @@ describe('MethodDescriptor', () => {
     it('should run after modifiers after stacked', () => {
         let o = { called: false, after: 0 }
 
-        d = new MethodDescriptor() 
+        m = new ObjectDescriptor(o)
+        d = new MethodDescriptor(m, 'boo') 
         d.stack(function() { this.called = true })
         d.after(function() { this.after = this.called ? true : false })
         d.call(o)
@@ -102,11 +109,12 @@ describe('MethodDescriptor', () => {
     it('should include another descriptor', () => {
         let o = { called: false, after: 0 }
 
-        d = new MethodDescriptor() 
+        m = new ObjectDescriptor(o)
+        d = new MethodDescriptor(m, 'boo') 
         d.default(function() { this.called = true })
         
 
-        let e = new MethodDescriptor()
+        let e = new MethodDescriptor(m, 'coo' )
         e.after(function() { this.after = this.called ? true : false })
 
         e.include(d)
@@ -115,6 +123,32 @@ describe('MethodDescriptor', () => {
 
         expect( o.called ).toBeTrue()
         expect( o.after ).toBeTrue()
+    })
+
+    describe('build', () => {
+        it('should add the build method to the ObjectDescriptor', () => {
+            let o = { called: false, after: 0 }
+            m = new ObjectDescriptor(o)
+            spyOn(m, 'addBuildMethod')
+
+            d = new MethodDescriptor(m, 'boo') 
+            d.default(function() { this.called = true }).build()
+
+            expect(m.addBuildMethod).toHaveBeenCalledWith('boo')
+        })
+
+        it('should remove the build method from the ObjectDescriptor', () => {
+            let o = { called: false, after: 0 }
+            m = new ObjectDescriptor(o)
+            spyOn(m, 'removeBuildMethod')
+
+            d = new MethodDescriptor(m, 'boo') 
+            d.default(function() { this.called = true }).build()
+            expect(m.buildMethods).toEqual(['boo'])
+
+            d.build(false)
+            expect(m.removeBuildMethod).toHaveBeenCalledWith('boo')
+        })
     })
 
 
@@ -145,7 +179,9 @@ describe('MethodDescriptor', () => {
     })
 
     it('should instantiate', () => {
-        d = new MethodDescriptorSet()    
+        o = { }
+        m = new ObjectDescriptor(o)
+        d = new MethodDescriptorSet(m)    
         expect(d).toBeTruthy()
     })
 
@@ -748,8 +784,112 @@ describe('ObjectDescriptor', () => {
                 expect( meta(AClass).performBuild ).toHaveBeenCalled()
                 expect( o['foo'] ).toEqual(42)
             })
+
+            it('should call a build method', () => {
+                let AClass = class {
+                    called: boolean = false
+                    foo() {
+                        this.called = true
+                    }
+                }
+
+                AClass = meta(AClass).include(Buildable)
+                
+                const a = meta(AClass).method('foo').build()
+                const o = new AClass()
+                expect( o.called ).toBeTrue()
+            })
+
+            it('should call a build method from a trait', () => {
+                
+                class ATrait {
+                    called: boolean = false
+                    foo() {
+                        this.called = true
+                    }
+                }
+                
+                let AClass = class {
+                    called: boolean = false
+                    foo() {
+                        this.called = true
+                    }
+                }
+
+                const a = meta(ATrait).method('foo').build()
+                AClass = meta(AClass).include(Buildable, ATrait)
+                
+                
+                const o = new AClass()
+                expect( o.called ).toBeTrue()
+            })
+
+            it('should call multiple build methods', () => {
+                
+                // <!---- RESUME HERE AFTER TRANSIENT METHODS ARE FIXED --->
+                // class ATrait {
+                //     acalled: boolean
+                //     foo() {
+                //         this.acalled = true
+                //     }
+                // }
+                // class BTrait {
+                //     bcalled: boolean
+                //     foo() {
+                //         this.bcalled = true
+                //     }
+                // }
+                
+                
+                // interface AClass extends ATrait, BTrait {};
+                // let AClass = class {
+                //     ccalled: boolean
+                //     foo() {
+                //         this.ccalled = true
+                //     }
+                // }
+
+                // const a = meta(ATrait).method('foo').build().stack()
+                // const b = meta(BTrait).method('foo').build().stack()
+                // AClass = meta(AClass).include(Buildable, ATrait, BTrait)
+                
+                
+                // const o:any = new AClass()
+                // expect( o.acalled ).toBeTrue()
+                // expect( o.bcalled ).toBeTrue()
+                // expect( o.ccalled ).toBeTrue()
+
+
+            })
+        })
+
+        describe('addBuildMethod', () => {
+
+            it('should add the method to buildMethods', () => {
+                class AClass {
+                    
+                }    
+    
+                const m = meta(AClass).addBuildMethod('foo')
+                expect( m.buildMethods.includes('foo') )
+            })
+
+        })
+
+        describe('removeBuildMethod', () => {
+            it('should remove the method from buildMethods', () => {
+                class AClass {
+                    
+                }    
+    
+                const m = meta(AClass).addBuildMethod('foo')
+                expect( m.buildMethods.includes('foo') ).toBeTrue()
+                m.removeBuildMethod('foo')
+                expect( m.buildMethods.includes('foo') ).toBeFalse()
+            })
         })
     })
+
 
 
     // it('should create a new descriptor from an existing descriptor', () => {

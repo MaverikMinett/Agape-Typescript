@@ -8,8 +8,10 @@ export function build( ...args:any[] ):any {
     let [ value, propertyName, descriptor ] = args
 
     function build( target:any, name: string,  descriptor?: TypedPropertyDescriptor<Function>) {
-        if ( descriptor ) throw new Error("Cannot use the build decorator on a method") 
-        meta(target).property(name).build( value )
+        // calling build on a property
+        if ( ! descriptor ) meta(target).property(name).build( value )
+        // calling build on a method
+        else meta(target).method(name).build()
     }
 
     if ( propertyName === undefined ) {
