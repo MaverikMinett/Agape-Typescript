@@ -4,7 +4,7 @@ import { ObjectDescriptor } from "./descriptors";
 
 export class Serializer {
 
-    constructor( public to?: any ) {
+    constructor( public to?: Class ) {
 
     }
 
@@ -24,11 +24,11 @@ export class Serializer {
 /**
  * Inflate
  */
-export function inflate<T extends Class>( to:T, from:Dictionary):InstanceType<T>
-export function inflate<T extends Class>( to:[T], from:Dictionary[]):Array<InstanceType<T>>
+export function inflate<T extends Class>( to:T, from:Dictionary|any):InstanceType<T>
+export function inflate<T extends Class>( to:[T], from:Dictionary[]|any[]):Array<InstanceType<T>>
 export function inflate<T>( to:Class|Serializer, from:Dictionary):T
 export function inflate<T>( to:[Class]|[Serializer], from:Dictionary[]):T
-export function inflate( to:Class|[Class]|Serializer|[Serializer], from:Dictionary|Dictionary[]) {
+export function inflate( to:Class|[Class]|Serializer|[Serializer], from:Dictionary|Dictionary[]|any|any[]) {
 
     return Array.isArray(to) 
         ? inflateArray( to[0], <Dictionary[]>from ) 

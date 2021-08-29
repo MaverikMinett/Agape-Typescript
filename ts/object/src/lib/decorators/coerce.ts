@@ -10,6 +10,8 @@ export function coerce( to:[Serializer] ):any
 export function coerce( target:any, name: string ):any
 export function coerce( to?:any, ...args:any[] ):any {
 
+    
+
     function coerce( target:any, name: string,  descriptor?: TypedPropertyDescriptor<Function>) {
         if ( descriptor ) throw new Error("Cannot use the coerce decorator on a method") 
         
