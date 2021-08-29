@@ -1,5 +1,5 @@
 
-1.3.0 TBD
+1.3.0 Aug 29, 2021
 - traits can now over-ride the constructor of the consuming class by decorating 
 the class using the Δdecorate property
 - added unveil function
