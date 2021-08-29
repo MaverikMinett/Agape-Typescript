@@ -4,11 +4,11 @@ import { ObjectDescriptor } from "./descriptors";
 
 export class Serializer {
 
-    constructor( public to?: Class ) {
+    constructor( public to?: any ) {
 
     }
 
-    inflate( data:Dictionary ) {
+    inflate( data:any ) {
         return inflate( this.to, data )
     }
 
