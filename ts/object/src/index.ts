@@ -14,7 +14,7 @@ export * from './lib/decorators/readonly'
 export * from './lib/decorators/stack'
 
 export * from './lib/descriptors'
-
+export * from './lib/unveil'
 export * from './lib/serializer'
 export * from './lib/meta'
 export * from './lib/types'
