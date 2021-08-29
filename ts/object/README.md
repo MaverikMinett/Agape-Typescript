@@ -161,7 +161,7 @@ If called without arguments, `methodName` will default to the property
 name pre prefixed with `_build_`. For example the
 builder method for property `foo` will default to `_build_foo`.
 
-
+`@coerce`
 `@coerce( to:Class|[Class] )`
 `@coerce( to:Serializer|[Serializer])`
 
