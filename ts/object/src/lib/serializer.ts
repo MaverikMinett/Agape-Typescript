@@ -24,7 +24,10 @@ export class Serializer {
 /**
  * Inflate
  */
-export function inflate<T>( to:Class|[Class]|Serializer|[Serializer], from:Dictionary|Dictionary[]):T
+export function inflate<T extends Class>( to:T, from:Dictionary):InstanceType<T>
+export function inflate<T extends Class>( to:[T], from:Dictionary[]):Array<InstanceType<T>>
+export function inflate<T>( to:Class|Serializer, from:Dictionary):T
+export function inflate<T>( to:[Class]|[Serializer], from:Dictionary[]):T
 export function inflate( to:Class|[Class]|Serializer|[Serializer], from:Dictionary|Dictionary[]) {
 
     return Array.isArray(to) 
@@ -50,7 +53,7 @@ export function inflateObject(to:Class|Serializer, from:Dictionary )
         for ( let key in from ) {
             if ( m.properties.has(key) &&  m.property(key).ʘcoerce ) {
                 const coerce =  m.property(key).ʘcoerce
-                o[key] = inflate( coerce, from[key] )
+                o[key] = inflate( <any>coerce, from[key] )
             }
             else {
                 o[key] = from[key]
