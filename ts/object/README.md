@@ -238,6 +238,14 @@ Instantiate an object or array of objects of the specified class type using
 the provided data. Properties which have been decoratored with `@coerce` will
 also be inflated to allow for deserialization of nested objects.
 
+`unveil( object )`
+
+Returns a psuedo-object which contains the current state of all enumerable data 
+properties on the original. This is useful for inspecting objects which utilize
+property decorators or inherit properties through the prototype chain. 
+
+
+
 ## Types
 
 `Class`

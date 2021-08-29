@@ -138,4 +138,40 @@ describe('unveil', () => {
         })
     })
 
+    it('should unveil an inherited object', () => {
+        class Foo {
+            a: string = "A"
+        }
+        class Bar extends Foo {
+            b: string = "B"
+        }
+
+        const o = new Bar()
+
+        const ps = unveil(o)
+        expect( ps ).toBeTruthy()
+    })
+    describe('an inherited psuedo-object', () => {
+
+        it('the psuedo objects class should have the same name as the class', () => {
+            class Foo { a: string = "A" }
+            class Bar extends Foo { b: string = "B" }
+    
+            const o = new Foo()
+    
+            const ps = unveil(o)
+            expect( Object.getPrototypeOf(ps).constructor.name ).toBe(Object.getPrototypeOf(o).constructor.name)
+        })
+
+        it('should have it\'s data', () => {
+            class Foo { baz: string = "biz" }
+            class Bar { foo: Foo = new Foo() }
+            const o = new Bar()
+    
+            const ps = unveil(o)
+            expect( ps.foo.baz ).toBe(o.foo.baz)
+        })
+    })
+
+
 })
