@@ -274,6 +274,21 @@ describe('coerce decorator', () => {
         expect( o.foo.a ).toBe("A")
     })
 
+
+    it('should inflate the value correctly', () => {
+        class Foo {
+            a: string
+         }
+
+        class Bar {
+            @coerce foo: Foo
+        }
+
+        const o = inflate<Bar>( Bar, { foo: { a: "A"} } )
+        expect( o.foo).toBeInstanceOf(Foo)
+    
+    })      
+
     it('should throw an exception if no paramter on an array', () => {
 
         expect( () => {

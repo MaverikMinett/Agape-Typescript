@@ -8,7 +8,7 @@ export function coerce( to:[Class] ):any
 export function coerce( to:Serializer ):any
 export function coerce( to:[Serializer] ):any
 export function coerce( target:any, name: string ):any
-export function coerce( to?:any, ...args ):any {
+export function coerce( to?:any, ...args:any[] ):any {
 
     function coerce( target:any, name: string,  descriptor?: TypedPropertyDescriptor<Function>) {
         if ( descriptor ) throw new Error("Cannot use the coerce decorator on a method") 
@@ -17,7 +17,7 @@ export function coerce( to?:any, ...args ):any {
            data */
         if ( to === undefined ) {
             const valueType = Reflect.getMetadata("design:type", target, name);
-
+            
             if ( valueType === Array ) {
                 throw new Error(`Sorry, in order to use @coerce on an array
                 property you must explicitly pass in the element type as
@@ -26,6 +26,8 @@ export function coerce( to?:any, ...args ):any {
                 
                 @coerce([MyClass]) ${name}`)
             }
+            
+            to = valueType
         }
         
         meta(target).property(name).coerce( to )
