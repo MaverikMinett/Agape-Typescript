@@ -48,10 +48,10 @@ export function inflateObject(to:Class|Serializer, from:Dictionary )
     else {
         const o = new to()
 
-        const m = meta(to)
+        const m = to['Δmeta']
         
         for ( let key in from ) {
-            if ( m.properties.has(key) &&  m.property(key).ʘcoerce ) {
+            if ( m?.properties.has(key) &&  m?.property(key).ʘcoerce ) {
                 const coerce =  m.property(key).ʘcoerce
                 o[key] = inflate( <any>coerce, from[key] )
             }
