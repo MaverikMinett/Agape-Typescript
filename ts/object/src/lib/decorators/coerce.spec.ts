@@ -37,7 +37,7 @@ describe('coerce decorator', () => {
 
         class Bar {
             @coerce( [Foo] )
-            foos: Foo
+            foos: Foo[]
         }
 
         const m = (<any>Bar.prototype).Δmeta
@@ -257,6 +257,51 @@ describe('coerce decorator', () => {
 
         const d = deflate(b)
         expect(d).toEqual({ foos: [{ bbaz: "yeah", type: "b" } , { abaz: "buddy", type: "a" }] } )
+
+    })
+
+    it('should allow @coerce without a parameter', () => {
+
+        class Foo {
+            a: string
+         }
+
+        class Bar {
+            @coerce foo: Foo
+        }
+
+        const o = inflate<Bar>( Bar, { foo: { a: "A"} } )
+        expect( o.foo.a ).toBe("A")
+    })
+
+
+    it('should inflate the value correctly', () => {
+        class Foo {
+            a: string
+         }
+
+        class Bar {
+            @coerce foo: Foo
+        }
+
+        const o = inflate<Bar>( Bar, { foo: { a: "A"} } )
+        expect( o.foo).toBeInstanceOf(Foo)
+    
+    })      
+
+    it('should throw an exception if no paramter on an array', () => {
+
+        expect( () => {
+            class Foo {
+                a: string
+             }
+    
+            class Bar {
+                @coerce foos: Foo[]
+            }
+    
+        }).toThrowError()
+
 
     })
 })
