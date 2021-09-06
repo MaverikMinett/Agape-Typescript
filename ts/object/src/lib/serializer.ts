@@ -103,8 +103,13 @@ function deflateObject( item:Object, params?:any ) {
         if ( m && m.properties.has(field) ) {
             /* ignore delegated properties */
             if ( m.property(field)['ʘdelegate'] ) continue
-            /* ignore inheritied properties */
-            if ( m.property(field)['ʘinherit'] ) continue
+
+            /* ignore unpopulated lazy/inheritied properties with undefined value */
+            if ( m.property(field)['ʘinherit'] || m.property(field)['ʘlazy'] ) {
+                if ( item[`ʘ${field}`] === undefined ) {
+                    continue
+                }
+           } 
 
             if (  m.property(field)['ʘcoerce'] ) {
                 const coerce = m.property(field)['ʘcoerce']

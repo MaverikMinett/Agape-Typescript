@@ -6,6 +6,8 @@ import { meta } from './meta'
 
 import { lazy } from './decorators/lazy'
 import { delegate } from './decorators/delegate'
+import { inherit } from './decorators/inherit'
+import { nonenumerable } from './decorators/nonenumerable'
 
 let o:any, d:any
 describe('deflate', () => {
@@ -63,20 +65,79 @@ describe('deflate', () => {
         expect(d).toEqual({'foo': 32, 'bar': 42})
     })
 
-    xit('should not deflate nonenumerable properties', () => {
+    it('should not deflate nonenumerable properties', () => {
+        class AClass {
+            @nonenumerable
+            foo:string = "bar"
+        }
 
+        o = new AClass()
+        let d = deflate(o)
+        expect( d.foo ).toBeUndefined()
+    })
+
+    it('should not deflate unpopulated lazy properties', () => {
+        class AClass {
+            @lazy("bar")
+            foo:string
+        }
+
+        o = new AClass()
+        let d = deflate(o)
+        expect( d.foo ).toBeUndefined()
+
+        o = new AClass()
+        o.foo
+
+        d = deflate(o)
+        expect( d.foo ).toEqual("bar")
 
     })
 
-    xit('should not deflate unpopulated lazy properties', () => {
+    it('should not deflate inheritied properties', () => {
 
+        class AClass {
+            foo:string = "bar"
+        }
+
+        class BClass {
+
+            a: AClass = new AClass()
+
+            @inherit( o => o.a )
+            foo:string
+        }
+
+        o = new BClass()
+        expect( o.foo ).toBe( o.a.foo )
+
+        let d = deflate(o)
+        expect( d.foo ).toBeUndefined()
 
     })
 
-    xit('should not deflate inheritied properties', () => {
+    it('should deflate populated inheritied values', () => {
 
+        class AClass {
+            foo:string = "bar"
+        }
+
+        class BClass {
+
+            a: AClass = new AClass()
+
+            @inherit( o => o.a )
+            foo:string
+        }
+
+        o = new BClass()
+        o.foo = "biz"
+
+        let d = deflate(o)
+        expect( d.foo ).toBe("biz")
 
     })
+
 
     it('should not deflate delegated properties', () => {
 
@@ -90,6 +151,7 @@ describe('deflate', () => {
         }
 
         o = new BObject()
+        o.foo
         d = deflate(o)
 
         expect(d).toEqual({'bar':{'foo':32}})
