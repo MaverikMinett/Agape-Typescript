@@ -161,38 +161,38 @@ describe('override decorator', () => {
     })
 
 
-    xit('should use first default from applied traits', () => {
+    // it('should use first default from applied traits', () => {
 
-        class AbstractTrait {
-            @property("abstract")
-            foo: string
+    //     class AbstractTrait {
+    //         @property("abstract")
+    //         foo: string
 
-            @property("abstract")
-            bar: string
-        }
+    //         @property("abstract")
+    //         bar: string
+    //     }
 
-        class ATrait extends AbstractTrait { 
-            @property("a")
-            foo: string
-        }
+    //     class ATrait extends AbstractTrait { 
+    //         @property("a")
+    //         foo: string
+    //     }
 
-        class BTrait extends AbstractTrait { 
-            // @property("b")
-            // foo: string
-        }
+    //     class BTrait extends AbstractTrait { 
+    //         // @property("b")
+    //         // foo: string
+    //     }
 
-        class SimpleObject {
+    //     class SimpleObject {
 
-        }
+    //     }
 
 
-        meta(SimpleObject).include(ATrait)
+    //     meta(SimpleObject).include(ATrait)
 
-        o = new SimpleObject()
-        expect( o.foo ).toBe("a")
-        expect( o.bar ).toBe("abstract")
+    //     o = new SimpleObject()
+    //     expect( o.foo ).toBe("a")
+    //     expect( o.bar ).toBe("abstract")
 
-    })
+    // })
 
 
     it('should use override default from applied traits', () => {

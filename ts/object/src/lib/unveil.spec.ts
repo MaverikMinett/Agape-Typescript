@@ -69,7 +69,7 @@ describe('unveil', () => {
             })
 
             // fails but prints correctly, odd message
-            xit('should have an equivalent but different dictionary property', () => {
+            it('should have an equivalent but different dictionary property', () => {
                 class Foo {
                     a: Dictionary = { 'bar': 'baz' }
                 }
@@ -78,7 +78,6 @@ describe('unveil', () => {
                 const ps = unveil(o)
                 console.log( ps )
                 expect( ps.a ).toEqual( Object({ 'bar': 'baz' }))
-                // expect( ps.a === o.a ).toBeFalse()
             })
             it('should have an equivalent but different array property', () => {
                 class Foo {

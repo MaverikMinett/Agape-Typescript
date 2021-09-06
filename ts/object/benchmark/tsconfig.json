@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+      "target": "es6",
+      "module": "commonjs",
+      "lib": ["dom","es2017"],
+      "declaration": true,
+      "outDir": "./dist/esm",
+      "emitDecoratorMetadata": true,
+      "experimentalDecorators": true,
+      "downlevelIteration": true,
+      "allowJs": true,
+      "types": ["jasmine"]
+    },
+    "include": ["./*" ],
+    "exclude": ["node_modules", "**/__tests__/*"]
+  }

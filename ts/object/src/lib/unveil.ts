@@ -34,7 +34,9 @@ function unveilObject( item:any, params?:any ) {
         let value = item[field]
         if ( typeof value != "function" )  r[field] = unveil( value )
     }
-
+    if ( Object.getPrototypeOf(item).constructor == Object ) {
+        return r
+    }
 
     /** black magic **/
     /* create a new anonymous class */
