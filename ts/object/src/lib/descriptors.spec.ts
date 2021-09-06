@@ -374,6 +374,104 @@ describe('PropertyDescriptor', () => {
         expect(JSON.parse(JSON.stringify(o))).toEqual({})
     })
 
+    describe('build & performBuild', () => {
+
+        describe('build', () => {
+            it('should set the ʘbuild property to true', () => {
+                class AClass {
+                    foo:string
+                }
+
+                const q = new ObjectDescriptor(AClass)
+                q.property('foo').build()
+                expect( q.property('foo').ʘbuild ).toBeTrue()
+            })
+
+            it('should set the default value', () => {
+                class AClass {
+                    foo:string
+                }
+
+                const q = new ObjectDescriptor(AClass)
+                q.property('foo').build()
+                expect( q.property('foo').ʘdefault ).toBeTruthy()
+            })
+        })
+
+        describe('performBuild', () => {
+            it('should set the value on an instance', () => {
+                class AClass {
+                    foo:string
+                }
+
+                const o = {
+                    _build_foo: () => {
+                        return "bar"
+                    }
+                }
+
+                const q = new ObjectDescriptor(AClass)
+                q.property('foo').build()
+
+                q.property('foo').performBuild(o)
+
+                expect( o['ʘfoo'] ).toBe("bar")
+            })
+        })
+
+
+        it('should use a default method name if no arguments provided', () => {
+            class AClass {
+                foo:string
+            }
+
+            const o = {
+                _build_foo: jasmine.createSpy()
+            }
+
+            const q = new ObjectDescriptor(AClass)
+            q.property('foo').build()
+
+            q.property('foo').performBuild(o)
+
+            expect( o._build_foo ).toHaveBeenCalled()
+        })
+
+
+        it('should use the provided method name to build the value', () => {
+            class AClass {
+                foo:string
+            }
+
+            const o = {
+                _build_foosie_doosie: jasmine.createSpy()
+            }
+
+            const q = new ObjectDescriptor(AClass)
+            q.property('foo').build('_build_foosie_doosie')
+
+            q.property('foo').performBuild(o)
+
+            expect( o._build_foosie_doosie ).toHaveBeenCalled()
+        })
+
+        it('should use the provided function to build the value', () => {
+            class AClass {
+                foo:string
+            }
+
+            const o = { }
+
+            const q = new ObjectDescriptor(AClass)
+            q.property('foo').build( o => 42 )
+
+            q.property('foo').performBuild(o)
+
+            expect( o['ʘfoo'] ).toBe(42)
+        })
+    })
+
+
 })
 
 
@@ -618,6 +716,21 @@ describe('ObjectDescriptor', () => {
             ac.Δmeta.include(BTrait)
 
             expect( ac.Δmeta.does(ATrait) ).toBeTrue()
+        })
+    })
+
+    describe('building', () => {
+        describe('addBuildProperty', () => {
+            it('should add the property to the build properties', () => {
+                class AClass {
+
+                }    
+            })
+        })
+        describe('performBuild', () => {
+            it('should build the properties', () => {
+
+            })
         })
     })
 

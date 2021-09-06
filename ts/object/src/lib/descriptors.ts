@@ -258,6 +258,18 @@ export class ObjectDescriptor {
         return false
     }
 
+    buildProperties:PropertyDescriptor[] = []
+
+    public performBuild( instance ) {
+        this.buildProperties.map( p => p.performBuild(instance) )
+    }
+
+    public addBuildProperty( property:PropertyDescriptor ) {
+        if ( this.buildProperties.includes(property) ) return
+        this.buildProperties.push( property )
+    }
+
+
     // public get super( ):ObjectDescriptor {
 
     //     let parent = Object.getPrototypeOf(this.target)
@@ -429,6 +441,8 @@ export class PropertyDescriptor {
 
     public ʘcoerce: Class|[Class]|Serializer|[Serializer]
 
+    public ʘbuild:boolean
+
     public ʘdelegate: { to?: Object|Function, property?: string }
     public ʘdefault: any
     public ʘenumerable: boolean
@@ -443,6 +457,28 @@ export class PropertyDescriptor {
      */
     constructor( public progenitor: ObjectDescriptor, public name:string ) {
 
+    }
+
+    build( method?:any ) {
+        if ( method === undefined ) method = `_build_${this.name}`
+        if ( typeof method === "string" ) {
+            this.default( o => o[<string>method].call(o,o) )
+        }
+        else { 
+            this.default( method )
+        }
+
+        this.progenitor.addBuildProperty( this )
+        
+        this.ʘbuild = true
+    }
+
+    performBuild( instance:any ) {
+        let value = typeof this.ʘdefault === "function" 
+            ? this.ʘdefault.call(instance, instance)
+            : this.ʘdefault
+
+        Object.defineProperty(instance, `ʘ${this.name}`, { value: value, configurable: true, enumerable: false } )
     }
 
     /**
@@ -561,11 +597,9 @@ export class PropertyDescriptor {
             }
 
             /* default (lazy) */
-            let value = typeof this.ʘdefault === "function" 
-                ? this.ʘdefault.call(instance, instance)
-                : this.ʘdefault
+            this.performBuild(instance)
 
-            Object.defineProperty(instance, `ʘ${this.name}`, { value: value, configurable: true, enumerable: false } )
+            
         }
 
         return instance['ʘ' + this.name]
