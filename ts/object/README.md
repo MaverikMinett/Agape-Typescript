@@ -65,7 +65,7 @@ class MyClass {
 ```
 
 
-## Method Modifiers
+## Method Decorators
 
 Method modifiers are decorators which affect the behavior of the method. Most
 method modifiers allow you to call aditional methods before or after the
@@ -94,7 +94,7 @@ Executes after the primary method but before any `after` modifiers.
 Over-rides the primary method. Use this to replace the default implementation
 while maintaining any method modifiers which have been applied.
 
-### Method Modifiers Example
+### Method Decorator Example
 
 ```
 
@@ -151,32 +151,86 @@ o.foo()
 ```
 
 
-## Property Modifiers
+## Property Decorators
 
-`@build`, `@build( methodName )`
+### `@build`
 
-User a builder method to provide the default value for the property.
+Populate the value of a property during object contruction using a builder a method or a factory function. Can be used in conjunction with `@lazy`.
 
-If called without arguments, `methodName` will default to the property
-name pre prefixed with `_build_`. For example the
-builder method for property `foo` will default to `_build_foo`.
+#### `@build`
+
+If called without arguments, `methodName` will default to the property name pre prefixed with `_build_`. For example the builder method for property `foo` will default to `_build_foo`.
+
+```
+class MyClass {
+
+    @build
+    foo: string
+
+    _build_foo() {
+        return "bar"
+    }
+}
+
+console.log( new MyClass().foo )  // bar
+```
+
+#### `@build( methodName )`
+
+Specify the builder method to use.
+
+```
+class MyClass {
+
+    @build('_buildFoo')
+    foo: string
+
+    _buildFoo() {
+        return "bar"
+    }
+}
+
+console.log( new MyClass().foo )  // bar
+```
+
+#### `@build(o => value)`
+
+Use a factory function to populate the value. The function will recieve the item instance as the first parameter. The property will be set to the return value of the factory.
+
+```
+class MyClass {
+    @build( o => "bar" )
+    foo: string
+}
+
+console.log( new MyClass().foo )  // bar
+```
+
+### `@coerce`
 
 `@coerce`
+
 `@coerce( to:Class|[Class] )`
+
 `@coerce( to:Serializer|[Serializer])`
 
-For use with `inflate` and `deflate`. Specify the concrete classes to create
-from serialized data.
+For use with `inflate` and `deflate`. Specify the concrete classes to create from serialized data.
 
+### `@delegate`
 
-`@delegate( o => to )`, `@delegate( o => to, propertyName )`
+`@delegate( o => to )`
+
+`@delegate( o => to, propertyName )`
 
 Delegate to the property of another object. Both reading or writing of the 
 property will be delegated to the `to` object. You may optionally specify
 an alternative property name on the `to` object.
 
+### `@inherit`
 
-`@inherit( o => from )`, `@inherit( o => from, propertyName )`
+`@inherit( o => from )`
+
+`@inherit( o => from, propertyName )`
 
 Inherit the property from another object if it has not been explicitly set 
 on the object itself. This is similar to `delegate` and different 
@@ -187,8 +241,13 @@ property will return the value from the object istelf if it has been set,
 otherwise the value on the `from` object will be used. You may optionally 
 specify the different property name on the `from` object which to inherit from.
 
+### `@lazy`
 
-`@lazy`, `@lazy( defaultValue )`, `@lazy( o => defaultValue )`
+`@lazy`
+
+`@lazy( defaultValue )`
+
+`@lazy( o => defaultValue )`
 
 Create a lazily loaded property. If the property has not been set it will
 be instantiated using the default value the first time it is accessed.
@@ -202,7 +261,7 @@ the `this` variable when not inside a fat-arrow function.
 
 Can be used in conjunction with `build`.
 
-`@nonenumeral`
+### `@nonenumeral`
 
 The property will not be included when iterating over the object using
 `for ... in` or returned as a result from `Object.keys`. The property
@@ -210,13 +269,13 @@ will not be included when serializing using `deflate` or `JSON.stringify`,
 or when printing the object using `console.log`. <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Enumerability_and_ownership_of_properties" target="_blank">More information</a>
 
 
-`@override`
+### `@override`
 
 Override the value in an existing property descriptor. This allows traits 
 to over-ride properties defined in consumers.
 
 
-`@readonly`
+### `@readonly`
 
 This property will be read only. Attempting to set this property will
 raise an exception. Use in conjunction with another decorator which 
@@ -226,17 +285,23 @@ provides a value such as `lazy`, `delegate`, or `build`.
 
 ## Functions
 
+### `deflate`
+
 `deflate( object )`
 
 Deflate a constructed object to an object literal. Use for serializing objects
 to be passed through APIs or stringified as JSON.  Delegated and inheritied 
 properties are not serialized. Returns a javascript object literal.
 
+### `inflate`
+
 `inflate( to:Class|[Class], data:Dictionary|Dictionary[] )`
 
 Instantiate an object or array of objects of the specified class type using
 the provided data. Properties which have been decoratored with `@coerce` will
 also be inflated to allow for deserialization of nested objects.
+
+### `unveil`
 
 `unveil( object )`
 
@@ -255,6 +320,10 @@ A type definition for a class symbol.
 `Dictionary`
 
 Represents an object literal which has strings for keys with any type of value.
+
+`PropertyDecorator`
+
+Type representing function signature of a javascript property decorator.
 
 
 ## Caveats
@@ -332,30 +401,6 @@ class MyTrait {
 }
 
 ```
-
-
-### Build and Lazy
-
-As it stands properties defined with the `@build` decorator are also lazy, meaning the value is not set at object construction time but when the property is first accessed. This may change in the future. If you want to ensure that the property is lazy, define it as such explicitly using the `@lazy` decorator in conjuction with `@build`.
-
-```
-
-class MyTrait {
-
-    @lazy @build
-    foo:string
-
-    _build_foo() {
-        return "bar"
-    }
-
-}
-
-```
-
-
-
-
 
 ## Author
 
