@@ -1,7 +1,6 @@
 import {} from "jasmine"
 
 import { lazy } from './lazy'
-import { property } from './property'
 import { readonly } from './readonly'
 import { nonenumerable } from './nonenumerable'
 import { build } from "./build"

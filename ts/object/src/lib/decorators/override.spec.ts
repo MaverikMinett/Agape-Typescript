@@ -4,7 +4,7 @@ import { override } from '../decorators/override'
 import { meta } from "../meta";
 import { include } from "./include";
 import { lazy } from "./lazy";
-import { property } from "./property";
+
 
 let o;
 describe('override decorator', () => {
@@ -19,7 +19,7 @@ describe('override decorator', () => {
 
             overwritten: boolean
 
-            @override @property(32)
+            @override @lazy(32)
             foo: number
 
         }
@@ -164,15 +164,15 @@ describe('override decorator', () => {
     xit('should use first default from applied traits', () => {
 
         class AbstractTrait {
-            @property("abstract")
+            @lazy("abstract")
             foo: string
 
-            @property("abstract")
+            @lazy("abstract")
             bar: string
         }
 
         class ATrait extends AbstractTrait { 
-            @property("a")
+            @lazy("a")
             foo: string
         }
 

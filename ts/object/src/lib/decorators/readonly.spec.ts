@@ -1,7 +1,6 @@
 import {} from "jasmine"
 import { meta } from "../meta";
 import { readonly } from "./readonly"
-import { property } from "./property"
 import { lazy } from "./lazy";
 
 let o:any;
