@@ -115,7 +115,7 @@ describe('override decorator', () => {
     })
 
     
-    xit('should use abstract default property for trait with inheritance', () => {
+    it('should use abstract default property for trait with inheritance', () => {
 
         class AbstractTrait {
             @lazy("abstract")
@@ -137,7 +137,7 @@ describe('override decorator', () => {
 
     })
 
-    xit('should use newly set default for trait with inheritance', () => {
+    it('should use newly set default for trait with inheritance', () => {
 
         class AbstractTrait {
             @lazy("abstract")
@@ -195,7 +195,7 @@ describe('override decorator', () => {
     })
 
 
-    xit('should use override default from applied traits', () => {
+    it('should use override default from applied traits', () => {
 
         class AbstractTrait {
             @lazy("abstract")
@@ -227,7 +227,7 @@ describe('override decorator', () => {
 
     })
 
-    xit('should use override default from applied traits', () => {
+    it('should use override default from applied traits', () => {
 
         class AbstractTrait {
             @lazy("abstract")
@@ -260,7 +260,7 @@ describe('override decorator', () => {
     })
 
 
-    xit('should handle abstract traits with inheritance', () => {
+    it('should handle abstract traits with inheritance', () => {
 
         class AbstractTrait {
             @override @lazy("ready")
