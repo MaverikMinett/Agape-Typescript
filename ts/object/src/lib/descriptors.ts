@@ -258,14 +258,15 @@ export class ObjectDescriptor {
         return false
     }
 
-    buildProperties:PropertyDescriptor[] = []
+    buildProperties:PropertyDescriptor[]
 
-    public performBuild( instance ) {
-        this.buildProperties.map( p => p.performBuild(instance) )
+    public performBuild( instance:any ) {
+        this.buildProperties && this.buildProperties.map( p => p.performBuild(instance) )
     }
 
     public addBuildProperty( property:PropertyDescriptor ) {
-        if ( this.buildProperties.includes(property) ) return
+        if ( this.buildProperties?.includes(property) ) return
+        this.buildProperties || ( this.buildProperties = [ ] )
         this.buildProperties.push( property )
     }
 
@@ -389,6 +390,7 @@ export class ObjectDescriptor {
                 /* don't copy over anything that is already defined in the target */
                 if ( propertyName in target ) continue;
                 
+                /* defined the property on the target */
                 Object.defineProperty( target, propertyName, { 
                     ...Object.getOwnPropertyDescriptor( trait, propertyName )
                 })
@@ -417,6 +419,11 @@ export class ObjectDescriptor {
                 }  
             }
 
+            /* copy over buildProperties */
+            if ( trait.Δmeta?.buildProperties ) {
+                target.Δmeta.buildProperties || ( target.Δmeta.buildProperties = [ ] )
+                target.Δmeta.buildProperties.push( ...trait.Δmeta.buildProperties )
+            }
             
             /* apply Δdecorator */
             if ( trait.Δdecorate ) {
@@ -442,6 +449,7 @@ export class PropertyDescriptor {
     public ʘcoerce: Class|[Class]|Serializer|[Serializer]
 
     public ʘbuild:boolean
+    public ʘlazy:boolean
 
     public ʘdelegate: { to?: Object|Function, property?: string }
     public ʘdefault: any
@@ -460,6 +468,7 @@ export class PropertyDescriptor {
     }
 
     build( method?:any ) {
+
         if ( method === undefined ) method = `_build_${this.name}`
         if ( typeof method === "string" ) {
             this.default( o => o[<string>method].call(o,o) )
@@ -471,6 +480,16 @@ export class PropertyDescriptor {
         this.progenitor.addBuildProperty( this )
         
         this.ʘbuild = true
+
+        return this
+    }
+
+    lazy( value?: any ):void
+    lazy( ...args:any[] ) {
+        const [ method ] = args
+        if ( args.length > 0 ) this.default( method )
+        this.ʘlazy = true
+        return this
     }
 
     performBuild( instance:any ) {
@@ -554,6 +573,7 @@ export class PropertyDescriptor {
         if ( this.ʘdefault === undefined || from.ʘoverride === true ) this.ʘdefault = from.ʘdefault
         if ( ! ( from.ʘoverride === undefined ) ) this.ʘoverride = from.ʘoverride
         if ( ! ( from.ʘreadonly === undefined ) ) this.ʘreadonly = from.ʘreadonly
+        if ( ! ( from.ʘlazy === undefined) ) this.ʘlazy = from.ʘlazy
         return this
     }
 
@@ -597,7 +617,7 @@ export class PropertyDescriptor {
             }
 
             /* default (lazy) */
-            this.performBuild(instance)
+            if( this.ʘlazy ) this.performBuild(instance)
 
             
         }
@@ -664,6 +684,10 @@ export class PropertyDescriptorSet {
     constructor( public progenitor: ObjectDescriptor, from?: PropertyDescriptorSet ) { 
         this.ʘ = {}
         if ( from ) this.merge( from )
+    }
+
+    all():PropertyDescriptor[] {
+        return Object.values(this.ʘ)
     }
 
     /**

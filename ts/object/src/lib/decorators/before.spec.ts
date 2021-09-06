@@ -6,7 +6,7 @@ import { lazy } from "./lazy";
 
 
 
-let o;
+let o:any
 describe('before decorator', () => {
 
     beforeEach( () => {

@@ -49,14 +49,14 @@ describe('override decorator', () => {
 
             overwritten: boolean
 
-            @override @property(32)
+            @override @lazy(32)
             foo: number
 
         }
 
         class SimpleObject {
 
-            @property(27)
+            @lazy(27)
             foo:number
 
         }
@@ -115,10 +115,10 @@ describe('override decorator', () => {
     })
 
     
-    it('should use abstract default property for trait with inheritance', () => {
+    xit('should use abstract default property for trait with inheritance', () => {
 
         class AbstractTrait {
-            @property("abstract")
+            @lazy("abstract")
             foo: string
         }
 
@@ -137,15 +137,15 @@ describe('override decorator', () => {
 
     })
 
-    it('should use newly set default for trait with inheritance', () => {
+    xit('should use newly set default for trait with inheritance', () => {
 
         class AbstractTrait {
-            @property("abstract")
+            @lazy("abstract")
             foo: string
         }
 
         class ATrait extends AbstractTrait { 
-            @property("a")
+            @lazy("a")
             foo: string
         }
 
@@ -195,20 +195,20 @@ describe('override decorator', () => {
     })
 
 
-    it('should use override default from applied traits', () => {
+    xit('should use override default from applied traits', () => {
 
         class AbstractTrait {
-            @property("abstract")
+            @lazy("abstract")
             foo: string
         }
 
         class ATrait extends AbstractTrait { 
-            @property("a")
+            @lazy("a")
             foo: string
         }
 
         class BTrait extends AbstractTrait { 
-            @override @property("b")
+            @override @lazy("b")
             foo: string
         }
 
@@ -227,20 +227,20 @@ describe('override decorator', () => {
 
     })
 
-    it('should use override default from applied traits', () => {
+    xit('should use override default from applied traits', () => {
 
         class AbstractTrait {
-            @property("abstract")
+            @lazy("abstract")
             foo: string
         }
 
         class ATrait extends AbstractTrait { 
-            @override @property("a")
+            @override @lazy("a")
             foo: string
         }
 
         class BTrait extends AbstractTrait { 
-            @property("b")
+            @lazy("b")
             foo: string
         }
 
@@ -260,10 +260,10 @@ describe('override decorator', () => {
     })
 
 
-    it('should handle abstract traits with inheritance', () => {
+    xit('should handle abstract traits with inheritance', () => {
 
         class AbstractTrait {
-            @override @property("ready")
+            @override @lazy("ready")
             foo: string
 
             action() {
