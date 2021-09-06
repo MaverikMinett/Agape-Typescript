@@ -1,8 +1,8 @@
 import { meta } from '../meta'
 import { Class } from '../types'
 
-export function build( value:string|Object|((any) => any) ):any
-export function build( value:string|Object|((any) => any)|Class, propertyName?: string,  descriptor?: TypedPropertyDescriptor<Function> ):any
+export function build( value:string|Object|((o:any) => any) ):any
+export function build( value:string|Object|((o:any) => any)|Class, propertyName?: string,  descriptor?: TypedPropertyDescriptor<Function> ):any
 export function build( ...args:any[] ):any {
 
     let [ value, propertyName, descriptor ] = args
