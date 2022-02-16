@@ -1,11 +1,14 @@
 
+1.4.0 Feb 16, 2022
+- added transient methods
+
 1.3.0 Aug 29, 2021
 - traits can now over-ride the constructor of the consuming class by decorating the class using the Δdecorate property
 - added unveil function
 - added tests for deflate
 
 1.2.1 June 26, 2021
-- inflate will now accept a customer serializer in place of class (original behavior still funcations as before)
+- inflate will now accept a customer serializer in place of class (original behavior still functions as before)
 
 1.2.0 Jun 25, 2021
 - added ability to use custom serializer with @coerce decorator

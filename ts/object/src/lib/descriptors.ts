@@ -1,4 +1,4 @@
-import {  } from "jasmine"
+
 import { Serializer } from "./serializer"
 import { Class } from "./types"
 
@@ -8,19 +8,21 @@ import { Class } from "./types"
  */
 export class MethodDescriptor {
 
-    ʘafter    : Array< () => void >
-    ʘaround   : Array< () => void >
-    ʘbefore   : Array< () => void >
+    ʘafter    : Array< Function|(() => void) >
+    ʘaround   : Array< Function|(() => void) >
+    ʘbefore   : Array< Function|(() => void) >
     // ʘvalue    : any
-    ʘdefault    : any
-    ʘoverride   : any
-    ʘstack    : Array< () => void >
+    ʘdefault  : any
+    ʘoverride : any
+    ʘstack    : Array< Function|(() => void) >
+    ʘtransient: boolean
+    
 
     /**
      * Add a method to be called after the primary method
      * @param value Function or method to be called
      */
-    after( value: () => void ) {
+    after( value: Function|(() => void) ) {
         this.ʘafter || ( this.ʘafter = [] )
         this.ʘafter.push( value )
         return this
@@ -38,7 +40,7 @@ export class MethodDescriptor {
      * Add a method to be called before the primary method
      * @param value Function or method to be called
      */
-    before( value: () => void ) {
+    before( value: Function|(() => void) ) {
         this.ʘbefore || ( this.ʘbefore = [] )
         this.ʘbefore.push( value )
         return this
@@ -49,7 +51,7 @@ export class MethodDescriptor {
      * method which will be called, unless it has been over-ridden.
      * @param value 
      */
-    default( value: () => void ) {
+    default( value: Function|(() => void) ) {
         this.ʘdefault = value
         return this
     }
@@ -58,7 +60,7 @@ export class MethodDescriptor {
      * Set the over-ride value for the primary method. This will be
      * called instead of the default value.
      */
-    override( value: () => void ) {
+    override( value: Function|(() => void) ) {
         this.ʘoverride = value
         return this
     }
@@ -68,7 +70,7 @@ export class MethodDescriptor {
      * any after methods
      * @param value 
      */
-    stack( value: () => void ) {
+    stack( value: Function|(() => void) ) {
         this.ʘstack || ( this.ʘstack = [] )
         this.ʘstack.push( value )
         return this
@@ -146,9 +148,34 @@ export class MethodDescriptor {
     install_dispatcher( target:any, name: string ) {
         let descriptor = this
 
+        /* store the "original" method as the default implementation
+           before installing the dispatcher */
         let original = Object.getOwnPropertyDescriptor( target, name )?.value
-
-        if ( original ) this.ʘdefault = original
+        if ( original ) { 
+            this.ʘdefault = original 
+        }
+        /* if there is no original method defined on the target, but the 
+        method does exist in the targets prototype heirarchy, then mark
+        this dispatcher as transient, and merge it with the ancestral 
+        dispatcher */
+        else if ( target[name] !== undefined ) {
+            this.ʘtransient = true;
+            let cursor = Object.getPrototypeOf(target)
+            while( cursor ) {
+                if ( cursor.hasOwnProperty(name) ) {
+                    if ( cursor.Δmeta?.methods.has(name) ) {
+                        this.include( cursor.Δmeta.methods.get(name) )
+                    }
+                    else {
+                        this.ʘdefault = Object.getOwnPropertyDescriptor( cursor, name ).value
+                    }
+                    cursor = null
+                }
+                else {
+                    cursor = Object.getPrototypeOf(cursor)
+                }
+            }
+        }
 
         Object.defineProperty( target, name, {
             value: function( ...args ) {
@@ -310,7 +337,7 @@ export class ObjectDescriptor {
      */
     public method( name:string ) {
 
-        let descriptor
+        let descriptor:MethodDescriptor
 
         if ( ! this.methods.has(name) ) {
             descriptor = new MethodDescriptor();
