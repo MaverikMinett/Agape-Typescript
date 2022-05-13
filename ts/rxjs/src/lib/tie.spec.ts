@@ -27,13 +27,13 @@ describe('tie', () => {
     } )
 
     it('should have no tied subscriptions', () => {
-        expect('ʘtiedSubsriptions' in $).toBeFalse()
+        expect('ʘtiedSubscriptions' in $).toBeFalse()
     })
 
     it('should add a subscription to the tied subscriptions', () => {
         tie( c, 'onDestroy', s )
 
-        expect($.ʘtiedSubsriptions).toEqual({
+        expect($.ʘtiedSubscriptions).toEqual({
             onDestroy: [ s ]
         })
     })
@@ -42,7 +42,7 @@ describe('tie', () => {
         const s2 = subject.subscribe()
         tie( c, 'onDestroy', s, s2 )
 
-        expect($.ʘtiedSubsriptions).toEqual({
+        expect($.ʘtiedSubscriptions).toEqual({
             onDestroy: [ s, s2 ]
         })
     })
@@ -70,6 +70,6 @@ describe('tie', () => {
     it('should remove the tied subscription', () => {
         tie( c, 'onDestroy', s )
         c.onDestroy()
-        expect( $.ʘtiedSubsriptions['onDestroy'] ).toEqual([])
+        expect( $.ʘtiedSubscriptions['onDestroy'] ).toEqual([])
     })
 })

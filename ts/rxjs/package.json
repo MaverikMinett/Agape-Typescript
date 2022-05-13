@@ -1,6 +1,6 @@
 {
   "name": "@agape/rxjs",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Companion library for rxjs",
   "type": "module",
   "main": "dist/cjs/index.mjs",
