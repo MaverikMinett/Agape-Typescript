@@ -1,4 +1,8 @@
 
+1.5.0 May 12, 2022
+- added support for both es2015/es2020
+- Δapply method on traits
+
 1.4.0 Feb 16, 2022
 - added transient methods
 

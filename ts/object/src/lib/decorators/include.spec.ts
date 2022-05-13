@@ -83,4 +83,21 @@ describe('include decorator', () => {
         expect( o.calls ).toBe(2)
     })
 
+    fit('should execute the Δapply method on the trait', () => {
+        class ATrait {
+            Δapply( target, trait ) {
+                target['ʘfoo'] = trait['ʘfoo']
+            }
+        }
+        ATrait.prototype['ʘfoo'] = true
+
+        @include( ATrait )
+        class AClass {
+
+        }
+
+        let o = new AClass()
+        expect( ATrait.prototype['ʘfoo'] ).toBeTrue()
+    })
+
 })

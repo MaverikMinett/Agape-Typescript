@@ -432,11 +432,15 @@ export class ObjectDescriptor {
                 }  
             }
 
-            
             /* apply Δdecorator */
             if ( trait.Δdecorate ) {
                 targetConstructor = trait.Δdecorate( targetConstructor )
                 target = targetConstructor.prototype
+            }
+
+            /* apply Δapply */
+            if ( trait.Δapply ) {
+                trait.Δapply( target, trait )
             }
         }
 
