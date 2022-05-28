@@ -21,19 +21,20 @@ export class FieldsGalleryMinimalComponent  {
   item = new Foo()
 
   fields = {
-    'string': new Field({ name: 'fooString' }),
-    'integer': new Field({ name: 'fooInteger', type: 'integer'}),
-    'decimal': new Field({ name: 'fooDecimal', type: 'decimal'}),
-    'boolean': new Field({ name: 'fooBoolean', type: 'boolean'}),
-    'select': new Field({ 
-      name: 'fooSelect', 
-      type: 'string',
-      widget: 'select',
-      choices: [
-        { value: "yes", label: "Yes" },
-        { value: "no", label: "No" }
-      ]
-    })
+    'string': new Field('fooString'),
+    'integer': new Field('fooInteger','integer'),
+    'decimal': new Field('fooDecimal', 'decimal'),
+    'boolean': new Field('fooBoolean', 'boolean'),
+    'date': new Field('fooDate','date'),
+    'select': new Field('fooSelect', 'string',
+        { 
+          widget: 'select',
+          choices: [
+            { value: "yes", label: "Yes" },
+            { value: "no", label: "No" }
+          ]
+        }
+      )
   }
 
 
