@@ -59,6 +59,13 @@ export class FieldsGalleryComponent  {
         { value: "yes", label: "Yes" },
         { value: "no", label: "No" }
       ]
+    }),
+    'date': new Field({
+      name: 'fooDate',
+      label: 'Foo date',
+      token: 'foo-date',
+      widget: 'date',
+      type: 'date'
     })
   }
 

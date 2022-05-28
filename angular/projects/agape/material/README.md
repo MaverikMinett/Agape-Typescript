@@ -1,8 +1,29 @@
 # Agape Material
 
+
+## Forms
+
+### Dates
+
+You must provide a date adapter to use the `date` form field. The forms module
+providers the `VERBOSE_DATE_PROVIDERS` by default. You may over-ride these
+settings at the module or component level.
+
+```
+import { VERBOSE_DATE_PROVIDERS } from '@agape/material';
+
+@Component({
+  ...
+  providers: [ ...VERBOSE_DATE_PROVIDERS  ],
+
+})
+```
+
+## Styles
+
 Material Styles for Agape
 
-## Synopsis
+### Synopsis
 
 ```
 # in your styles.scss
@@ -11,7 +32,7 @@ Material Styles for Agape
 @import "~@agape/material/themes/aion-blue"
 ```
 
-## Description
+### Description
 
 A collection of SCSS styles and themes for Angular Material.
 
