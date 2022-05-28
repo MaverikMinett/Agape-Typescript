@@ -18,10 +18,6 @@ export class Field {
         else {
             params = args[0] ? {...args[0]} : {}
         }
-        
-        // if ( ! params.name ) {
-        //     throw new Error("Field must have a name")    
-        // }
 
         params.name  ??= "";
         params.label ??= verbalize(params.name);
@@ -35,6 +31,9 @@ export class Field {
             switch (params.type) {
                 case "date":
                     params.widget = "date";
+                    break;
+                case "text":
+                    params.widget = 'text';
                     break;
                 case "boolean":
                     params.widget = "checkbox";

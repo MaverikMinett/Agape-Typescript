@@ -26,6 +26,7 @@ export class FieldsGalleryMinimalComponent  {
     'decimal': new Field('fooDecimal', 'decimal'),
     'boolean': new Field('fooBoolean', 'boolean'),
     'date': new Field('fooDate','date'),
+    'text': new Field('fooText','text'),
     'select': new Field('fooSelect', 'string',
         { 
           widget: 'select',

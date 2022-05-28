@@ -66,6 +66,13 @@ export class FieldsGalleryComponent  {
       token: 'foo-date',
       widget: 'date',
       type: 'date'
+    }),
+    'text': new Field({
+      name: 'fooText',
+      label: 'Foo text',
+      token: 'foo-text',
+      widget: 'text',
+      type: 'text',
     })
   }
 

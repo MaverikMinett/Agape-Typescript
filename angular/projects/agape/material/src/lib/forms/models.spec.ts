@@ -138,6 +138,12 @@ describe('Field', () => {
                     expect(f.widget).toBe('date')
                 })
             })
+            describe('type = text', () => {
+                it('should be text', () => {
+                    f = new Field({ name: 'foo', type: 'text' })
+                    expect(f.widget).toBe('text')
+                })
+            })
         })
     })
 
