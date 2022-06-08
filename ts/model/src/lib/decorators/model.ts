@@ -15,7 +15,24 @@ export function Model( ...args:any[] ):any {
     }
 
     function Model( target:any ) {
-        const descriptor = new ModelDescriptor( target )
+        // A stub model descriptor may have been created by a @Field decorator
+        let descriptor = Reflect.getMetadata( "model:descriptor", target.prototype );
+        if ( descriptor ) {
+            // Copy in params
+            if ( params ) Object.assign(descriptor,params)
+            else descriptor.name ??= target.name
+            // Autopopulate empty label/token values
+            descriptor.autopopulate()
+        }
+        else  {
+            if ( params ) {
+                params = { ...params, name: target.name }
+                descriptor = new ModelDescriptor( params )
+            }
+            else {
+                descriptor = new ModelDescriptor( target.name )
+            }
+        }
         Reflect.defineMetadata( "model:descriptor", descriptor, target );
     }
 

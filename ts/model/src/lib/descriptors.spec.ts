@@ -1,12 +1,43 @@
+import { Model } from "./decorators/model";
 import { FieldDescriptor, ModelDescriptor } from "./descriptors"
 
 
-fdescribe('ModelDescriptor', () => {
+describe('FieldDescriptor', () => {
+    let f: FieldDescriptor
+
+    afterEach(() => {
+        f = undefined;
+    })
+
+    it('should instantiate', () => {
+        f = new FieldDescriptor('foo')
+    })
+
+    it('should set the name of the field', () => {
+        f = new FieldDescriptor('foo')
+        expect(f.name).toBe('foo')
+    })
+
+    it('should set the field type', () => {
+        f = new FieldDescriptor('foo', 'string')
+        expect(f.type).toBe('string')
+    })
+
+    it('should set the widget type', () => {
+        f = new FieldDescriptor('foo', 'string', 'textarea')
+        expect(f.widget).toBe('textarea')
+    })
+
+})
+
+describe('ModelDescriptor', () => {
 
     let m: ModelDescriptor
+    let f: FieldDescriptor
 
     afterEach(() => {
         m = undefined;
+        f = undefined;
     })
 
     it('should instantiate', () => {
@@ -80,37 +111,14 @@ fdescribe('ModelDescriptor', () => {
         })
     })
 
+    describe('add', () => {
+        it('should add a field', () => {
+            f = new FieldDescriptor('bar')
+            m = new ModelDescriptor('foo')
+            m.add(f)
+            expect(m.fields.has('bar')).toBeTrue()
+        })
+    })
+
 })
 
-
-// fdescribe('FieldDescriptor', () => {
-//     let f: FieldDescriptor
-
-//     afterEach(() => {
-//         f = undefined;
-//     })
-
-//     it('', () => {
-
-//     })
-
-//     it('should instantiate', () => {
-//         f = new FieldDescriptor('foo')
-//     })
-
-//     it('should set the name of the field', () => {
-//         f = new FieldDescriptor('foo')
-//         expect(f.name).toBe('foo')
-//     })
-
-//     it('should set the field type', () => {
-//         f = new FieldDescriptor('foo', 'string')
-//         expect(f.type).toBe('string')
-//     })
-
-//     it('should set the widget type', () => {
-//         f = new FieldDescriptor('foo', 'string', 'textarea')
-//         expect(f.widget).toBe('textarea')
-//     })
-
-// })

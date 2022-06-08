@@ -17,7 +17,7 @@ export class ModelDescriptor {
 
     tokens: string;
 
-    fields: FieldDescriptorSet;
+    fields: FieldDescriptorSet = new FieldDescriptorSet()
 
     constructor ( name?:string, params?:Partial<Pick<ModelDescriptor, keyof ModelDescriptor>> )
     constructor ( params?:Partial<Pick<ModelDescriptor, keyof ModelDescriptor>> )
@@ -33,13 +33,7 @@ export class ModelDescriptor {
             params.name = name;
         }
         if ( params ) Object.assign(this, params)
-        if ( this.name || this.label ) {
-            this.name   ??= camelize(this.label)
-            this.label  ??= verbalize(this.name)
-            this.plural ??= pluralize(this.label)
-            this.token  ??= tokenize(this.name)
-            this.tokens ??= pluralize(this.token)
-        }
+        this.autopopulate()
     }
 
     public field( name:string ):FieldDescriptor {
@@ -55,6 +49,16 @@ export class ModelDescriptor {
             throw new Error(`Field ${field.name} is already defined on model ${this.name}`)
         }
         this.fields.set(field.name, field)
+    }
+
+    public autopopulate() {
+        if ( this.name || this.label ) {
+            this.name   ??= camelize(this.label)
+            this.label  ??= verbalize(this.name)
+            this.plural ??= pluralize(this.label)
+            this.token  ??= tokenize(this.name)
+            this.tokens ??= pluralize(this.token)
+        }
     }
 
 }
@@ -91,15 +95,14 @@ export class FieldDescriptor {
     constructor( params: FieldDescriptorParams )
     constructor( ...args:any[] ) {
         let params: FieldDescriptorParams
-        if ( args.length === 1 && ! ( args[0] instanceof String ) ) {
-            params = args[0]
+        if ( args.length === 1 && ! ( typeof args[0] === 'string' ) ) {
+            params = {...args[0]}
         }
         else {
             const [name, type, widget] = args;
             params = { name, type, widget }
         }
         Object.assign(this, params)
-
         this.name   ??= camelize(this.label)
         this.label  ??= verbalize(this.name)
         this.plural ??= pluralize(this.label)
@@ -121,6 +124,10 @@ export class FieldDescriptor {
         if ( from ) this.merge( from )
     }
 
+    get length(): number {
+        return Object.keys(this.ʘ).length
+    }
+    
     /**
      * Merge descriptors from another set into this set
      * @param from 
