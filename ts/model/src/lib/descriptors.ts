@@ -1,5 +1,7 @@
-import { Class } from "@agape/object";
 import { camelize, pluralize, tokenize, verbalize } from "@agape/string";
+
+export type FieldDescriptorParams = Partial<Pick<FieldDescriptor, keyof FieldDescriptor>>;
+export type ModelDescriptorParams = Partial<Pick<ModelDescriptor, keyof ModelDescriptor>>;
 
 export class ModelDescriptor {
 
@@ -106,8 +108,6 @@ export class FieldDescriptor {
     }
 
 }
-
-export type FieldDescriptorParams = Partial<Pick<FieldDescriptor, keyof FieldDescriptor>>;
 
 
 /**
