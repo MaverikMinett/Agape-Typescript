@@ -1,7 +1,7 @@
 {
-  "name": "@agape/object",
-  "version": "1.4.0",
-  "description": "Extensible objects",
+  "name": "@agape/model",
+  "version": "0.1.0",
+  "description": "Annotated object models",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "scripts": {
