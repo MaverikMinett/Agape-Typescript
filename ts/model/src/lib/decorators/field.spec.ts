@@ -1,9 +1,9 @@
 
-import { FieldDescriptor, ModelDescriptor } from '../descriptors';
+import { ModelDescriptor } from '../descriptors';
 import { Field } from './field'
 import { Model } from './model'
 
-describe('Model', () => {
+describe('Field', () => {
     it('should create a model descriptor', () => {
         @Model class Foo {
 

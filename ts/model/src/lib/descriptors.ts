@@ -38,7 +38,7 @@ export class ModelDescriptor {
 
     public field( name:string ):FieldDescriptor {
         if ( ! this.fields.has(name) ) {
-            throw new Error(`Model ${this.name} does not have field ${name}`)
+            throw new Error(`${this.name} does not have field ${name}`)
         }
 
         return this.fields.get(name)
@@ -46,7 +46,7 @@ export class ModelDescriptor {
 
     public add( field:FieldDescriptor ) {
         if ( this.fields.has(field.name) ) {
-            throw new Error(`Field ${field.name} is already defined on model ${this.name}`)
+            throw new Error(`Field ${field.name} is already defined on ${this.name}`)
         }
         this.fields.set(field.name, field)
     }
@@ -63,32 +63,55 @@ export class ModelDescriptor {
 
 }
 
+export class ViewDescriptor extends ModelDescriptor {
+
+    title?: string;
+
+    model?: ModelDescriptor;
+
+    constructor ( model?: ModelDescriptor )
+    constructor ( name?:string, params?:Partial<Pick<ModelDescriptor, keyof ModelDescriptor>> )
+    constructor ( params?:Partial<Pick<ModelDescriptor, keyof ModelDescriptor>> )
+    constructor ( ...args:any[] ) {
+        if ( args.length === 1 && args[0] instanceof ModelDescriptor ) {
+            const model = args.shift()
+            super( )
+            this.model = model;
+        }
+        else {
+            super( ...args )
+        }
+    }
+
+}
 
 
 export class FieldDescriptor {
     
-    name: string;
+    name?: string;
 
-    label: string;
+    label?: string;
 
-    plural: string;
+    plural?: string;
 
-    description: string;
+    description?: string;
 
-    link: string;
+    length?: number;
+
+    link?: string;
     // ᚲᚲid: string;
 
-    column: string;
+    column?: string;
 
-    required: boolean;
+    required?: boolean;
 
-    token: string;
+    token?: string;
 
-    tokens: string;
+    tokens?: string;
 
-    type: string;
+    type?: string;
 
-    widget: string;
+    widget?: string;
 
     constructor()
     constructor( name:string, type?:string, widget?:string ) 
@@ -103,11 +126,21 @@ export class FieldDescriptor {
             params = { name, type, widget }
         }
         Object.assign(this, params)
-        this.name   ??= camelize(this.label)
-        this.label  ??= verbalize(this.name)
-        this.plural ??= pluralize(this.label)
-        this.token  ??= tokenize(this.name)
-        this.tokens ??= pluralize(this.token)
+        this.autopopulate()
+    }
+
+    autopopulate() {
+        if ( this.name || this.label ) {
+            this.name   ??= camelize(this.label)
+            this.label  ??= verbalize(this.name)
+            this.plural ??= pluralize(this.label)
+            this.token  ??= tokenize(this.name)
+            this.tokens ??= pluralize(this.token)
+        }
+    }
+
+    include( field: FieldDescriptor ) {
+
     }
 
 }
@@ -127,7 +160,7 @@ export class FieldDescriptor {
     get length(): number {
         return Object.keys(this.ʘ).length
     }
-    
+
     /**
      * Merge descriptors from another set into this set
      * @param from 

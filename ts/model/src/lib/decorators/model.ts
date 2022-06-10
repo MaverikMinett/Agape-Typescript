@@ -40,3 +40,8 @@ export function Model( ...args:any[] ):any {
     else return Model
 
 }
+
+
+Model.descriptor = function ( model:Class ) {
+    return Reflect.getMetadata( "model:descriptor", model )
+}

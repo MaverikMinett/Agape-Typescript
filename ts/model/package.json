@@ -12,8 +12,8 @@
   },
   "keywords": [
     "agape",
-    "object",
-    "traits"
+    "model",
+    "view"
   ],
   "author": "Maverik Minett",
   "license": "MIT",
