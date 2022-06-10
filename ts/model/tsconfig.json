@@ -16,6 +16,6 @@
         ]
       }
     },
-    "include": ["src/**/*", "./public_api.ts", ],
+    "include": ["src/**/*", "./public_api.ts" ],
     "exclude": ["node_modules", "**/__tests__/*"],
   }

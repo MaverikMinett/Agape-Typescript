@@ -1,14 +1,16 @@
 {
   "name": "@agape/model",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Annotated object models",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "scripts": {
     "start": "tsc -w",
     "build": "tsc && tsc -p tsconfig-cjs.json",
+    "pack": "tar -czf ../../dist/agape-model.tgz dist/*",
+    "dist": "npm run build && npm run pack",
     "test": "jasmine-ts && exit 0",
-    "release": "npm run build && npm publish --access public"
+    "release": "npm run dist && npm publish --access public"
   },
   "keywords": [
     "agape",
@@ -19,6 +21,7 @@
   "license": "MIT",
   "devDependencies": {
     "@types/jasmine": "^3.5.14",
+    "gzip-folder": "^1.0.4",
     "jasmine": "^3.6.1",
     "jasmine-spec-reporter": "^6.0.0",
     "jasmine-ts": "^0.3.0",
@@ -26,6 +29,7 @@
     "typescript": "^4.0.3"
   },
   "dependencies": {
+    "@agape/object": "^1.4.0",
     "@agape/string": "^1.0.0",
     "reflect-metadata": "^0.1.13"
   }
