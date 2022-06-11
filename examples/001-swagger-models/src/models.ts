@@ -1,4 +1,9 @@
-import { Field, Model, View} from "../../../ts/model";
+
+
+import { Model } from "../../../ts/model/src/lib/decorators/model"
+import { Field } from "../../../ts/model/src/lib/decorators/field"
+import { View } from "../../../ts/model/src/lib/decorators/view"
+
 
 @Model export class Event {
     @Field id: number;
