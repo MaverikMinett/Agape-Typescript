@@ -3,12 +3,12 @@
 ## Special Properties
 
 
-### `Δapply`
+### `Δinclude`
 
 
 
 ```
-Δapply( target:HasTiedSubscriptions, trait:HasTiedSubscriptions ) {
+Δinclude( target:HasTiedSubscriptions, trait:HasTiedSubscriptions ) {
     ...
 }
 ```
@@ -21,7 +21,7 @@
 
 ( target:HasTiedSubscriptions, trait:HasTiedSubscriptions )`
 
-    protected Δapply( target:HasTiedSubscriptions, trait:HasTiedSubscriptions ) {
+    protected Δinclude( target:HasTiedSubscriptions, trait:HasTiedSubscriptions ) {
         if ( ! trait.ʘtiedSubsriptions ) return;
         if ( ! trait.ʘtiedSubsriptions.length ) return;
         target.ʘtiedSubsriptions ??= {}

@@ -1,4 +1,7 @@
 
+1.4.1 Jun 11, 2022
+- changed Δapply to Δinclude
+
 1.4.0 May 12, 2022
 - added support for both es2015/es2020
 - Δapply method on traits

@@ -1,6 +1,6 @@
 {
   "name": "@agape/object",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Extensible objects",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -28,5 +28,8 @@
   "dependencies": {
     "@agape/string": "^1.0.0",
     "reflect-metadata": "^0.1.13"
+  },
+  "peerDependencies": {
+    "@agape/object": "^1.4.0"
   }
 }

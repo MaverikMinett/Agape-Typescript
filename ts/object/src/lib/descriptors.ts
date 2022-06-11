@@ -438,9 +438,9 @@ export class ObjectDescriptor {
                 target = targetConstructor.prototype
             }
 
-            /* apply Δapply */
-            if ( trait.Δapply ) {
-                trait.Δapply( target, trait )
+            /* apply Δinclude */
+            if ( trait.Δinclude ) {
+                trait.Δinclude( target, trait )
             }
         }
 

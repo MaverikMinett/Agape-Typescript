@@ -83,9 +83,9 @@ describe('include decorator', () => {
         expect( o.calls ).toBe(2)
     })
 
-    it('should execute the Δapply method on the trait', () => {
+    it('should execute the Δinclude method on the trait', () => {
         class ATrait {
-            Δapply( target, trait ) {
+            Δinclude( target, trait ) {
                 target['ʘfoo'] = trait['ʘfoo']
             }
         }
