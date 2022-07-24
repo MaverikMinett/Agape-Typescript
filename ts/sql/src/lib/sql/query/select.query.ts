@@ -9,10 +9,14 @@ export interface SelectQuery extends HasFields, HasWhereClause, CanParseUserArgs
 @include( HasFields, HasWhereClause, CanParseUserArgs )
 export class SelectQuery extends Query {
 
-    get sql() {
+    sql() {
         let sql = `SELECT `
         sql += this._fields.join(', ')
         sql += ` FROM ${this.table.name}`
+
+        const where = this.whereClause()
+        if ( where ) sql += ` ${where}`
+
         return sql
     }
 

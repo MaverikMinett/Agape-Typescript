@@ -380,4 +380,17 @@ describe('SelectQuery', () => {
     })
 
 
+    describe('query', () => {
+
+        beforeEach( () => {
+            t = new SqlTable('foo')
+            q = new SelectQuery(t)
+        })
+        it('should generate a complete sql statement', () => {
+            q.fields('*').where('foo','=','bar')
+            expect(q.sql()).toEqual('SELECT * FROM foo WHERE foo = bar')
+        })
+    })
+
+
 })
