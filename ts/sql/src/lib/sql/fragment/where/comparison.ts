@@ -15,6 +15,7 @@ export class WhereComparison extends Sql {
     constructor( leftArg:SqlToken, operator:'in', ...rightArgs:SqlToken[] )
     constructor( leftArg:SqlToken, operator:'not in', ...rightArgs:SqlToken[] )
     constructor( leftArg:SqlToken, operator:StandardComparisonOperator, rightArg:SqlToken )
+    constructor( leftArg:SqlToken, operator:ComparisonOperator, ...rightArgs:SqlToken[] ) 
     constructor( leftArg:SqlToken, operator:ComparisonOperator, ...rightArgs:SqlToken[] ) {
         super()
         Object.assign( this, {leftArg, operator, rightArgs} )

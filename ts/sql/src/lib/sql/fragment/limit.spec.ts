@@ -1,6 +1,6 @@
 import { Limit } from "./limit"
 
-fdescribe('Limit', () => {
+describe('Limit', () => {
 
     let f:Limit
 

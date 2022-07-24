@@ -1,6 +1,6 @@
 import  { Offset } from "./offset"
 
-fdescribe('Offset', () => {
+describe('Offset', () => {
 
     let f:Offset
 

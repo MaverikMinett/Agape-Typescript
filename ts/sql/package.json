@@ -1,0 +1,37 @@
+{
+  "name": "@agape/sql",
+  "version": "0.0.1",
+  "description": "SQL statement erector",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "tsc -w",
+    "build": "tsc && tsc -p tsconfig-cjs.json",
+    "test": "jasmine-ts && exit 0",
+    "release": "npm run build && npm publish --access public"
+  },
+  "keywords": [
+    "agape",
+    "object",
+    "traits"
+  ],
+  "author": "Maverik Minett",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/jasmine": "^3.5.14",
+    "@types/microtime": "^2.1.0",
+    "jasmine": "^3.6.1",
+    "jasmine-spec-reporter": "^6.0.0",
+    "jasmine-ts": "^0.3.0",
+    "microtime": "^3.1.0",
+    "ts-node": "^8.10.2",
+    "typescript": "^4.0.3"
+  },
+  "dependencies": {
+    "reflect-metadata": "^0.1.13"
+  },
+  "peerDependencies": {
+    "@agape/object": "^1.4.0"
+  }
+}

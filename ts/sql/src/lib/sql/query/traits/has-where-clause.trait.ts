@@ -2,8 +2,13 @@
 
 // trait - for Query objects
 
+import { ComparisonOperator } from "../../../types";
+import { SqlToken } from "../../abstract";
 import { WhereBoolean, WhereComparison, WhereSubgroupEnd, WhereSubgroupStart } from "../../fragment/where";
 import { CanParseUserArgs } from "./can-parse-user-args.trait";
+
+
+type ComparisonParameter = SqlToken|string|number|undefined|null;
 
 // requires ( CanParseUserArgs )
 export interface HasWhereClause extends CanParseUserArgs { }
@@ -11,8 +16,9 @@ export class HasWhereClause {
 
     protected whereElements: any[]
 
-    where( arg1:any, operator:any, arg2:any ) {
-        const objects = this.argsToSqlObjects(arg1, arg2)
+    where( arg1:ComparisonParameter, operator:ComparisonOperator, ...args:ComparisonParameter[] ): this 
+    where( arg1:any, operator:any, ...args:any[] ): this {
+        const objects = this.argsToSqlObjects(arg1, ...args)
 
         const element = new WhereComparison(objects[0], operator, ...objects.slice(1) )
 
@@ -23,7 +29,9 @@ export class HasWhereClause {
         return this
     }
 
-    and() {
+    and(): this
+    and( arg1:ComparisonParameter, operator:ComparisonOperator, ...args:ComparisonParameter[] ): this 
+    and( ...args:any[] ): this {    
         if ( ! this.whereElements?.length 
             || this.whereElements[this.whereElements.length-1] instanceof WhereSubgroupStart
             || this.whereElements[this.whereElements.length-1] instanceof WhereBoolean ) {
@@ -32,10 +40,16 @@ export class HasWhereClause {
 
         this.addWhereElement( new WhereBoolean('and') )
 
+        if ( args.length ) {
+            this.where( args[0], args[1], ...args.slice(2) )
+        }
+
         return this
     }
 
-    or() {
+    or(): this
+    or( arg1:ComparisonParameter, operator:ComparisonOperator, ...args:ComparisonParameter[] ): this 
+    or( ...args:any[] ): this {    
         if ( ! this.whereElements?.length 
             || this.whereElements[this.whereElements.length-1] instanceof WhereSubgroupStart
             || this.whereElements[this.whereElements.length-1] instanceof WhereBoolean ) {
@@ -44,10 +58,16 @@ export class HasWhereClause {
 
         this.addWhereElement( new WhereBoolean('or') )
 
+        if ( args.length ) {
+            this.where( args[0], args[1], ...args.slice(2) )
+        }
+
         return this
     }
 
-    xor() {
+    xor(): this
+    xor( arg1:ComparisonParameter, operator:ComparisonOperator, ...args:ComparisonParameter[] ): this 
+    xor( ...args:any[] ): this {   
         if ( ! this.whereElements?.length 
             || this.whereElements[this.whereElements.length-1] instanceof WhereSubgroupStart
             || this.whereElements[this.whereElements.length-1] instanceof WhereBoolean ) {
@@ -56,12 +76,29 @@ export class HasWhereClause {
         
         this.addWhereElement( new WhereBoolean('xor') )
 
+        if ( args.length ) {
+            this.where( args[0], args[1], ...args.slice(2) )
+        }
+
         return this
     }
 
-    not() {       
+    not(): this
+    not( arg1:ComparisonParameter, operator:ComparisonOperator, ...args:ComparisonParameter[] ): this 
+    not( ...args:any[] ): this {      
+
+        if ( this.whereElements?.length 
+            && this.whereElements[this.whereElements.length-1] instanceof WhereBoolean
+            && this.whereElements[this.whereElements.length-1].operator == 'not' ) {
+            throw new Error("xor is not valid here")
+        } 
+
         this.addAndIfNeeded()
         this.addWhereElement( new WhereBoolean('not') )
+
+        if ( args.length ) {
+            this.where( args[0], args[1], ...args.slice(2) )
+        }
 
         return this
     }

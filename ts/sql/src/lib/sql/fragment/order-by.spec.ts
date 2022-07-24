@@ -2,7 +2,7 @@ import { SqlColumn } from "../column"
 import { OrderBy } from "./order-by"
 
 
-fdescribe('OrderBy', () => {
+describe('OrderBy', () => {
 
     let f:OrderBy
     let c:SqlColumn

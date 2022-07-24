@@ -1,6 +1,6 @@
 import { WhereBoolean } from "./boolean"
 
-fdescribe('WhereBoolean', () => {
+describe('WhereBoolean', () => {
 
     let s:WhereBoolean
 

@@ -4,7 +4,7 @@ import { SelectQuery } from "./select.query"
 
 import * as test from "../../sql/fragment/where/comparison"
 
-fdescribe('SelectQuery', () => {
+describe('SelectQuery', () => {
 
     let t:SqlTable
     let q:SelectQuery
@@ -82,7 +82,7 @@ fdescribe('SelectQuery', () => {
 
     })
 
-    fdescribe('and', () => {
+    describe('and', () => {
 
         beforeEach( () => {
             t = new SqlTable('foo')
@@ -136,9 +136,13 @@ fdescribe('SelectQuery', () => {
             q.and()
             expect( () => q.and() ).toThrowError()
         })
+        it('should accept arguments', () => {
+            q.where('foo','=','bar')
+            q.and('baz','=','biz')
+        })
     })
 
-    fdescribe('or', () => {
+    describe('or', () => {
 
         beforeEach( () => {
             t = new SqlTable('foo')
@@ -192,10 +196,14 @@ fdescribe('SelectQuery', () => {
             q.and()
             expect( () => q.or() ).toThrowError()
         })
+        it('should accept arguments', () => {
+            q.where('foo','=','bar')
+            q.or('baz','=','biz')
+        })
 
     })
 
-    fdescribe('xor', () => {
+    describe('xor', () => {
 
         beforeEach( () => {
             t = new SqlTable('foo')
@@ -248,6 +256,11 @@ fdescribe('SelectQuery', () => {
             q.where('foo','=','bar')
             q.and()
             expect( () => q.or() ).toThrowError()
+        })
+
+        it('should accept arguments', () => {
+            q.where('foo','=','bar')
+            q.xor('baz','=','biz')
         })
 
     })
@@ -303,11 +316,16 @@ fdescribe('SelectQuery', () => {
             q.and()
             expect( q.not() ).toBeTruthy()
         })
+
+        it('should accept arguments', () => {
+            q.where('foo','=','bar')
+            q.not('baz','=','biz')
+        })
     })
 
 
 
-    fdescribe('whereClause', () => {
+    describe('whereClause', () => {
 
         beforeEach( () => {
             t = new SqlTable('foo')
@@ -346,6 +364,18 @@ fdescribe('SelectQuery', () => {
             q.not()
             q.where('baz','=',6)
             expect(q.whereClause()).toEqual('WHERE foo = bar AND NOT baz = 6')
+        })
+
+        it('should return a where clause with a group', () => {
+            q.where('foo','=','bar')
+            q.not()
+            q.groupStart()
+                q.where('baz','=',6)
+                q.or()
+                q.where('baz','=',9)
+            q.groupEnd()
+
+            expect(q.whereClause()).toEqual('WHERE foo = bar AND NOT ( baz = 6 OR baz = 9 )')
         })
     })
 

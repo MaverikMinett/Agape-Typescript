@@ -6,7 +6,7 @@ import { SqlValueNumber } from "../../value/number"
 import { SqlValueString } from "../../value/string"
 import { WhereComparison } from "./comparison"
 
-fdescribe('WhereComparison', () => {
+describe('WhereComparison', () => {
 
     let s:WhereComparison
     let t1:SqlToken
