@@ -1,11 +1,10 @@
 import { OrderByDirection } from "../../types";
-import { Sql } from "../abstract";
-import { SqlColumn } from "../column";
+import { Sql, SqlToken } from "../abstract";
 
 
 export class OrderBy extends Sql {
 
-    constructor( public column:SqlColumn, public direction:OrderByDirection='asc' ) {
+    constructor( public column:SqlToken, public direction:OrderByDirection='asc' ) {
         super()
     }
 

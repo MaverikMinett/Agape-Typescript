@@ -381,14 +381,129 @@ describe('SelectQuery', () => {
 
 
     describe('query', () => {
-
         beforeEach( () => {
             t = new SqlTable('foo')
             q = new SelectQuery(t)
         })
-        it('should generate a complete sql statement', () => {
+        it('should generate a complete sql statement with where clause', () => {
             q.fields('*').where('foo','=','bar')
             expect(q.sql()).toEqual('SELECT * FROM foo WHERE foo = bar')
+        })
+        it('should generate a complete sql statement with order by clause', () => {
+            q.fields('*').orderBy('foo','asc').orderBy('bar','desc')
+            expect(q.sql()).toEqual('SELECT * FROM foo ORDER BY foo ASC, bar DESC')
+        })
+        it('should generate a complete sql statement with limit clause', () => {
+            q.fields('*').limit(50)
+            expect(q.sql()).toEqual('SELECT * FROM foo LIMIT 50')
+        })
+        it('should generate a complete sql statement with where and order by clauses', () => {
+            q.fields('*')
+                .where('foo','=','bar')
+                .orderBy('foo','asc')
+                .orderBy('bar','desc')
+
+            expect(q.sql()).toEqual('SELECT * FROM foo WHERE foo = bar ORDER BY foo ASC, bar DESC')
+        })
+        it('should generate a complete sql statement with where and limit clauses', () => {
+            q.fields('*')
+                .where('foo','=','bar')
+                .limit(50)
+
+            expect(q.sql()).toEqual('SELECT * FROM foo WHERE foo = bar LIMIT 50')
+        })
+        it('should generate a complete sql statement with order by and limit', () => {
+            q.fields('*')
+                .orderBy('foo','asc')
+                .orderBy('bar','desc')
+                .limit(50)
+
+            expect(q.sql()).toEqual('SELECT * FROM foo ORDER BY foo ASC, bar DESC LIMIT 50')
+        })
+        it('should generate a complete sql statement with where, order by, and limit', () => {
+            q.fields('*')
+                .where('foo','=','bar')
+                .orderBy('foo','asc')
+                .orderBy('bar','desc')
+                .limit(50)
+
+            expect(q.sql()).toEqual('SELECT * FROM foo WHERE foo = bar ORDER BY foo ASC, bar DESC LIMIT 50')
+        })
+    })
+
+
+    describe('orderBy', () => {
+        beforeEach( () => {
+            t = new SqlTable('foo')
+            q = new SelectQuery(t)
+            q.fields('*')
+        })
+
+        it('should parse the token as a user arg', () => {
+            spyOn(q as any,'argsToSqlObjects').and.callThrough()
+            const a = 'foo'
+            q.orderBy(a)
+            expect( (q as any).argsToSqlObjects).toHaveBeenCalledWith(a)
+        })
+        it('should return the query', () => {
+            expect( q.orderBy('foo') ).toBe(q)
+        })
+
+        it('should order by a column in asc', () => {
+            expect( q.orderBy('foo','asc') ).toBeTruthy()
+        })
+        it('should order by a column in desc', () => {
+            expect( q.orderBy('foo','asc') ).toBeTruthy()
+        })
+        it('should order by multiple columns', () => {
+            expect( q.orderBy('foo').orderBy('bar') ).toBeTruthy()
+        })
+        xit('should order by a function in asc', () => {
+
+        })
+        xit('should order by a function in desc', () => {
+
+        })
+    })
+
+    describe('orderByClause', () => {
+        beforeEach( () => {
+            t = new SqlTable('foo')
+            q = new SelectQuery(t)
+            q.fields('*')
+        })
+        it('should generate the correct where clause', () => {
+            q.orderBy('foo','asc')
+            expect(q.orderByClause()).toEqual('ORDER BY foo ASC')
+        })
+        it('should generate correct where clause for multiple elements', () => {
+            q.orderBy('foo','asc').orderBy('bar','desc')
+            expect(q.orderByClause()).toEqual('ORDER BY foo ASC, bar DESC')
+        })
+    })
+
+
+    describe('limit', () => {
+        beforeEach( () => {
+            t = new SqlTable('foo')
+            q = new SelectQuery(t)
+        })
+        it('should accept a number', () => {
+            expect( q.limit(50)).toBeTruthy()
+        })
+        it('should return the query', () => {
+            expect( q.limit(50) ).toBe(q)
+        })
+    })
+
+    describe('limitClause', () => {
+        beforeEach( () => {
+            t = new SqlTable('foo')
+            q = new SelectQuery(t)
+        })
+        it('should generate the correct where clause', () => {
+            q.limit(50)
+            expect(q.limitClause()).toEqual('LIMIT 50')
         })
     })
 
