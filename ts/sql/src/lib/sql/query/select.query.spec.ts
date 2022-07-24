@@ -397,6 +397,10 @@ describe('SelectQuery', () => {
             q.fields('*').limit(50)
             expect(q.sql()).toEqual('SELECT * FROM foo LIMIT 50')
         })
+        it('should generate a complete sql statement with offset clause', () => {
+            q.fields('*').offset(50)
+            expect(q.sql()).toEqual('SELECT * FROM foo OFFSET 50')
+        })
         it('should generate a complete sql statement with where and order by clauses', () => {
             q.fields('*')
                 .where('foo','=','bar')
@@ -428,6 +432,16 @@ describe('SelectQuery', () => {
                 .limit(50)
 
             expect(q.sql()).toEqual('SELECT * FROM foo WHERE foo = bar ORDER BY foo ASC, bar DESC LIMIT 50')
+        })
+        it('should generate a complete sql statement with where, order by, limit, offset', () => {
+            q.fields('*')
+                .where('foo','=','bar')
+                .orderBy('foo','asc')
+                .orderBy('bar','desc')
+                .limit(50)
+                .offset(50)
+
+            expect(q.sql()).toEqual('SELECT * FROM foo WHERE foo = bar ORDER BY foo ASC, bar DESC LIMIT 50 OFFSET 50')
         })
     })
 
@@ -472,11 +486,11 @@ describe('SelectQuery', () => {
             q = new SelectQuery(t)
             q.fields('*')
         })
-        it('should generate the correct where clause', () => {
+        it('should generate the correct order by clause', () => {
             q.orderBy('foo','asc')
             expect(q.orderByClause()).toEqual('ORDER BY foo ASC')
         })
-        it('should generate correct where clause for multiple elements', () => {
+        it('should generate correct order by clause for multiple elements', () => {
             q.orderBy('foo','asc').orderBy('bar','desc')
             expect(q.orderByClause()).toEqual('ORDER BY foo ASC, bar DESC')
         })
@@ -501,11 +515,35 @@ describe('SelectQuery', () => {
             t = new SqlTable('foo')
             q = new SelectQuery(t)
         })
-        it('should generate the correct where clause', () => {
+        it('should generate the correct limit clause', () => {
             q.limit(50)
             expect(q.limitClause()).toEqual('LIMIT 50')
         })
     })
 
+
+    describe('offset', () => {
+        beforeEach( () => {
+            t = new SqlTable('foo')
+            q = new SelectQuery(t)
+        })
+        it('should accept a number', () => {
+            expect( q.offset(50)).toBeTruthy()
+        })
+        it('should return the query', () => {
+            expect( q.offset(50) ).toBe(q)
+        })
+    })
+
+    describe('offsetClause', () => {
+        beforeEach( () => {
+            t = new SqlTable('foo')
+            q = new SelectQuery(t)
+        })
+        it('should generate the correct offset clause', () => {
+            q.offset(50)
+            expect(q.offsetClause()).toEqual('OFFSET 50')
+        })
+    })
 
 })
