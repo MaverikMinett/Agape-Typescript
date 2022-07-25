@@ -1,10 +1,9 @@
 import { include } from "@agape/object"
-import { Limit } from "../fragment/limit"
 import { Query } from "./abstract"
 import { CanParseUserArgs } from "./traits/can-parse-user-args.trait"
 import { HasFields } from "./traits/has-fields.trait"
 import { HasLimitClause } from "./traits/has-limit-clause.trait"
-import { HasOffsetClause } from "./traits/has-offset-clause"
+import { HasOffsetClause } from "./traits/has-offset-clause.trait"
 import { HasOrderByClause } from "./traits/has-order-by-clause.trait"
 import { HasWhereClause } from "./traits/has-where-clause.trait"
 
