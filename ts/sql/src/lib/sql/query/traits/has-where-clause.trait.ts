@@ -2,7 +2,7 @@
 
 // trait - for Query objects
 
-import { ComparisonOperator } from "../../../types";
+import { ComparisonOperator, StandardComparisonOperator } from "../../../types";
 import { SqlToken } from "../../abstract";
 import { WhereBoolean, WhereComparison, WhereSubgroupEnd, WhereSubgroupStart } from "../../fragment/where";
 import { CanParseUserArgs } from "./can-parse-user-args.trait";
@@ -16,7 +16,15 @@ export class HasWhereClause {
 
     protected whereElements: any[]
 
-    where( arg1:ComparisonParameter, operator:ComparisonOperator, ...args:ComparisonParameter[] ): this 
+    // TODO: OVERLOAD OTHER METHODS ON THIS TRAIT
+    where( leftArg:SqlToken|string|number, operator:'between', betweenFrom:SqlToken, betweenTo:SqlToken ): this 
+    where( leftArg:SqlToken|string|number, operator:'not between', betweenFrom:SqlToken, betweenTo:SqlToken ): this 
+    where( leftArg:SqlToken|string|number, operator:'like', rightArg:SqlToken ): this 
+    where( leftArg:SqlToken|string|number, operator:'not like', rightArg:SqlToken ): this 
+    where( leftArg:SqlToken|string|number, operator:'in', ...rightArgs:SqlToken[] ): this 
+    where( leftArg:SqlToken|string|number, operator:'not in', ...rightArgs:SqlToken[] ): this 
+    where( leftArg:SqlToken|string|number, operator:StandardComparisonOperator, rightArg:SqlToken ): this 
+    where( arg1:SqlToken|string|number, operator:ComparisonOperator, ...args:Array<SqlToken|string|number> ): this 
     where( arg1:any, operator:any, ...args:any[] ): this {
         const objects = this.argsToSqlObjects(arg1, ...args)
 
@@ -30,7 +38,7 @@ export class HasWhereClause {
     }
 
     and(): this
-    and( arg1:ComparisonParameter, operator:ComparisonOperator, ...args:ComparisonParameter[] ): this 
+    and( arg1:any, operator:ComparisonOperator, ...args:any[] ): this 
     and( ...args:any[] ): this {    
         if ( ! this.whereElements?.length 
             || this.whereElements[this.whereElements.length-1] instanceof WhereSubgroupStart
@@ -48,7 +56,7 @@ export class HasWhereClause {
     }
 
     or(): this
-    or( arg1:ComparisonParameter, operator:ComparisonOperator, ...args:ComparisonParameter[] ): this 
+    or( arg1:any, operator:ComparisonOperator, ...args:any[] ): this 
     or( ...args:any[] ): this {    
         if ( ! this.whereElements?.length 
             || this.whereElements[this.whereElements.length-1] instanceof WhereSubgroupStart
@@ -66,7 +74,7 @@ export class HasWhereClause {
     }
 
     xor(): this
-    xor( arg1:ComparisonParameter, operator:ComparisonOperator, ...args:ComparisonParameter[] ): this 
+    xor( arg1:any, operator:ComparisonOperator, ...args:any[] ): this 
     xor( ...args:any[] ): this {   
         if ( ! this.whereElements?.length 
             || this.whereElements[this.whereElements.length-1] instanceof WhereSubgroupStart
@@ -84,7 +92,7 @@ export class HasWhereClause {
     }
 
     not(): this
-    not( arg1:ComparisonParameter, operator:ComparisonOperator, ...args:ComparisonParameter[] ): this 
+    not( arg1:any, operator:ComparisonOperator, ...args:any[] ): this 
     not( ...args:any[] ): this {      
 
         if ( this.whereElements?.length 
