@@ -1,8 +1,8 @@
 import { OrderByDirection } from "../../types";
-import { Sql, SqlToken } from "../abstract";
+import { SqlToken, Syntax } from "../abstract";
 
 
-export class OrderBy extends Sql {
+export class OrderBy extends Syntax {
 
     constructor( public column:SqlToken, public direction:OrderByDirection='asc' ) {
         super()

@@ -1,6 +1,6 @@
-import { Sql } from "../../abstract";
+import { Syntax } from "../../abstract";
 
-export class WhereSubgroupEnd extends Sql {
+export class WhereSubgroupEnd extends Syntax {
     sql() {
         return ')'
     }

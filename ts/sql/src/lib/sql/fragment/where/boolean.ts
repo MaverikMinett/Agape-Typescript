@@ -1,10 +1,10 @@
 import { BooleanOperator } from "../../../types"
-import { Sql } from "../../abstract"
+import { Syntax } from "../../abstract"
 
 /**
  * Where Boolean: and, not, or, xor
  */
-export class WhereBoolean extends Sql {
+export class WhereBoolean extends Syntax {
     
     // and not or xor
     constructor( public operator:BooleanOperator ) {

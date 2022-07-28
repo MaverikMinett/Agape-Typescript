@@ -1,8 +1,8 @@
-import { Sql } from "../abstract";
+import { Syntax } from "../abstract";
 
 
 
-export class Offset extends Sql {
+export class Offset extends Syntax {
 
     constructor( public offset:number ) {
         super()

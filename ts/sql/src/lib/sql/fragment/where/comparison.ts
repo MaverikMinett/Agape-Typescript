@@ -1,8 +1,8 @@
 import { ComparisonOperator, StandardComparisonOperator } from "../../../types"
-import { Sql, SqlToken } from "../../abstract"
+import { Syntax, SqlToken } from "../../abstract"
 
 
-export class WhereComparison extends Sql {
+export class WhereComparison extends Syntax {
 
     leftArg:SqlToken
     operator:ComparisonOperator

@@ -1,8 +1,8 @@
-import { Sql } from "../abstract";
+import { Syntax } from "../abstract";
 
 
 
-export class Limit extends Sql {
+export class Limit extends Syntax {
 
     constructor( public limit:number ) {
         super()

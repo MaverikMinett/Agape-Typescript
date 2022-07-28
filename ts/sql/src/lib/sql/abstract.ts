@@ -1,11 +1,11 @@
-export abstract class Sql {
+export abstract class Syntax {
     abstract sql(): string 
 }
 
 /**
  * Any SQL keyword, value, operator, function, literal, symbol, value, etc
  */
-export abstract class SqlToken extends Sql {
+export abstract class SqlToken extends Syntax {
     
 }
 
@@ -29,10 +29,3 @@ export abstract class SqlValue extends SqlToken {
     abstract value: any
 }
 
-/**
- * A fragment is composed of one or more SQL tokens, values, 
- * operators, functions, or keywords.
- */
-export abstract class SqlFragment extends Sql {
-
-}
