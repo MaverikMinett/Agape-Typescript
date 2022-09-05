@@ -27,10 +27,18 @@ import { View } from "../../../ts/model/src/lib/decorators/view"
     contact_phone: string = ""
 }
 
-export interface EventList extends Event{};
+
+/**
+ * Demonstrates that by default all properties from the model
+ * will be available on the view
+ */
+export interface EventDetail extends Event{}
 @View(Event) export class EventDetail { }
 
-export interface EventList extends Pick<Event,"id"|"name"|"description">{};
+/**
+ * Pick specific fields from the model to make available on the view
+ */
+export interface EventList extends Pick<Event,"id"|"name"|"description">{}
 @View(Event,['id','name','description']) 
 export class EventList { }
 

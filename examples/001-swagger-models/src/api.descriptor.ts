@@ -1,7 +1,7 @@
 
 import { Model } from "../../../ts/model/src/lib/decorators/model"
 import { ModelDescriptor } from "../../../ts/model/src/lib/descriptors"
-import { Class } from "../../../ts/object"
+import { Class } from "../../../ts/object/src"
 
 
 export class ApiDescriptor {
@@ -55,18 +55,23 @@ export class ApiDescriptor {
 			}
 		}
 
+		// Generate swagger model definitions docs using model meta data
 		for ( const descriptor of this.models ) {
+
+			// Open API model definition
 			const definition = {
 				type: "object",
 				properties: { } as any
 			}
 
+			// Create Open API model property definitions from model meta data
 			for ( const name of descriptor.fields.names ) {
 				definition.properties[name] = {
 						type: descriptor.field(name).type || 'string'
 				}
 			}
 
+			// Add the model definition to the open api spec
 			value.definitions[descriptor.symbol] = definition
 		}
 
