@@ -29,9 +29,10 @@ export function View( progenitor: Class, fieldSelection?: any ):any {
         let protoDescriptor = Reflect.getMetadata( "model:descriptor", target.prototype );
 
         let viewDescriptor  = new ViewDescriptor( modelDescriptor )
+        viewDescriptor.symbol = target.name
 
         if ( allFields ) {
-            // console.log(`Adding all frields from ${progenitor.name} to ${target.name}`)
+            // console.log(`Adding all fields from ${progenitor.name} to ${target.name}`)
             for ( let name of modelDescriptor.fields.names ) {
                 const fieldDescriptor = new FieldDescriptor(name)
                 const modelFieldDescriptor = modelDescriptor.fields.get(name)
