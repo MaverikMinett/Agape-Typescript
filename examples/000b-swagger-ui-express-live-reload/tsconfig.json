@@ -16,9 +16,6 @@
             "*": [
                 "node_modules/*"
             ],
-            "@agape/model": [
-                "../model/src/index.ts"
-            ]
         }
     },
     "include": [
