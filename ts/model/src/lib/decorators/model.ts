@@ -8,7 +8,7 @@ import 'reflect-metadata'
  * Use the @Model decorator to annotate a class and designate it as a
  * data model
  */
-export function Model( params?:ModelDescriptorParams ):any
+export function Model( params?:Omit<ModelDescriptorParams,'symbol'|'fields'> ):any
 export function Model( target:Class ):any
 export function Model( ...args:any[] ):any {
 
