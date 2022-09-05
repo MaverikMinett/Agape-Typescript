@@ -7,6 +7,7 @@
   "scripts": {
     "start": "tsc -w",
     "start:mongo": "cd \"$PWD/spec\" && DEV_AG_ORM_SPECDIR=\"$PWD\" docker-compose up",
+    "mongo:wipe": "cd \"$PWD/spec\" docker-compose kill && docker-compose rm",
     "pwd": "echo $PWD",
     "build": "tsc && tsc -p tsconfig-cjs.json",
     "pack": "tar -czf ../../dist/agape-orm.tgz dist/*",
