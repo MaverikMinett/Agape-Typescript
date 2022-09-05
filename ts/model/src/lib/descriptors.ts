@@ -3,6 +3,9 @@ import { camelize, pluralize, tokenize, verbalize } from "@agape/string";
 export type FieldDescriptorParams = Partial<Pick<FieldDescriptor, keyof FieldDescriptor>>;
 export type ModelDescriptorParams = Partial<Pick<ModelDescriptor, keyof ModelDescriptor>>;
 
+/**
+ * Meta data describing a model.
+ */
 export class ModelDescriptor {
 
     name: string;
@@ -12,6 +15,8 @@ export class ModelDescriptor {
     plural: string;
 
     description: string;
+
+    symbol: string;            // the class name
 
     token: string;
 
@@ -63,6 +68,9 @@ export class ModelDescriptor {
 
 }
 
+/**
+ * Meta data describing a view
+ */
 export class ViewDescriptor extends ModelDescriptor {
 
     title?: string;
@@ -88,30 +96,30 @@ export class ViewDescriptor extends ModelDescriptor {
 
 export class FieldDescriptor {
     
-    name?: string;
+    name?: string;            // the name of the field
 
-    label?: string;
+    label?: string;           // label for the field, autopopulated if unset
 
-    plural?: string;
+    plural?: string;          // plural label for the field, autopoulated if unset
 
-    description?: string;
+    description?: string;     // description of the field
 
-    length?: number;
+    length?: number;          // maximum length of the field in characters (used to create database schema)
 
-    link?: string;
-    // ᚲᚲid: string;
+    link?: string;            // link to another model or view
+    // ᚲᚲid: string;          // the id of the linked field
 
-    column?: string;
+    column?: string;          // property name in the database
 
-    required?: boolean;
+    required?: boolean;       // markt the field as required
 
-    token?: string;
+    token?: string;           // kebab-case version of the field name
 
-    tokens?: string;
+    tokens?: string;          // plural kebab-case version of the field name
 
-    type?: string;
+    type?: string;            // string, number, text, date
 
-    widget?: string;
+    widget?: string;          // input, date, textarea, does not autopopulate
 
     constructor()
     constructor( name:string, type?:string, widget?:string ) 

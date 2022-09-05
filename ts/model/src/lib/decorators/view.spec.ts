@@ -21,7 +21,7 @@ describe('View', () => {
             @Field bar: string
         }
 
-        interface FooDetail extends Foo {};
+        interface FooDetail extends Foo {}
         @View(Foo) class FooDetail {}
 
         const d = Reflect.getMetadata( "model:descriptor", FooDetail );
@@ -33,7 +33,7 @@ describe('View', () => {
             @Field bar: string
         }
 
-        interface FooDetail extends Foo {};
+        interface FooDetail extends Foo {}
         @View(Foo) class FooDetail {}
 
         const d = Reflect.getMetadata( "model:descriptor", FooDetail );
@@ -47,7 +47,7 @@ describe('View', () => {
             @Field biz: number
         }
 
-        interface FooDetail extends Foo {};
+        interface FooDetail extends Foo {}
         @View(Foo) class FooDetail {}
 
         const d = Reflect.getMetadata( "model:descriptor", FooDetail );
@@ -68,7 +68,7 @@ describe('View', () => {
         expect(d.fields.length).toBe(0)
     })
 
-    fit('should have the specified field from the model', () => {
+    it('should have the specified field from the model', () => {
         @Model class Foo {
             @Field bar: string
             @Field biz: number
@@ -81,7 +81,7 @@ describe('View', () => {
         expect(d.fields.has('biz')).toBeFalse()
     })
 
-    fit('should throw an error if the field does not exist on the model', () => {
+    it('should throw an error if the field does not exist on the model', () => {
         @Model class Foo {
             @Field bar: string
             @Field biz: number
