@@ -42,9 +42,15 @@ const DATABASE_URL = 'mongodb://localhost:49000';
 
 @Model class Foo {
 
+    id: string
+
     name: string
 
     age: number
+
+    constructor( params: Partial<Pick<Foo, keyof Foo>>) {
+        Object.assign( this, params )
+    }
 
 }
 
@@ -77,6 +83,16 @@ async function main() {
     /** Register Models **/
 
     orm.registerModel(Foo)
+
+    const foo = new Foo({ name: 'Test', age: 56 })
+
+    try {
+        await orm.insert(Foo, foo)
+    }
+    catch (error) {
+        console.log("Error inserting record into Foo", error)
+    }
+
 
 
 }

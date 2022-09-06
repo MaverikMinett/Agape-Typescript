@@ -1,6 +1,7 @@
 import { Db } from 'mongodb'
 import { MongoConnection } from '../connections/mongo.connection';
 import { Database } from './database';
+import { Class } from '@agape/object';
 
 
 export class MongoDatabase extends Database {
@@ -17,6 +18,15 @@ export class MongoDatabase extends Database {
         this.databaseName = databaseName
 
         this.db = this.connection.client.db()
+    }
+
+    collection( model: Class ) {
+        // get the collection name from the model
+        // TODO: Allow setting the collection name on the model descriptor, for now this is
+        // just using the model class name as the collection name
+
+        const collectionName = model.name;
+        return this.db.collection( collectionName )
     }
 
 }
