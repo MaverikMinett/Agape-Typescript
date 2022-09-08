@@ -1,14 +1,31 @@
-import { Database } from './databases/database';
 import { Class } from '@agape/object'
 import { Collection } from 'mongodb';
+import { MongoDatabase } from './databases/mongo.database';
+import { RetrieveQuery } from './mongo/queries/retrieve.query';
+
+
+export interface ModelLocatorParams {
+    databaseName?: string;
+    collectionName?: string;
+}
+
+export class ModelLocator {
+    databaseName: string;
+    collectionName: string;
+    collection: Collection;
+
+    constructor( params:Pick<ModelLocator, keyof ModelLocator> ) {
+        params && Object.assign(this, params)
+    }
+}
 
 export class Orm {
 
-    databases: Map<string, Database> = new Map()
+    databases: Map<string, MongoDatabase> = new Map()
 
-    models: Map<Class, Collection> = new Map()
+    models: Map<Class, ModelLocator> = new Map()
 
-    registerDatabase( identifier: string, database: Database ) {
+    registerDatabase( identifier: string, database: MongoDatabase ) {
         this.databases.set(identifier, database)
     }
 
@@ -19,18 +36,30 @@ export class Orm {
         // this.registerModel( entity, database )
     // }
 
-    registerModel( model: Class ) {
-        // TODO: Allow the database to be passed in as a parameter
+    registerModel( model: Class, params: ModelLocatorParams={} ) {
 
-        // Just use the default database for now
-        const databaseName = 'default';
+        // TODO: Throw an error if the class passed in is a View and not a plain Model
+        // Only Models can be registered here
+
+        const databaseName = params?.databaseName ?? 'default';
+        const collectionName = params?.collectionName ?? model.name;
+
         const database = this.databases.get(databaseName)
         if ( ! database )
             throw new Error(`Error registering model ${model.name}, database with identifier ${databaseName} does not exit`)
 
+        // TODO: Don't allow two models to map to the same collection on the same database
+        // will need to keep some sort of registry which can be validated against here.
+        // dev should see an error that mapping two models to the same table/collection
+        // is not possible, and that a View should be used instead
+
         // Determine the collection
-        const collection = database.collection(model)
-        this.models.set(model, collection)
+        const collection = database.getCollection(collectionName)
+
+        // Create a locator object
+        const locator = new ModelLocator({ databaseName, collectionName, collection})
+
+        this.models.set(model, locator)
 
         // this.models.set(model, database)
     }
@@ -39,7 +68,7 @@ export class Orm {
 
         console.log(`Inserting instance of ${model.name}`, item)
 
-        const collection = this.models.get(model)
+        const collection = this.models.get(model).collection
 
         // TODO: validate the item
 
@@ -53,6 +82,18 @@ export class Orm {
             console.log("Error inserting record into Foo", error)
         }
         console.log(`Success`)
+    }
+
+    retrieve<T extends Class>( model: T, id: string ) {
+        console.log(`Retrieving instance of ${model.name}`, id)
+
+        const collection = this.models.get(model).collection
+
+        return new RetrieveQuery<T>(model, collection, id)
+    }
+
+    async list( model: Class, id: string ) {
+
     }
 
 

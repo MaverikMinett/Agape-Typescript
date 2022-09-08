@@ -29,4 +29,8 @@ export class MongoDatabase extends Database {
         return this.db.collection( collectionName )
     }
 
+    getCollection( collectionName: string ) {
+        return this.db.collection( collectionName )
+    }
+
 }
