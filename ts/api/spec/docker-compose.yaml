@@ -1,0 +1,14 @@
+version: '3.2'
+services:
+  mongodb:
+    image: mongo
+    restart: always
+    ports:
+      - "49000:27017"
+    volumes:
+      - type: bind
+        source: "${DEV_AG_ORM_SPECDIR}/mongo/fixtures"
+        target: /root/fixtures
+      - type: bind
+        source: "${DEV_AG_ORM_SPECDIR}/mongo/root/.mongorc.js"
+        target: /root/.mongorc.js

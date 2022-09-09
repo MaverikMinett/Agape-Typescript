@@ -1,0 +1,42 @@
+{
+  "name": "@agape/api",
+  "version": "0.1.0",
+  "description": "Express Rest API",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "scripts": {
+    "start": "tsc -w",
+    "start:mongo": "cd \"$PWD/spec\" && DEV_AG_ORM_SPECDIR=\"$PWD\" docker-compose up",
+    "mongo:wipe": "cd \"$PWD/spec\" docker-compose kill && docker-compose rm",
+    "pwd": "echo $PWD",
+    "build": "tsc && tsc -p tsconfig-cjs.json",
+    "pack": "tar -czf ../../dist/agape-orm.tgz dist/*",
+    "dist": "npm run build && npm run pack",
+    "test": "jasmine-ts && exit 0",
+    "release": "npm run dist && npm publish --access public"
+  },
+  "keywords": [
+    "agape",
+    "model",
+    "view",
+    "api",
+    "rest"
+  ],
+  "author": "Maverik Minett",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/jasmine": "^3.5.14",
+    "cors": "^2.8.5",
+    "gzip-folder": "^1.0.4",
+    "jasmine": "^3.6.1",
+    "jasmine-spec-reporter": "^6.0.0",
+    "jasmine-ts": "^0.3.0",
+    "ts-node": "^8.10.2",
+    "typescript": "^4.0.3"
+  },
+  "dependencies": {
+    "@types/express": "^4.17.13",
+    "express": "^4.18.1",
+    "mongodb": "^4.9.1"
+  }
+}
