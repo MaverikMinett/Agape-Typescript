@@ -77,6 +77,7 @@ export class Orm {
         try {
             const response = await collection.insertOne( item )
             item.id = response.insertedId.toString()
+            return item.id
         }
         catch (error) {
             console.log("Error inserting record into Foo", error)
