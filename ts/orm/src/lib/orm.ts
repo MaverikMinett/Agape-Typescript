@@ -2,6 +2,7 @@ import { Class } from '@agape/object'
 import { Collection } from 'mongodb';
 import { MongoDatabase } from './databases/mongo.database';
 import { RetrieveQuery } from './mongo/queries/retrieve.query';
+import { ListQuery } from './mongo/queries/list.query';
 
 
 export interface ModelLocatorParams {
@@ -93,8 +94,10 @@ export class Orm {
         return new RetrieveQuery<T>(model, collection, id)
     }
 
-    async list( model: Class, id: string ) {
+    list<T extends Class>( model: T ) {
+        const collection = this.models.get(model).collection
 
+        return new ListQuery<T>(model, collection)
     }
 
 
