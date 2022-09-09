@@ -10,4 +10,6 @@ export function handle( target:Class ) {
     return descriptor
 }
 
-
+export function $model( target: Class ) {
+    return Reflect.getMetadata( "model:descriptor", target );
+}
