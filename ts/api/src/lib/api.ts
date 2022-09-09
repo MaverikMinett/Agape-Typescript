@@ -18,10 +18,10 @@ import { Router as ExpressRouter, Application as ExpressApplication, Request, Re
 //
 // }
 
-class Route {
+class Route<T extends Controller> {
 
     constructor(
-        public controller: Controller,
+        public controller: T,
         public method: string,
         public path: string,
         public action: string ) { }
@@ -37,16 +37,17 @@ class Route {
     }
 }
 
-class Router {
+class Router<T extends Controller> {
 
     express = ExpressRouter()
 
-    constructor( public controller: Controller ) {
+    constructor( public controller: T ) {
 
     }
 
-    addRoute( method: string, path: string, action: string ) {
-        const route = new Route( this.controller, method, path, action )
+    addRoute( method: string, path: string, action: keyof T ) {
+        // TODO: action as string?
+        const route = new Route( this.controller, method, path, action as string )
         route.apply( this.express )
     }
 
@@ -58,7 +59,7 @@ export class Controller {
 
 class ModelController<T extends Class> extends Controller {
 
-    router: Router
+    router: Router<ModelController<T>>
 
     modelDescriptor: ModelDescriptor
 
@@ -83,6 +84,11 @@ class ModelController<T extends Class> extends Controller {
 
     }
 
+    async list( request: Request, response: Response ) {
+        const items = await this.orm.list(this.model).exec()
+        return items
+    }
+
     async retrieve( request: Request, response: Response ) {
         const id: string = request.params.id
         const item = await this.orm.retrieve(this.model, id).exec()
@@ -97,6 +103,10 @@ class ModelController<T extends Class> extends Controller {
     registerRoutes( ) {
 
         this.router.addRoute( 'get', `/${this.modelDescriptor.tokens}/:id`, 'retrieve' )
+
+        this.router.addRoute( 'get', `/${this.modelDescriptor.tokens}`, 'list' )
+
+        this.router.addRoute( 'post', `/${this.modelDescriptor.tokens}`, 'create' )
 
         // this.controllerRouter.register(
         //     [ 'get', `/${this.modelDescriptor.tokens}/:id`, 'retrieve' ],
