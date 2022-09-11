@@ -1,7 +1,7 @@
 import { Class } from '@agape/object';
 import { Orm } from '../../../orm/src';
 import { $model, ModelDescriptor } from '../../../model/src';
-import { Router as ExpressRouter, Application as ExpressApplication, Request, Response, request } from 'express';
+import { Router as ExpressRouter, Application as ExpressApplication, Request, Response } from 'express';
 
 // class ApiModelDefinition {
 //     controller: ModelController;
@@ -84,19 +84,37 @@ class ModelController<T extends Class> extends Controller {
 
     }
 
+    async delete( request: Request, response: Response ) {
+        const id: string = request.params.id;
+        const deletedCount = await this.orm.delete(this.model, id).exec()
+        deletedCount ? response.status(201) : response.status(404)
+        return ""
+    }
+
     async list( request: Request, response: Response ) {
         const items = await this.orm.list(this.model).exec()
         return items
+    }
+
+    async update( request: Request, response: Response ) {
+        const id: string = request.params.id;
+        const item: Pick<T, keyof T> = request.body;
+        console.log('API Update', id, item)
+        // TODO: VALIDATE ITEM
+        const result = await this.orm.update(this.model, id, item).exec()
+        console.log(result)
+        response.status(201)
     }
 
     async retrieve( request: Request, response: Response ) {
         const id: string = request.params.id
         const item = await this.orm.retrieve(this.model, id).exec()
         if ( ! item ) {
-            // TODO: Throw HttpException
+            response.status(404)
             throw new Error("404 item not found")
         }
         console.log("Retrieved item", item)
+        response.status(200)
         return item
     }
 
@@ -104,23 +122,14 @@ class ModelController<T extends Class> extends Controller {
 
         this.router.addRoute( 'get', `/${this.modelDescriptor.tokens}/:id`, 'retrieve' )
 
+        this.router.addRoute( 'delete', `/${this.modelDescriptor.tokens}/:id`, 'delete')
+
+        this.router.addRoute( 'put', `/${this.modelDescriptor.tokens}/:id`, 'update')
+
         this.router.addRoute( 'get', `/${this.modelDescriptor.tokens}`, 'list' )
 
         this.router.addRoute( 'post', `/${this.modelDescriptor.tokens}`, 'create' )
 
-        // this.controllerRouter.register(
-        //     [ 'get', `/${this.modelDescriptor.tokens}/:id`, 'retrieve' ],
-        //
-        // )
-
-        // let path = `/${this.modelDescriptor.tokens}/:id`
-        // this.router.get(`/${this.modelDescriptor.tokens}/:id`, async ( request: Request, response: Response ) => {
-        //     console.log("Retrieve route called")
-        //     response.send(await this.retrieve( request, response ))
-        // });
-        // this.router.get(`/${this.modelDescriptor.tokens}/:id`, async ( request: Request, response: Response ) => {
-        //    return this.retrieve( request, response )
-        // });
     }
 
 
@@ -139,12 +148,5 @@ export class Api {
 
         this.app.use('/api', controller.router.express )
     }
-
-    // createControllerForModel( model: Class ) {
-    //
-    // }
-    //
-    // createRouterFromController
-
 
 }
