@@ -54,6 +54,7 @@ async function main() {
     orm.registerModel(Foo)
 
     /** Insert a record **/
+    console.log("** INSERT **")
     const foo = new Foo({ name: 'Test', age: 42 })
     let insertedId: string
     try {
@@ -65,6 +66,7 @@ async function main() {
     }
 
     /** Retrieve a record **/
+    console.log("** RETRIEVE **")
     try {
         const fooPojo = await orm.retrieve(Foo, insertedId).exec()
         console.log(`Retrieved record`, fooPojo)
@@ -73,7 +75,8 @@ async function main() {
         console.log("Error retrieving record from Foo", error)
     }
 
-    /** Retrieve record and specify an explicit interface (DTO) **/
+    /** Retrieve record and specify an explicit interface **/
+    console.log("** RETRIEVE WITH INTERFACE **")
     try {
         const fooPojo: IFoo = await orm.retrieve(Foo, insertedId).exec()
         console.log(`Retrieved record`, fooPojo)
@@ -83,6 +86,7 @@ async function main() {
     }
 
     /** Inflate a record **/
+    console.log("** INFLATE **")
     try {
         const fooObject = await orm.retrieve(Foo, insertedId).inflate()
         console.log(`Retrieved object`, fooObject)
@@ -91,6 +95,25 @@ async function main() {
         console.log("Error retrieving record from Foo", error)
     }
 
+    /** List records **/
+    console.log("** LIST **")
+    try {
+        const fooPojo = await orm.list(Foo).exec()
+        console.log(`Retrieved records`, fooPojo)
+    }
+    catch (error) {
+        console.log("Error retrieving record from Foo", error)
+    }
+
+    /** Delete a record **/
+    console.log("** DELETE **")
+    try {
+        await orm.delete(Foo, insertedId).exec()
+        console.log(`Deleted record ${insertedId}`)
+    }
+    catch (error) {
+        console.log("Error deleting record from Foo", error)
+    }
 
 }
 

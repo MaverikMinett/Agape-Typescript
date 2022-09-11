@@ -3,6 +3,8 @@ import { Collection } from 'mongodb';
 import { MongoDatabase } from './databases/mongo.database';
 import { RetrieveQuery } from './mongo/queries/retrieve.query';
 import { ListQuery } from './mongo/queries/list.query';
+import { DeleteQuery } from './mongo/queries/delete.query';
+import { UpdateQuery } from './mongo/queries/update.query';
 
 
 export interface ModelLocatorParams {
@@ -94,10 +96,24 @@ export class Orm {
         return new RetrieveQuery<T>(model, collection, id)
     }
 
+    update<T extends Class>(model: T, id: string, item: Pick<T, keyof T> ) {
+        console.log(`Updating instance of ${model.name}`, id, item)
+
+        const collection = this.models.get(model).collection
+
+        return new UpdateQuery(model, collection, id, item)
+    }
+
     list<T extends Class>( model: T ) {
         const collection = this.models.get(model).collection
 
         return new ListQuery<T>(model, collection)
+    }
+
+    delete<T extends Class>(model: T, id: string ) {
+        const collection = this.models.get(model).collection
+
+        return new DeleteQuery<T>(model, collection, id)
     }
 
 
