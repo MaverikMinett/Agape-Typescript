@@ -81,7 +81,7 @@ export class MethodDescriptor {
      * @param modifier 
      */
     does ( modifier:string ) {
-        return this[`ʘ${modifier}`] ? true : false
+        return (this as any)[`ʘ${modifier}`] ? true : false
     }
 
     /**
@@ -89,7 +89,7 @@ export class MethodDescriptor {
      * @param target The object to call the method on
      * @param args The arguments to pass to the object
      */
-    call( target:any, ...args ) {
+    call( target:any, ...args:any[] ) {
 
         this.ʘbefore && this.callStack( 'before', target, ...args )
 
@@ -110,8 +110,8 @@ export class MethodDescriptor {
      * @param target The object on which to act
      * @param args The arguments to pass
      */
-    callStack( modifier:string, target:any, ...args ) {
-        for ( let func of this['ʘ' + modifier] ) {
+    callStack( modifier:string, target:any, ...args:any[] ) {
+        for ( let func of (this as any)['ʘ' + modifier] ) {
             func.call( target, ...args )
         }
     }
@@ -178,7 +178,7 @@ export class MethodDescriptor {
         }
 
         Object.defineProperty( target, name, {
-            value: function( ...args ) {
+            value: function( ...args:any[] ) {
                 return descriptor.call(this, ...args)
             },
             writable: true,
@@ -364,7 +364,7 @@ export class ObjectDescriptor {
      * descriptors as applicable.
      * @param traits 
      */
-     public include( ...traits ) {
+     public include( ...traits:any[] ) {
         this.traits || ( this.traits = [ ] )
 
         let targetConstructor, target
@@ -575,7 +575,7 @@ export class PropertyDescriptor {
         if ( this.ʘdelegate && this.ʘdelegate.to ) {
             return typeof this.ʘdelegate.to === "function"
             ? this.ʘdelegate.to.call(instance, instance)[this.ʘdelegate.property || this.name]
-            : this.ʘdelegate.to[this.ʘdelegate.property || this.name]
+            : (this.ʘdelegate.to as any)[this.ʘdelegate.property || this.name]
         }
 
         if ( ! instance['ʘ' + this.name] ) {
@@ -587,7 +587,7 @@ export class PropertyDescriptor {
                     return from !== undefined ? from[ this.ʘinherit.property || this.name ] : undefined
                 }
                 else {
-                    return this.ʘinherit.from ? this.ʘinherit.from[ this.ʘinherit.property || this.name ] : undefined
+                    return this.ʘinherit.from ? (this.ʘinherit.from as any)[ this.ʘinherit.property || this.name ] : undefined
                 }
             }
 
@@ -616,7 +616,7 @@ export class PropertyDescriptor {
         if ( this.ʘdelegate && this.ʘdelegate.to ) {
             return typeof this.ʘdelegate.to === "function"
             ? this.ʘdelegate.to.call(instance, instance)[this.ʘdelegate.property || this.name] = value
-            : this.ʘdelegate.to[this.ʘdelegate.property || this.name] = value
+            : (this.ʘdelegate.to as any)[this.ʘdelegate.property || this.name] = value
         }
 
         Object.defineProperty(instance, `ʘ${this.name}`, { value: value, configurable: true, enumerable: false } )

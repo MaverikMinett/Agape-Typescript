@@ -79,22 +79,28 @@ export function inflateArray( to:Class|Serializer, from:Dictionary[] )
  */
 
 
+export function deflate<T>( item: T, params?: any ): Pick<T, keyof T>
+export function deflate<T>( item: Array<T>, params?: any ):Array<Pick<T, keyof T>>
+export function deflate<T>( item: T|Array<T>, params?:any ): Pick<T, keyof T>|Array<Pick<T, keyof T>>  {
 
-export function deflate( item:any, params?:any ) {
+    if ( item instanceof Object ) {
+        return deflateObject<T>( item as T )
+    }
 
-    if ( item instanceof Object ) { return deflateObject( item ) }
-
-    else if ( item instanceof Array ) { return deflateArray(item) }
+    else if ( item instanceof Array ) {
+        return deflateArray<T>(item as T[])
+    }
 
     else return item
 }
 
 
-
-function deflateObject( item:Object, params?:any ) {
+function deflateObject<T>( item: T, params?:any ): Pick<T, keyof T> {
     let r:any = {}
 
-    let m:ObjectDescriptor = 'Δmeta' in item ? <ObjectDescriptor>item['Δmeta'] : null
+    let _item:any = item;
+
+    let m:ObjectDescriptor = 'Δmeta' in _item? <ObjectDescriptor>_item['Δmeta'] : null
 
 
     for ( let field in item ) {
@@ -103,9 +109,9 @@ function deflateObject( item:Object, params?:any ) {
         if ( m && m.properties.has(field) ) {
             /* ignore delegated properties */
             if ( m.property(field)['ʘdelegate'] ) continue
-            /* ignore unpopulated inheritied properties with undefined value */
+            /* ignore unpopulated inherited properties with undefined value */
             if ( m.property(field)['ʘinherit']  ) {
-                if ( item[`ʘ${field}`] === undefined ) {
+                if ( _item[`ʘ${field}`] === undefined ) {
                     continue
                 }
            } 
@@ -117,10 +123,10 @@ function deflateObject( item:Object, params?:any ) {
                     r[field] = coerce.deflate( item[field] )
                 }
                 else if ( Array.isArray(coerce) && coerce[0] instanceof Serializer ) {
-                    r[field] = item[field].map( value => (<Serializer>coerce[0]).deflate( value ) )
+                    r[field] = _item[field].map( (value:any) => (<Serializer>coerce[0]).deflate( value ) )
                 }
                 else {
-                    r[field] = deflate( item[field] )
+                    r[field] = deflate( _item[field] )
                 }
                 continue
             }
@@ -139,8 +145,7 @@ function deflateObject( item:Object, params?:any ) {
     return r
 }
 
-
-function deflateArray(  items:Array<any>, params?:any ) {
+function deflateArray<T>( items:Array<T>, params?: any ): Array<Pick<T, keyof T>> {
     return items.map( item => deflate(item) )
 }
 
