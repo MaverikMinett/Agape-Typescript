@@ -13,17 +13,15 @@ export function Controller( params?: any ) {
 }
 
 Controller.descriptor = function ( target:any, create:boolean=false ) {
+    if ( typeof target === "function" ) target = target.prototype
 
-    console.log(`---->Get controller:descriptor for`, target)
     let controllerDescriptor: ControllerDescriptor = Reflect.getMetadata( "controller:descriptor", target )
-    if ( ! controllerDescriptor ) {
-        console.log(`----->Could not find descriptor`)
-    }
+
     if ( ! controllerDescriptor && create===true ) {
         controllerDescriptor = new ControllerDescriptor( target )
         Reflect.defineMetadata("controller:descriptor", controllerDescriptor, target)
-        console.log(`----->Set controller:descriptor for`, target)
     }
+
     return controllerDescriptor
 }
 

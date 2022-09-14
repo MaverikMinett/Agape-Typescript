@@ -8,6 +8,9 @@ import { Router } from '../router';
 import { Get } from '../decorators/get'
 import { Controller } from '../decorators/controller';
 import { Status } from '../decorators/status';
+import { Put } from '../decorators/put';
+import { Post } from '../decorators/post';
+import { Delete } from '../decorators/delete';
 
 @Controller()
 export class ModelController<T extends Class> extends ApiController {
@@ -22,6 +25,7 @@ export class ModelController<T extends Class> extends ApiController {
         this.registerRoutes()
     }
 
+    @Post()
     async create( request: Request, response: Response ) {
         // $validate(this.model, request.body)
 
@@ -36,7 +40,7 @@ export class ModelController<T extends Class> extends ApiController {
 
     }
 
-    // @Delete(':id')
+    @Delete(':id')
     async delete( request: Request, response: Response ) {
         const id: string = request.params.id;
         const deletedCount = await this.orm.delete(this.model, id).exec()
@@ -44,13 +48,13 @@ export class ModelController<T extends Class> extends ApiController {
         return ""
     }
 
-    // @Get
+    @Get()
     async list( request: Request, response: Response ) {
         const items = await this.orm.list(this.model).exec()
         return items
     }
 
-    // @Put(':id')
+    @Put(':id')
     async update( request: Request, response: Response ) {
         const id: string = request.params.id;
         const item: Pick<T, keyof T> = request.body;
