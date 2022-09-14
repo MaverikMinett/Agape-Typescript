@@ -41,24 +41,28 @@ export class ActionDescriptor {
 
     // status: { statusCode: number, message?: string, body?: any }
 
-    ʘstatus: number;
+    private ʘstatus: number;
 
-    ʘroute: { method: string, path: string };
+    private ʘroute: { method: string, path: string };
 
     constructor( public name: string ) {
 
     }
 
-    status( statusCode: number ) {
+    status(): number
+    status( statusCode: number ): this
+    status( statusCode?: number ) {
+        if ( statusCode === undefined ) return this.ʘstatus
         this.ʘstatus = statusCode;
         return this
     }
 
-    route( method:HttMethod, path: string, params?: any ) {
+    route(): { method: string, path: string }
+    route( method:HttMethod, path: string, params?: any ): this
+    route( method?:HttMethod, path?: string, params?: any ):any {
+        if ( method === undefined ) return this.ʘroute
         this.ʘroute = { method, path }
         return this
     }
-
-
 
 }
