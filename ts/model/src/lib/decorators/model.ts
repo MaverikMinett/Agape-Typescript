@@ -54,5 +54,5 @@ export function Model( ...args:any[] ):any {
 
 
 Model.descriptor = function ( model:Class ) {
-    return Reflect.getMetadata( "model:descriptor", model )
+    return Reflect.getMetadata( "model:descriptor", model ) as ModelDescriptor
 }
