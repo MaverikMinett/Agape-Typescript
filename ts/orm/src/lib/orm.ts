@@ -1,4 +1,4 @@
-import { Class } from '@agape/object'
+import { Class } from '../../../object/src'
 import { Collection } from 'mongodb';
 import { MongoDatabase } from './databases/mongo.database';
 import { RetrieveQuery } from './mongo/queries/retrieve.query';

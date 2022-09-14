@@ -1,7 +1,7 @@
 import { Db } from 'mongodb'
 import { MongoConnection } from '../connections/mongo.connection';
 import { Database } from './database';
-import { Class } from '@agape/object';
+import { Class } from '../../../../object/src';
 
 
 export class MongoDatabase extends Database {
