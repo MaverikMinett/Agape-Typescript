@@ -67,25 +67,25 @@ export class SwaggerApi {
 
 			},
 			"paths": {
-				"/pets": {
-					"get": {
-						"description": "Returns all pets from the system that the user has access to",
-						"produces": [
-							"application/json"
-						],
-						"responses": {
-							"200": {
-								"description": "A list of pets.",
-								"schema": {
-									"type": "array",
-									"items": {
-										"$ref": "#/definitions/Pet"
-									}
-								}
-							}
-						}
-					}
-				}
+				// "/pets": {
+				// 	"get": {
+				// 		"description": "Returns all pets from the system that the user has access to",
+				// 		"produces": [
+				// 			"application/json"
+				// 		],
+				// 		"responses": {
+				// 			"200": {
+				// 				"description": "A list of pets.",
+				// 				"schema": {
+				// 					"type": "array",
+				// 					"items": {
+				// 						"$ref": "#/definitions/Pet"
+				// 					}
+				// 				}
+				// 			}
+				// 		}
+				// 	}
+				// }
 			},
 		}
 
@@ -110,7 +110,7 @@ export class SwaggerApi {
 
 					const definition = {
 						[action.route().method]: {
-							"description": "Returns all pets from the system that the user has access to",
+							"description": action.getDescription(controller),
 							"produces": [
 								"application/json"
 							],

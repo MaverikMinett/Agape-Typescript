@@ -1,4 +1,5 @@
 import { HttMethod } from './types';
+import { ApiController } from './controllers/api.controller';
 
 
 export class RouteDescriptor {
@@ -37,6 +38,10 @@ export class ControllerDescriptor {
 //
 // }
 
+
+export type ActionDescriptionFunction = (controller: ApiController, action: ActionDescriptor) => string
+export type ActionDescription = string|ActionDescriptionFunction
+
 export class ActionDescriptor {
 
     // status: { statusCode: number, message?: string, body?: any }
@@ -45,8 +50,30 @@ export class ActionDescriptor {
 
     private ʘroute: { method: string, path: string };
 
+    private ʘdescription: ActionDescription
+
     constructor( public name: string ) {
 
+    }
+
+    description(): string
+    description( description: ActionDescription ): this
+    description( description?: ActionDescription ) {
+        if ( description === undefined ) return this.ʘdescription
+        this.ʘdescription = description
+        return this
+    }
+
+    getDescription( controller: ApiController ): string {
+
+        if ( ! this.ʘdescription ) return ""
+        if ( typeof this.ʘdescription === "function" ) {
+            console.log("Get description", controller, this)
+            console.log("======>GOT FUNCTION")
+            console.log(this.ʘdescription.call(this, controller, this ))
+            return this.ʘdescription.call(this, controller, this )
+        }
+        return this.ʘdescription
     }
 
     status(): number
