@@ -7,7 +7,7 @@ import { Router } from '../router';
 
 import { Get } from '../decorators/get'
 import { Controller } from '../decorators/controller';
-import { Description} from '../decorators/description';
+import { Description } from '../decorators/description';
 import { Status } from '../decorators/status';
 import { Put } from '../decorators/put';
 import { Post } from '../decorators/post';

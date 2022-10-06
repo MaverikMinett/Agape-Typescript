@@ -1,5 +1,6 @@
-import { HttMethod } from './types';
+import { ActionDescription, HttMethod, RespondDescription } from './types';
 import { ApiController } from './controllers/api.controller';
+import { Class } from '../../../object/src';
 
 
 export class RouteDescriptor {
@@ -38,19 +39,33 @@ export class ControllerDescriptor {
 //
 // }
 
+export class RespondDescriptor {
 
-export type ActionDescriptionFunction = (controller: ApiController, action: ActionDescriptor) => string
-export type ActionDescription = string|ActionDescriptionFunction
+    // statusCode: number
+    //
+    // description: RespondDescriptor
+
+    // model: Class
+
+    constructor( public model: Class, public description?: RespondDescription, statusCode?: number ) {
+
+    }
+}
+
 
 export class ActionDescriptor {
 
     // status: { statusCode: number, message?: string, body?: any }
+
+    // private ʘname: string;
 
     private ʘstatus: number;
 
     private ʘroute: { method: string, path: string };
 
     private ʘdescription: ActionDescription
+
+    private ʘresponds: RespondDescriptor[]
 
     constructor( public name: string ) {
 
@@ -74,6 +89,14 @@ export class ActionDescriptor {
             return this.ʘdescription.call(this, controller, this )
         }
         return this.ʘdescription
+    }
+
+
+    respond( model: Class, description?: RespondDescription, statusCode?: number ) {
+        this.ʘresponds ??= []
+        const descriptor = new RespondDescriptor( model, description, statusCode )
+        this.ʘresponds.push(descriptor)
+        return this
     }
 
     status(): number
