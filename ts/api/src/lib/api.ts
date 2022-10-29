@@ -21,12 +21,30 @@ export class Api {
     registerModel<T extends Class>( model: T ) {
         const controller = new ModelController( model, this.orm )
         controller.path = Model.descriptor(model).tokens
-        this.registerController( controller )
+        this.registerControllerInstance( controller )
+
+        // const descriptor = Controller.descriptor( controller )
     }
 
-    registerController<T extends ApiController>(controller: T ) {
+    // TODO: Should the controller be instantiated during initialization
+    // and reused for each request? or should a new controller be instantiated
+    // and thrown away for each request? If a new controller is instantiated for
+    // each request then new backend service could be injected for each request,
+    // which means that Authentication tokens could be injected and made available to
+    // Backend services? What's the overhead?
+    registerControllerInstance<T extends ApiController>(controller: T ) {
         this.controllers.push( controller )
         this.app.use('/api', controller.router.express )
+    }
+
+    registerController<T extends Class>( controller: T ) {
+        const instance = this.instantiateController( controller )
+        this.registerControllerInstance(instance)
+    }
+
+    protected instantiateController<T extends Class>( controller: T ) {
+        const instance = new controller()
+        return instance
     }
 
 }

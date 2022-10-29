@@ -1,0 +1,28 @@
+{
+  "name": "@agape/monorepo",
+  "version": "0.1.0",
+  "description": "Extensible objects",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "scripts": {
+    "start": "tsc -w"
+  },
+  "keywords": [
+    "agape"
+  ],
+  "author": "Maverik Minett",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/jasmine": "^3.5.14",
+    "jasmine": "^3.6.1",
+    "jasmine-spec-reporter": "^6.0.0",
+    "jasmine-ts": "^0.3.0",
+    "ts-node": "^8.10.2",
+    "typescript": "^4.0.3"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.1",
+    "reflect-metadata": "^0.1.13"
+  }
+}

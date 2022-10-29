@@ -59,6 +59,8 @@ export class ActionDescriptor {
 
     // private ʘname: string;
 
+    private ʘbody: BodyDescriptor;
+
     private ʘstatus: number;
 
     private ʘroute: { method: string, path: string };
@@ -79,14 +81,15 @@ export class ActionDescriptor {
         return this
     }
 
-    getDescription( controller: ApiController ): string {
-
+    getDescription( controller?: ApiController ): string {
         if ( ! this.ʘdescription ) return ""
         if ( typeof this.ʘdescription === "function" ) {
-            console.log("Get description", controller, this)
-            console.log("======>GOT FUNCTION")
-            console.log(this.ʘdescription.call(this, controller, this ))
-            return this.ʘdescription.call(this, controller, this )
+            // TODO: This should look at the Controller Descriptor, not the controller
+            // console.log("Get description", controller, this)
+            // console.log("======>GOT FUNCTION")
+            // console.log(this.ʘdescription.call(this, controller, this ))
+            // return this.ʘdescription.call(this, controller, this )
+            return "GET DESCRIPTION"
         }
         return this.ʘdescription
     }
@@ -115,4 +118,43 @@ export class ActionDescriptor {
         return this
     }
 
+    body(): BodyDescriptor
+    body( model: Class, description?: string, contentType?: string )
+    body( params: BodyDescriptorParams )
+    body( params?: Class|BodyDescriptorParams, description?: string, contentType?: string ) {
+        if ( params === undefined ) return this.ʘbody
+
+        let descriptor: BodyDescriptor
+
+        if ( typeof params === 'function' ) {
+            const model = params
+            descriptor = new BodyDescriptor({ model })
+
+            descriptor.model = model
+            if ( description !== undefined ) descriptor.description = description
+        }
+        else {
+            descriptor = new BodyDescriptor(params)
+        }
+
+        this.ʘbody = descriptor
+        return this
+    }
+
 }
+
+export class BodyDescriptor {
+
+    description?: string
+
+    contentType?: string = "application/json"
+
+    model?: Class
+
+    constructor( params?: BodyDescriptorParams ) {
+        params && Object.assign(this, params)
+    }
+
+}
+
+export type BodyDescriptorParams = Pick<BodyDescriptor, keyof BodyDescriptor>

@@ -1,4 +1,5 @@
 import { camelize, pluralize, tokenize, verbalize } from "@agape/string";
+import { Dictionary } from '../../../object/src';
 
 export type FieldDescriptorParams = Partial<Pick<FieldDescriptor, keyof FieldDescriptor>>;
 export type ModelDescriptorParams = Partial<Pick<ModelDescriptor, keyof ModelDescriptor>>;
@@ -120,6 +121,10 @@ export class FieldDescriptor {
     type?: string;            // string, number, text, date
 
     widget?: string;          // input, date, textarea, does not autopopulate
+
+    readable?: boolean;       // can read value? default to true (set to false on password fields)
+
+    example?: string|number|Date|Dictionary
 
     constructor()
     constructor( name:string, type?:string, widget?:string ) 
