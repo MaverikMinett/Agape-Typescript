@@ -1,8 +1,23 @@
-
-
 import { Model } from "../../../ts/model/src/lib/decorators/model"
 import { Field } from "../../../ts/model/src/lib/decorators/field"
 import { View } from "../../../ts/model/src/lib/decorators/view"
+
+@Model export class User {
+    @Field id: string;
+
+    @Field({ readable: false })
+    username: string;
+
+    @Field password: string;
+
+    @Field lastLogin: Date;
+}
+
+export interface UserDetail extends Pick<User,'id'|'username'|'lastLogin'>{}
+@View(User) export class UserDetail { }
+
+
+
 
 
 @Model export class Event {

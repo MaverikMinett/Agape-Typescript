@@ -7,6 +7,7 @@ import { Api } from '../../../ts/api/src'
 
 import { Event, EventDetail, EventList } from './models'
 import { SwaggerApi } from './swagger.api';
+import { AuthController } from './modules/users/auth.controller';
 const PORT=3200
 const DATABASE_URL = 'mongodb://localhost:49000';
 
@@ -35,6 +36,7 @@ async function main() {
     /** Register Models **/
     orm.registerModel(Event)
 
+
     /** Build the express application **/
     const app = express()
     app.use( cors({origin: '*'}) )
@@ -59,7 +61,8 @@ async function main() {
 
     /** Build the api **/
     const api = new Api( app, orm )
-    api.registerModel(Event)
+    // api.registerModel(Event)
+    api.registerController(AuthController)
 
     /** Build the swagger documentation **/
     const swagger = new SwaggerApi()
@@ -68,7 +71,7 @@ async function main() {
     swagger.addModel(Event)
     swagger.addModel(EventList)
     swagger.addModel(EventDetail)
-    swagger.addRouter(api.controllers[0].router)
+    // swagger.addRouter(api.controllers[0].router)
 
     swagger.addApi( api )
 
@@ -76,6 +79,7 @@ async function main() {
 
     app.use( '/swagger.json', ( req, res ) => {
         res.send( swaggerDoc )
+        console.log(JSON.stringify(swaggerDoc,null,4))
     })
 
 

@@ -2,8 +2,44 @@
 import { Model } from "../../../ts/model/src/lib/decorators/model"
 import { ModelDescriptor } from "../../../ts/model/src/lib/descriptors"
 import { Class } from "../../../ts/object/src"
-import { Api, ActionDescriptor, Controller, ApiController, Router } from '../../../ts/api/src';
+import {
+	Api,
+	ActionDescriptor,
+	Controller,
+	ApiController,
+	Router,
+	BodyDescriptor,
+	ControllerDescriptor
+} from '../../../ts/api/src';
 
+
+const BASE = {
+	"openapi": "3.0.3",
+	"title": "Sample Pet Store App",
+	"description": "This is a sample server for a pet store.",
+	"termsOfService": "http://example.com/terms/",
+	"contact": {
+		"name": "API Support",
+		"url": "http://www.example.com/support",
+		"email": "support@example.com"
+	},
+	"license": {
+		"name": "Apache 2.0",
+		"url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+	},
+	"version": "3.0.3",
+	"servers": [
+		{ "url": "petstore.swagger.io", "description": "Swagger Pet store" }
+	],
+	"basePath": "/api",
+	"paths": {
+
+	},
+	"components": {
+		"schemas": { },
+		"requestBodies": { },
+	}
+}
 
 export class SwaggerApi {
 
@@ -26,7 +62,14 @@ export class SwaggerApi {
 		let descriptor = model instanceof ModelDescriptor
 			? model
 			: Model.descriptor(model)
-		this.models.push( descriptor )
+
+		// TODO: Could be a map
+		if ( ! this.models.includes(descriptor) ) {
+			this.models.push( descriptor )
+		}
+
+		const ref = `#/components/schemas/${descriptor.symbol}`
+		return ref
 	}
 
 	addRouter( router: Router<ApiController> ) {
@@ -34,60 +77,7 @@ export class SwaggerApi {
 	}
 
 	toOpenApiJson() {
-		const value:any = {
-			swagger: "2.0",
-			info: {
-				title: this.title,
-				description: this.description,
-				
-				"termsOfService": "http://example.com/terms/",
-				"contact": {
-					"name": "API Support",
-					"url": "http://www.example.com/support",
-					"email": "support@example.com"
-				},
-				"license": {
-					"name": "Apache 2.0",
-					"url": "https://www.apache.org/licenses/LICENSE-2.0.html"
-				},
-				"version": "1.0.1",
-				"host": "petstore.swagger.io",
-				"basePath": "/api",
-				"schemes": [
-					"http"
-				],
-				"consumes": [
-					"application/json"
-				],
-				"produces": [
-					"application/json"
-				],
-			},
-			"definitions": { 
-
-			},
-			"paths": {
-				// "/pets": {
-				// 	"get": {
-				// 		"description": "Returns all pets from the system that the user has access to",
-				// 		"produces": [
-				// 			"application/json"
-				// 		],
-				// 		"responses": {
-				// 			"200": {
-				// 				"description": "A list of pets.",
-				// 				"schema": {
-				// 					"type": "array",
-				// 					"items": {
-				// 						"$ref": "#/definitions/Pet"
-				// 					}
-				// 				}
-				// 			}
-				// 		}
-				// 	}
-				// }
-			},
-		}
+		const openApi:any = { ...BASE }
 
 		const apiPath = 'api';
 		for (let api of this.apis) {
@@ -108,29 +98,11 @@ export class SwaggerApi {
 					controllerPath && ( path += `/${controllerPath}` );
 					actionPath && ( path += `/${actionPath}` );
 
-					const definition = {
-						[action.route().method]: {
-							"description": action.getDescription(controller),
-							"produces": [
-								"application/json"
-							],
-							"responses": {
-								[action.status()]: {
-									"description": "Success",
-									"schema": {
-										"type": "array",
-										"items": {
-											"$ref": "#/definitions/Pet"
-										}
-									}
-								}
-							}
-						}
-					}
-					value.paths[path] ??= {}
-					Object.assign(value.paths[path], definition)
+					const operationDefinition = this.buildOperationDefinition( controllerDescriptor, action )
 
-					console.log()
+					openApi.paths[path] ??= {}
+					Object.assign(openApi.paths[path], operationDefinition)
+
 				}
 				console.log("==================================================")
 				console.log(controllerDescriptor.actions.entries())
@@ -138,65 +110,80 @@ export class SwaggerApi {
 			}
 		}
 
-
-
 		// Generate swagger model definitions docs using model meta data
 		for ( const descriptor of this.models ) {
-
-			// Open API model definition
-			const definition = {
-				type: "object",
-				properties: { } as any
-			}
-
-			// Create Open API model property definitions from model meta data
-			for ( const name of descriptor.fields.names ) {
-				definition.properties[name] = {
-						type: descriptor.field(name).type || 'string'
-				}
-			}
-
-			// Add the model definition to the open api spec
-			value.definitions[descriptor.symbol] = definition
+			const definition = this.buildModelDefinition(descriptor)
+			openApi.components.schemas[descriptor.symbol] = definition
 		}
 
-		// Generate paths from routers
-		// for ( let router of this.routers ) {
-		// 	for ( let route of router.routes ) {
-		//
-		// 		// Model.field()
-		//
-		// 		const definition = {
-		// 			[route.method]: {
-		// 				"description": "Returns all pets from the system that the user has access to",
-		// 				"produces": [
-		// 					"application/json"
-		// 				],
-		// 				"responses": {
-		// 					"200": {
-		// 						"description": "A list of pets.",
-		// 						"schema": {
-		// 							"type": "array",
-		// 							"items": {
-		// 								"$ref": "#/definitions/Pet"
-		// 							}
-		// 						}
-		// 					}
-		// 				}
-		// 			}
-		// 		}
-		// 		value.paths[route.path] ??= {}
-		// 		Object.assign(value.paths[route.path], definition)
-		// 	}
-		// }
-
-		// console.log(value)
-
-		return value
+		return openApi
 
 	}
 
+	buildModelDefinition( descriptor: ModelDescriptor ) {
+		const modelDefinition = {
+			type: "object",
+			properties: { } as any
+		}
 
+		// Create Open API model property definitions from model metadata
+		for ( const name of descriptor.fields.names ) {
+			const fieldDescriptor =  descriptor.field(name)
+			const fieldDefinition: any = { type: fieldDescriptor.type || 'string' }
+
+			if ( fieldDescriptor.example ) {
+				fieldDefinition.example = fieldDescriptor.example
+			}
+
+			modelDefinition.properties[name] = fieldDefinition
+		}
+
+		return modelDefinition
+	}
+
+
+	buildRequestBody( body: BodyDescriptor ) {
+		const $ref = this.addModel( body.model )
+
+		const requestBody = {
+			description: body.description,
+			content: {
+				[body.contentType]: {
+					schema: { $ref }
+				}
+			}
+		}
+
+		return requestBody
+	}
+
+	buildOperationDefinition( controller: ControllerDescriptor, action: ActionDescriptor ) {
+		const operationDefinition: any = {
+			"description": action.getDescription(),
+			"produces": [
+				"application/json"
+			],
+			"responses": {
+				[action.status()]: {
+					"description": "Success",
+					"schema": {
+						"type": "array",
+						"items": {
+							"$ref": "#/definitions/Pet"
+						}
+					}
+				}
+			}
+		}
+
+		const bodyDescriptor = action.body()
+		if ( bodyDescriptor ) {
+			const requestBody = this.buildRequestBody( bodyDescriptor )
+			operationDefinition.requestBody = requestBody
+		}
+
+		return { [action.route().method]: operationDefinition }
+	}
 
 }
 
