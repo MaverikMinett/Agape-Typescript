@@ -1,8 +1,9 @@
+import { Document } from './document'
 import { Flatten } from './types';
 
-class AnEntity extends Document { }
+class ADocument extends Document { }
 
-class NotAnEntity { }
+class NotADocument { }
 
 class AClass extends Document {
 
@@ -24,25 +25,25 @@ class AClass extends Document {
 
     arrayOfArrays: Array<Array<number>>
 
-    document: AnEntity
+    document: ADocument
 
-    notAnEntity: NotAnEntity
+    notADocument: NotADocument
 
-    arrayOfEntities: Document[]
+    arrayOfDocument: Document[]
 
-    arrayOfNotEntities: NotAnEntity[]
+    arrayOfNotDocuments: NotADocument[]
 
     map: Map<string, string>
 
-    mapOfEntities: Map<string, AnEntity>
+    mapOfDocuments: Map<string, ADocument>
 
-    mapOfNonEntities: Map<string, NotAnEntity>
+    mapOfNonDocuments: Map<string, NotADocument>
 
     set: Set<string>
 
-    setOfEntities: Set<AnEntity>
+    setOfDocuments: Set<ADocument>
 
-    setOfNonEntities: Set<NotAnEntity>
+    setOfNonDocuments: Set<NotADocument>
 }
 
 
@@ -62,15 +63,15 @@ describe('Model Types', () => {
         console.log( x.arrayOfBooleans )        /** boolean[] **/
         console.log( x.arrayOfArrays )          /** number[][] **/
         console.log( x.document )               /** string[] **/
-        console.log( x.notAnEntity )            /** {} (POJO) **/
-        console.log( x.arrayOfEntities )        /** string[] **/
-        console.log( x.arrayOfNotEntities )     /** {}[] (Array of POJOS) **/
+        console.log( x.notADocument )            /** {} (POJO) **/
+        console.log( x.arrayOfDocument )        /** string[] **/
+        console.log( x.arrayOfNotDocuments )     /** {}[] (Array of POJOS) **/
         console.log( x.map )                    /** Record<string, string> **/
-        console.log( x.mapOfEntities)           /** Record<string, string> **/
-        console.log( x.mapOfNonEntities )       /** Record<string, {}> **/
+        console.log( x.mapOfDocuments)           /** Record<string, string> **/
+        console.log( x.mapOfNonDocuments )       /** Record<string, {}> **/
         console.log( x.set )                    /** string[] **/
-        console.log( x.setOfEntities )          /** string[] **/
-        console.log( x.setOfNonEntities )       /** string[] **/
+        console.log( x.setOfDocuments )          /** string[] **/
+        console.log( x.setOfNonDocuments )       /** string[] **/
 
         let r: Flatten<string>                  /** string[] **/
 
