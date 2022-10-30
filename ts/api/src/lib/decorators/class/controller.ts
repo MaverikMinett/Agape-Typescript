@@ -1,5 +1,6 @@
-import { ControllerDescriptor } from '../descriptors';
-import { Class } from '../../../../object/src'
+import { Class } from '../../../../../object/src'
+import { ControllerDescriptor } from '../../descriptors/controller';
+import { StubDescriptor } from '../../descriptors';
 
 export function Controller( params?: any ) {
     return function <T extends {new(...args:any[]):{}}>( target:T ) {
@@ -7,8 +8,11 @@ export function Controller( params?: any ) {
 
         params && Object.assign(descriptor, params)
 
-        return target
+        const stub = StubDescriptor.descriptor( target )
 
+        if ( stub ) stub.finalizeController( descriptor )
+
+        return target
     }
 }
 
@@ -17,7 +21,7 @@ Controller.descriptor = function ( target:any, create:boolean=false ) {
 
     let controllerDescriptor: ControllerDescriptor = Reflect.getMetadata( "controller:descriptor", target )
 
-    if ( ! controllerDescriptor && create===true ) {
+    if ( ! controllerDescriptor && create === true ) {
         controllerDescriptor = new ControllerDescriptor( target )
         Reflect.defineMetadata("controller:descriptor", controllerDescriptor, target)
     }

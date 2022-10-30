@@ -5,13 +5,13 @@ import { Request, Response } from 'express';
 import { ApiController } from './api.controller';
 import { Router } from '../router';
 
-import { Get } from '../decorators/get'
-import { Controller } from '../decorators/controller';
-import { Description } from '../decorators/description';
-import { Status } from '../decorators/status';
-import { Put } from '../decorators/put';
-import { Post } from '../decorators/post';
-import { Delete } from '../decorators/delete';
+import { Get } from '../decorators/controller/get'
+import { Controller } from '../decorators/class/controller';
+import { Description } from '../decorators/controller/description';
+import { Status } from '../decorators/controller/status';
+import { Put } from '../decorators/controller/put';
+import { Post } from '../decorators/controller/post';
+import { Delete } from '../decorators/controller/delete';
 
 @Controller()
 export class ModelController<T extends Class> extends ApiController {
@@ -27,10 +27,7 @@ export class ModelController<T extends Class> extends ApiController {
     }
 
     @Post()
-    @Description( (controller:ModelController<T>, action) => {
-        const model = Model.descriptor(controller.model)
-        return `Create ${model.label.toLowerCase()}`
-    })
+    @Description( c => `Create ${Model.descriptor(c.model).label.toLowerCase()}` )
     async create( request: Request, response: Response ) {
         // $validate(this.model, request.body)
 
@@ -46,10 +43,7 @@ export class ModelController<T extends Class> extends ApiController {
     }
 
     @Delete(':id')
-    @Description( (controller:ModelController<T>, action) => {
-        const model = Model.descriptor(controller.model)
-        return `Delete ${model.label.toLowerCase()}`
-    })
+    @Description( c => `Delete ${Model.descriptor(c.model).label.toLowerCase()}` )
     async delete( request: Request, response: Response ) {
         const id: string = request.params.id;
         const deletedCount = await this.orm.delete(this.model, id).exec()
@@ -58,20 +52,14 @@ export class ModelController<T extends Class> extends ApiController {
     }
 
     @Get()
-    @Description( (controller:ModelController<T>, action) => {
-        const model = Model.descriptor(controller.model)
-        return `List ${model.plural.toLowerCase()}`
-    })
+    @Description( c => `List ${Model.descriptor(c.model).plural.toLowerCase()}` )
     async list( request: Request, response: Response ) {
         const items = await this.orm.list(this.model).exec()
         return items
     }
 
     @Put(':id')
-    @Description( (controller:ModelController<T>, action) => {
-        const model = Model.descriptor(controller.model)
-        return `Update ${model.label.toLowerCase()}`
-    })
+    @Description( c => `Update ${Model.descriptor(c.model).label.toLowerCase()}` )
     async update( request: Request, response: Response ) {
         const id: string = request.params.id;
         const item: Pick<T, keyof T> = request.body;
@@ -82,10 +70,7 @@ export class ModelController<T extends Class> extends ApiController {
     }
 
     @Get(':id') @Status(200)
-    @Description( (controller:ModelController<T>, action) => {
-        const model = Model.descriptor(controller.model)
-        return `Retrieve ${model.label.toLowerCase()}`
-    })
+    @Description( c =>  `Retrieve ${Model.descriptor(c.model).label.toLowerCase()}`)
     async retrieve( request: Request, response: Response ) {
         const id: string = request.params.id
         const item = await this.orm.retrieve(this.model, id).exec()

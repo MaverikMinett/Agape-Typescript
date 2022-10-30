@@ -1,10 +1,20 @@
-import { ApiController } from './controllers/api.controller';
-import { ActionDescriptor } from './descriptors';
+import {
+    ActionDescriptor,
+    OperationDescriptor,
+    ResponseDescriptor
+} from './descriptors';
 
 export type HttMethod = 'put'|'post'|'get'|'patch'|'delete';
 
-export type ActionDescriptionFunction = (controller: ApiController, action: ActionDescriptor) => string
+export type ActionDescriptionFunction<T=any> = (progenitor: T, action: ActionDescriptor) => string
 export type ActionDescription = string|ActionDescriptionFunction
 
-export type RespondDescriptionFunction = (controller: ApiController, action: ActionDescriptor) => string
-export type RespondDescription = string|RespondDescriptionFunction
+export type OperationDescriptionFunction<T=any> = (progenitor: T, operation: OperationDescriptor) => string
+export type OperationDescription = string|OperationDescriptionFunction
+
+export type ResponseDescriptionFunction<T=any> = (progenitor: T, response: ResponseDescriptor) => string
+export type ResponseDescription = string|ResponseDescriptionFunction
+
+
+// // // TODO: Replace all of the above with this?
+// // export type DescriptionFunction<T,U> = ( progenitor: T, item: U ) => string

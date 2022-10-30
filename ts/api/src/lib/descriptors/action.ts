@@ -1,56 +1,8 @@
-import { ActionDescription, HttMethod, RespondDescription } from './types';
-import { ApiController } from './controllers/api.controller';
-import { Class } from '../../../object/src';
-
-
-export class RouteDescriptor {
-
-    description: string;
-
-    constructor( public method: string, public path: string, public action: string, params: any ) {
-
-    }
-
-}
-
-export class ControllerDescriptor {
-
-    routes: RouteDescriptor[] = []
-
-    actions: Map<string, ActionDescriptor> = new Map()
-
-    constructor( public target: any ) {
-
-    }
-
-    action( name: string ) {
-        let action = this.actions.get(name)
-        if ( ! action ) {
-            console.log(`Creating action ${name}`)
-            action = new ActionDescriptor( name )
-            this.actions.set(name, action)
-        }
-        return action
-    }
-
-}
-
-// export class StatusDescriptor {
-//
-// }
-
-export class RespondDescriptor {
-
-    // statusCode: number
-    //
-    // description: RespondDescriptor
-
-    // model: Class
-
-    constructor( public model: Class, public description?: RespondDescription, statusCode?: number ) {
-
-    }
-}
+import { ActionDescription, HttMethod, ResponseDescription } from '../types';
+import { ApiController } from '../controllers/api.controller';
+import { Class } from '../../../../object/src';
+import { ResponseDescriptor } from './response';
+import { BodyDescriptor, BodyDescriptorParams } from './body';
 
 
 export class ActionDescriptor {
@@ -67,7 +19,7 @@ export class ActionDescriptor {
 
     private ʘdescription: ActionDescription
 
-    private ʘresponds: RespondDescriptor[]
+    private ʘresponses: ResponseDescriptor[]
 
     constructor( public name: string ) {
 
@@ -95,10 +47,10 @@ export class ActionDescriptor {
     }
 
 
-    respond( model: Class, description?: RespondDescription, statusCode?: number ) {
-        this.ʘresponds ??= []
-        const descriptor = new RespondDescriptor( model, description, statusCode )
-        this.ʘresponds.push(descriptor)
+    respond(model: Class, description?: ResponseDescription, statusCode?: number ) {
+        this.ʘresponses ??= []
+        const descriptor = new ResponseDescriptor( model, description, statusCode )
+        this.ʘresponses.push(descriptor)
         return this
     }
 
@@ -143,18 +95,8 @@ export class ActionDescriptor {
 
 }
 
-export class BodyDescriptor {
 
-    description?: string
 
-    contentType?: string = "application/json"
 
-    model?: Class
 
-    constructor( params?: BodyDescriptorParams ) {
-        params && Object.assign(this, params)
-    }
 
-}
-
-export type BodyDescriptorParams = Pick<BodyDescriptor, keyof BodyDescriptor>
