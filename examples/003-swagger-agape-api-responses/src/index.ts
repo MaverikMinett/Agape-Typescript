@@ -68,9 +68,9 @@ async function main() {
     const swagger = new SwaggerApi()
     swagger.title = "Foo API"
     swagger.description = "An automatically generated API"
-    swagger.addModel(Event)
-    swagger.addModel(EventList)
-    swagger.addModel(EventDetail)
+    // swagger.addModel(Event)
+    // swagger.addModel(EventList)
+    // swagger.addModel(EventDetail)
     // swagger.addRouter(api.controllers[0].router)
 
     swagger.addApi( api )
@@ -91,23 +91,3 @@ async function main() {
 
 main()
 
-// const app = express()
-// app.use( cors({origin: '*'}) )
-// app.get('', (req, res) => { res.redirect('/api')})
-//
-// /** Swagger **/
-// const pathToSwaggerUi = require('swagger-ui-dist').absolutePath()
-// app.use( '/api', express.static('public') )
-// app.use( '/api', express.static(pathToSwaggerUi) )
-//
-// app.use( '/swagger.json', ( req, res ) => {
-//     res.send( api )
-// })
-//
-//
-//
-//
-// app.listen( PORT, () => {
-//     console.log(`Server started at http://localhost:${PORT}/api`)
-// })
-//

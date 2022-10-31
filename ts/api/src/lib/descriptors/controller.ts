@@ -3,6 +3,8 @@ import { ComponentDescriptor } from './component';
 
 export class ControllerDescriptor extends ComponentDescriptor {
 
+    path?: string
+
     actions: Map<string, ActionDescriptor> = new Map()
 
     action( name: string ) {

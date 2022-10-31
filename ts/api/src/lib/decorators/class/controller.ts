@@ -1,4 +1,3 @@
-import { Class } from '../../../../../object/src'
 import { ControllerDescriptor } from '../../descriptors/controller';
 import { StubDescriptor } from '../../descriptors';
 
@@ -27,8 +26,4 @@ Controller.descriptor = function ( target:any, create:boolean=false ) {
     }
 
     return controllerDescriptor
-}
-
-Controller.actions = function ( target: Class|Object ) {
-
 }

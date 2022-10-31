@@ -1,7 +1,8 @@
 import { Request, Response, Router as ExpressRouter } from 'express';
-import { ApiController } from './controllers/api.controller';
+import { Controller } from './decorators';
 
-class Route<T extends ApiController> {
+
+class Route<T> {
 
     constructor(
         public controller: T,
@@ -20,22 +21,24 @@ class Route<T extends ApiController> {
     }
 }
 
-export class Router<T extends ApiController> {
+export class Router<T> {
 
-    express = ExpressRouter()
+    // express = ExpressRouter()
 
     routes: Array<Route<T>> = []
 
     constructor( public controller: T, public path?: string ) {
-
+        const controllerDescriptor = Controller.descriptor(controller)
+        for ( let [name, actionDescriptor] of controllerDescriptor.actions.entries() ) {
+            const { method, path } = actionDescriptor.route();
+            this.addRoute( method, path, name as keyof T )
+        }
     }
 
     addRoute( method: string, path: string, action: keyof T ) {
-        // TODO: action as string?
         const fullPath = this.path ? [this.path, path].join("/") : path
         const route = new Route( this.controller, method, fullPath, action as string )
         this.routes.push( route )
-        route.apply( this.express )
     }
 
 }

@@ -6,7 +6,6 @@ import {
 	Api,
 	ActionDescriptor,
 	Controller,
-	ApiController,
 	Router,
 	BodyDescriptor,
 	ControllerDescriptor
@@ -49,8 +48,6 @@ export class SwaggerApi {
 
 	models: ModelDescriptor[]
 
-	routers: Router<ApiController>[] = []
-
 	apis: Api[] = []
 
 	addApi( api: Api ) {
@@ -72,25 +69,22 @@ export class SwaggerApi {
 		return ref
 	}
 
-	addRouter( router: Router<ApiController> ) {
-		this.routers.push( router )
-	}
-
 	toOpenApiJson() {
 		const openApi:any = { ...BASE }
 
 		const apiPath = 'api';
 		for (let api of this.apis) {
 			for ( let controller of api.controllers ) {
-				// console.log("Controller", controller )
-				// const prototype = Object
-				//
-				// getPrototypeOf(controller)
 				const controllerClass = controller.constructor
 				const controllerPath  = controller.path
 				const controllerDescriptor = Controller.descriptor(controllerClass)
 
+				console.log(`Processing controller ${controllerClass} ${controllerPath}`)
+
 				for ( let action of controllerDescriptor.actions.values() ) {
+
+					console.log(`Processing controller ${controllerClass} ${controllerPath}`)
+
 					const actionRoute = action.route()
 					const actionPath = actionRoute.path
 					let path = '';
@@ -111,7 +105,7 @@ export class SwaggerApi {
 		}
 
 		// Generate swagger model definitions docs using model meta data
-		for ( const descriptor of this.models ) {
+		for ( const descriptor of this.models ?? [] ) {
 			const definition = this.buildModelDefinition(descriptor)
 			openApi.components.schemas[descriptor.symbol] = definition
 		}

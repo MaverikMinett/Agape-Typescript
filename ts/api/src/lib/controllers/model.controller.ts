@@ -1,9 +1,8 @@
 import { Class } from '../../../../object/src';
-import { $model, Model, ModelDescriptor } from '../../../../model/src';
+import { Model } from '../../../../model/src';
 import { Orm } from '../../../../orm/src'
 import { Request, Response } from 'express';
-import { ApiController } from './api.controller';
-import { Router } from '../router';
+
 
 import { Get } from '../decorators/controller/get'
 import { Controller } from '../decorators/class/controller';
@@ -14,20 +13,16 @@ import { Post } from '../decorators/controller/post';
 import { Delete } from '../decorators/controller/delete';
 
 @Controller()
-export class ModelController<T extends Class> extends ApiController {
+export class ModelController<T extends Class> {
 
-    router: Router<ModelController<T>>
-
-    modelDescriptor: ModelDescriptor
 
     constructor( public model: T, public orm: Orm ) {
-        super()
-        this.modelDescriptor = $model( this.model )
-        this.registerRoutes()
+
     }
 
     @Post()
     @Description( c => `Create ${Model.descriptor(c.model).label.toLowerCase()}` )
+    // @Uses( [ModelBackend, 'create'] )
     async create( request: Request, response: Response ) {
         // $validate(this.model, request.body)
 
@@ -82,20 +77,5 @@ export class ModelController<T extends Class> extends ApiController {
         response.status(200)
         return item
     }
-
-    registerRoutes( ) {
-
-        this.router.addRoute( 'get', `/${this.modelDescriptor.tokens}/:id`, 'retrieve' )
-
-        this.router.addRoute( 'delete', `/${this.modelDescriptor.tokens}/:id`, 'delete')
-
-        this.router.addRoute( 'put', `/${this.modelDescriptor.tokens}/:id`, 'update')
-
-        this.router.addRoute( 'get', `/${this.modelDescriptor.tokens}`, 'list' )
-
-        this.router.addRoute( 'post', `/${this.modelDescriptor.tokens}`, 'create' )
-
-    }
-
 
 }
