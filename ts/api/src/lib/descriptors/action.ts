@@ -2,6 +2,7 @@ import { ActionDescription, HttMethod, ResponseDescription } from '../types';
 import { Class } from '../../../../object/src';
 import { ResponseDescriptor } from './response';
 import { BodyDescriptor, BodyDescriptorParams } from './body';
+import { ControllerDescriptor } from './controller';
 
 
 export class ActionDescriptor {
@@ -30,15 +31,14 @@ export class ActionDescriptor {
 
     // TODO: Are controllers really any? Or do they need to
     // inherit from a base class
-    getDescription( controller?: any ): string {
+    getDescription( controller: ControllerDescriptor ): string {
         if ( ! this.ʘdescription ) return ""
         if ( typeof this.ʘdescription === "function" ) {
             // TODO: This should look at the Controller Descriptor, not the controller
             // console.log("Get description", controller, this)
             // console.log("======>GOT FUNCTION")
             // console.log(this.ʘdescription.call(this, controller, this ))
-            // return this.ʘdescription.call(this, controller, this )
-            return "GET DESCRIPTION"
+            return this.ʘdescription.call(this, controller, this )
         }
         return this.ʘdescription
     }

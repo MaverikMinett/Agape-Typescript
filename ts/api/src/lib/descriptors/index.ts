@@ -1,6 +1,6 @@
 export * from './action'
 export * from './backend'
-export * from './component'
+export * from './aspect.descriptor'
 export * from './controller'
 export * from './body';
 export * from './operation'

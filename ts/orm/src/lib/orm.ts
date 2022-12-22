@@ -110,6 +110,12 @@ export class Orm {
         return new ListQuery<T>(model, collection)
     }
 
+    // lookup<T extends Class>( model: T, filter: any ) {
+    //     const collection = this.models.get(model).collection
+    //
+    //     return new LookupQuery<T>(model, collection)
+    // }
+
     delete<T extends Class>(model: T, id: string ) {
         const collection = this.models.get(model).collection
 

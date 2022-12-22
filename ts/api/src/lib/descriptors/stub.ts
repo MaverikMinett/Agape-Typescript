@@ -2,7 +2,7 @@
 import { ActionDescriptor } from './action';
 import { BackendDescriptor } from './backend';
 import { ControllerDescriptor } from './controller';
-import { ComponentDescriptor } from './component';
+import { AspectDescriptor } from './aspect.descriptor';
 
 import { include } from '../../../../object/src';
 /**
@@ -33,7 +33,7 @@ export class StubDescriptor {
         return descriptor
     }
 
-    finalize( component: ComponentDescriptor ) {
+    finalize( component: AspectDescriptor ) {
 
         Reflect.deleteMetadata("stub:descriptor", this.target)
     }
