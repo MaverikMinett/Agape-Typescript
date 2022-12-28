@@ -1,3 +1,0 @@
-Django>=2.2.9
-django-autoslug>=1.9.7
-agape-string>=0.0.1
