@@ -1,8 +1,15 @@
 import { ControllerDescriptor } from '../../descriptors/controller';
 import { StubDescriptor } from '../../descriptors';
+import { ControllerParams } from '../../types';
 
-export function Controller( params?: any ) {
+
+// export function Controller( path:string )
+// export function Controller( params?: ControllerParams )
+export function Controller( params?: ControllerParams|string ) {
     return function <T extends {new(...args:any[]):{}}>( target:T ) {
+
+        // if ( typeof params === 'string' ) params = { path: params }
+
         const descriptor = Controller.descriptor( target, true )
 
         params && Object.assign(descriptor, params)

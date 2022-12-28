@@ -1,11 +1,11 @@
 import { OperationDescriptor } from './operation';
-import { ComponentDescriptor } from './component';
+import { AspectDescriptor } from './aspect.descriptor';
 
 
 /**
  * Describe a backend service
  */
-export class BackendDescriptor extends ComponentDescriptor {
+export class BackendDescriptor extends AspectDescriptor {
 
     operations: Map<string, OperationDescriptor> = new Map()
 

@@ -1,7 +1,8 @@
 import { ActionDescriptor } from './action';
-import { ComponentDescriptor } from './component';
+import { AspectDescriptor } from './aspect.descriptor';
+import { ModelDescriptor } from '@agape/model';
 
-export class ControllerDescriptor extends ComponentDescriptor {
+export class ControllerDescriptor extends AspectDescriptor {
 
     path?: string
 
@@ -10,7 +11,6 @@ export class ControllerDescriptor extends ComponentDescriptor {
     action( name: string ) {
         let action = this.actions.get(name)
         if ( ! action ) {
-            console.log(`Creating action ${name}`)
             action = new ActionDescriptor( name )
             this.actions.set(name, action)
         }
@@ -18,3 +18,10 @@ export class ControllerDescriptor extends ComponentDescriptor {
     }
 
 }
+
+export class ModelControllerDescriptor extends ControllerDescriptor {
+
+    model: ModelDescriptor
+
+}
+

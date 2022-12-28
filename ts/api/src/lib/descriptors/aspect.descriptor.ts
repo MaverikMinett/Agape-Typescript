@@ -1,4 +1,4 @@
-export abstract class ComponentDescriptor {
+export abstract class AspectDescriptor {
 
     name?: string;
 

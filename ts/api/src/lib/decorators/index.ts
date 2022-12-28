@@ -1,6 +1,8 @@
 
 export * from './class/backend'
 export * from './class/controller'
+export * from './class/module.decorator'
+
 // export * from './controller/action'
 export * from './controller/body'
 export * from './controller/delete'

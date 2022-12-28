@@ -1,5 +1,5 @@
 import {
-    ActionDescriptor,
+    ActionDescriptor, ControllerDescriptor,
     OperationDescriptor,
     ResponseDescriptor
 } from './descriptors';
@@ -14,6 +14,8 @@ export type OperationDescription = string|OperationDescriptionFunction
 
 export type ResponseDescriptionFunction<T=any> = (progenitor: T, response: ResponseDescriptor) => string
 export type ResponseDescription = string|ResponseDescriptionFunction
+
+export type ControllerParams = Partial<Omit<ControllerDescriptor,'actions'>>
 
 
 // // // TODO: Replace all of the above with this?
