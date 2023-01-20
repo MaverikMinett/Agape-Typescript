@@ -77,14 +77,12 @@ export function inflateArray( to:Class|Serializer, from:Dictionary[] )
 /**
  * Deflate
  */
-
-
 export function deflate<T>( item: T, params?: any ): Pick<T, keyof T>
 export function deflate<T>( item: Array<T>, params?: any ):Array<Pick<T, keyof T>>
 export function deflate<T>( item: T|Array<T>, params?:any ): Pick<T, keyof T>|Array<Pick<T, keyof T>>  {
 
     if ( item instanceof Object ) {
-        return deflateObject<T>( item as T )
+        return deflateObject<T>( item as unknown as T )
     }
 
     else if ( item instanceof Array ) {
