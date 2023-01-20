@@ -6,7 +6,7 @@ import { Request, Response, NextFunction } from 'express';
 
 
 import { SwaggerApi } from './swagger.api';
-const PORT=3200
+
 const DATABASE_URL = 'mongodb://localhost:49000';
 
 export async function buildExpressApplication() {
