@@ -1,5 +1,5 @@
 {
-  "name": "example-006-api-decorator",
+  "name": "example-007-api-commander",
   "version": "0.1.0",
   "description": "",
   "main": "dist/cjs/index.js",

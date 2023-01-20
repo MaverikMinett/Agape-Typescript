@@ -1,5 +1,5 @@
 {
-  "name": "example-002-swagger-agape-api",
+  "name": "example-005-flatten-types",
   "version": "0.1.0",
   "description": "",
   "main": "dist/cjs/index.js",
