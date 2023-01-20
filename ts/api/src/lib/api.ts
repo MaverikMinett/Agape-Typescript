@@ -21,9 +21,9 @@ import { Module } from './decorators/class/module.decorator'
 
 
 
-export class JitApi {
+// export class JitApi {
 
-}
+// }
 
 
 
@@ -33,11 +33,16 @@ export class Api {
 
     controllers: Class[] = []
 
+    modules: Class[] = []
+
     constructor( modules?: Class[] ) {
-        modules.forEach( module => this.processModule(module) )
+        modules.forEach( module => this.registerModule(module) )
     }
 
-    protected processModule( module: Class ) {
+    protected registerModule( module: Class ) {
+
+        this.modules.push( module )
+
         const descriptor = Module.descriptor( module )
 
         const controllers = descriptor.getControllers()
@@ -91,18 +96,18 @@ export class AotApi extends Api {
 }
 
 
-export class JitApi extends Api {
+// export class JitApi extends Api {
 
-    protected getController<T extends Class>(controller: T): InstanceType<T> {
-        if ( this.controllerCache.has(controller) )
-            return this.controllerCache.get(controller)
+//     protected getController<T extends Class>(controller: T): InstanceType<T> {
+//         if ( this.controllerCache.has(controller) )
+//             return this.controllerCache.get(controller)
 
-        const instance = super.getController(controller);
-        this.controllerCache.set(controller, instance)
-        return instance
-    }
+//         const instance = super.getController(controller);
+//         this.controllerCache.set(controller, instance)
+//         return instance
+//     }
 
-}
+// }
 
 
 
