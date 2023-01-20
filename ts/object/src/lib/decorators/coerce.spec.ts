@@ -4,7 +4,7 @@ import { coerce } from './coerce'
 import { readonly } from './readonly'
 import { lazy } from './lazy'
 import { deflate, inflate, Serializer } from "../serializer";
-import { Dictionary } from "../types";
+import { Dictionary, TypedInterface } from "../types";
 
 
 
@@ -180,7 +180,7 @@ describe('coerce decorator', () => {
         }   
 
         class FooSerializer extends Serializer {
-            deflate( object:Object, params={} ) {
+            deflate( object:any, params={} ) {
                 
                 const data = deflate( object )
 
@@ -197,17 +197,28 @@ describe('coerce decorator', () => {
         }
 
         class Bar {
-
             @coerce( new FooSerializer() )
             foo: AFoo|BFoo
+        }
+
+
+        interface DeflatedBar extends Omit<Bar, "foo"> {
+            foo: TypedInterface<AFoo>|TypedInterface<BFoo>
         }
 
         const b = new Bar()
         b.foo = new AFoo()
         b.foo.abaz = "yeah"
 
-        const d = deflate(b)
+        const d = deflate(b) as DeflatedBar
         expect(d).toEqual({ foo: { abaz: "yeah", type: "a" } } )
+
+        const e = new Bar()
+        e.foo = new BFoo()
+        e.foo.bbaz = "yo"
+
+        const f = deflate(e) as DeflatedBar
+        expect(f).toEqual({ foo: { bbaz: "yo", type: "b" } } )
 
     })
 
@@ -230,7 +241,7 @@ describe('coerce decorator', () => {
         }   
 
         class FooSerializer extends Serializer {
-            deflate( object:Object, params={} ) {
+            deflate( object:any, params={} ) {
                 
                 const data = deflate( object )
 
@@ -252,10 +263,15 @@ describe('coerce decorator', () => {
             foos: Array<AFoo|BFoo>
         }
 
+        interface DeflatedBar extends Omit<Bar, "foos"> {
+            foos: Array<TypedInterface<AFoo>|TypedInterface<BFoo>>
+        }
+
+
         const b = new Bar()
         b.foos = [new BFoo( "yeah" ), new AFoo("buddy") ]
 
-        const d = deflate(b)
+        const d = deflate(b) as DeflatedBar
         expect(d).toEqual({ foos: [{ bbaz: "yeah", type: "b" } , { abaz: "buddy", type: "a" }] } )
 
     })
