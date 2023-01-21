@@ -1,6 +1,6 @@
 {
   "name": "@agape/string",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "String and token manipulation",
   "main": "dist/cjs/public_api.js",
   "module": "dist/esm/public_api.js",

@@ -91,6 +91,27 @@ export function pluralize( string?:string ) {
 
 }
 
+// define a file-level copy of the pluralize function so that the quanitfy
+// function can have a `pluralize` attribute and still use `_pluralize`
+const _pluralize = pluralize;
+
+/**
+ * Format a number in units, pluralizing the units if there is more or less than
+ * one count.
+ * @param count Number of units
+ * @param unit Label for the value
+ * @param plural Set to false to disable pluralization
+ * @returns String in `x units` format
+ */
+export function quanitfy( count: number|string, unit: string, pluralize = true ) {
+
+    const value = typeof count == 'number' ? count : Number(count);
+    
+    const label = pluralize === false || value === 1 ? unit : _pluralize(unit);
+    
+    return `${count} ${label}`
+
+}
 
 /**
  * Formats a string in it's plural form. Most strings a returned
