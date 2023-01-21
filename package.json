@@ -2,7 +2,9 @@
   "name": "agape",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "test": "nx run-many --all --target=test"
+  },
   "private": true,
   "dependencies": {
     "tslib": "^2.3.0"
