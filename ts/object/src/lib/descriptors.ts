@@ -571,12 +571,14 @@ export class PropertyDescriptor {
      */
     get( instance:any ) {
 
-        /* delegate */
-        if ( this.ʘdelegate && this.ʘdelegate.to ) {
-            return typeof this.ʘdelegate.to === "function"
-            ? this.ʘdelegate.to.call(instance, instance)[this.ʘdelegate.property || this.name]
-            : (this.ʘdelegate.to as any)[this.ʘdelegate.property || this.name]
+        function delegateGetDispatcher( $this:PropertyDescriptor, instance: any ) {
+            return typeof $this.ʘdelegate.to === "function"
+                ? $this.ʘdelegate.to.call(instance, instance)[$this.ʘdelegate.property || $this.name]
+                : ($this.ʘdelegate.to as any)[$this.ʘdelegate.property || $this.name]
         }
+
+        /* delegate */
+        if ( this.ʘdelegate && this.ʘdelegate.to ) return delegateGetDispatcher( this, instance )
 
         if ( ! instance['ʘ' + this.name] ) {
 
