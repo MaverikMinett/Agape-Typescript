@@ -599,6 +599,7 @@ export class PropertyDescriptor {
      * @param value Default value
      */
     default( value:any ) {
+        // this.ʘlazy = true; // needs to be removed see documentation
         this['ʘdefault'] === undefined && ( this['ʘdefault'] = value )
         return this
     }
@@ -645,8 +646,8 @@ export class PropertyDescriptor {
         if ( ! ( from.ʘoverride === undefined ) ) this.ʘoverride = from.ʘoverride
         if ( ! ( from.ʘreadonly === undefined ) ) this.ʘreadonly = from.ʘreadonly
         // if ( ! ( from.ʘdelegate === undefined ) ) this.ʘdelegate = {...from.ʘdelegate}
-        // if ( ! ( from.ʘreadonly === undefined ) ) this.ʘephemeral = from.ʘephemeral
-        // if ( ! ( from.ʘreadonly === undefined ) ) this.ʘshadow = from.ʘshadow
+        // if ( ! ( from.ʘephemeral === undefined ) ) this.ʘephemeral = from.ʘephemeral
+        // if ( ! ( from.ʘshadow === undefined ) ) this.ʘshadow = from.ʘshadow
         return this
     }
 
@@ -666,10 +667,12 @@ export class PropertyDescriptor {
      * A default value that will be instantiated the first time the property is accessed
      * @param value The default value for the property
      */
-    lazy( value?:any ): this
-    lazy( ...args: any[] ): this {
-        this.ʘlazy = true;
-        args.length === 1 && ( this['ʘdefault'] = args[0] )
+    lazy( value?:any ): this {
+        // this.ʘlazy = true;
+        console.log("---------LAZY", value, this['ʘdefault'] )
+        if ( value === undefined ) console.log("value is undefined")
+        value !== undefined && this['ʘdefault'] === undefined && ( this['ʘdefault'] = value )
+        console.log(this['ʘdefault'])
         return this
     }
 

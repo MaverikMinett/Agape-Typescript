@@ -9,6 +9,7 @@ import { delegate } from './decorators/delegate'
 import { inherit } from './decorators/inherit'
 import { nonenumerable } from './decorators/nonenumerable'
 import { ephemeral } from './decorators/ephemeral'
+import { shadow } from './decorators/shadow'
 
 let o:any, d:any
 describe('deflate', () => {
@@ -270,6 +271,50 @@ describe('deflate', () => {
 
         const [o1, o2] = [new AObject(), new AObject()]
         d = deflate([o1,o2], { ephemeral: true })
+
+        expect(d).toEqual([{foo: 42}, {foo:42}])
+    })
+
+    it('should not deflate unset shadow properties', () => {
+        class AObject { 
+            @shadow( o => 42 ) foo:number
+        }
+
+        o = new AObject()
+        d = deflate(o)
+
+        expect(d).toEqual({})
+    })
+    it('should deflate shadow properties which have been explicitly set a value', () => {
+        class AObject { 
+            @shadow( o => 42 ) foo:number
+        }
+
+        o = new AObject()
+        o.foo = 32
+        d = deflate(o)
+
+        expect(d).toEqual({'foo': 32})
+    })
+
+    it('should deflate shadow properties if the shadow option is set', () => {
+        class AObject { 
+            @shadow( o => 42 ) foo:number
+        }
+
+        o = new AObject()
+        d = deflate(o, { shadow: true })
+
+        expect(d).toEqual({foo: 42})
+    })
+
+    it('should deflate an array of objects where the shadow option is set', () => {
+        class AObject { 
+            @shadow( o => 42 ) foo:number
+        }
+
+        const [o1, o2] = [new AObject(), new AObject()]
+        d = deflate([o1,o2], { shadow: true })
 
         expect(d).toEqual([{foo: 42}, {foo:42}])
     })
