@@ -601,6 +601,17 @@ export class PropertyDescriptor {
     }
 
     /**
+     * A default value that will be instantiated the first time the property is accessed
+     * @param value The default value for the property
+     */
+    lazy( value?:any ): this
+    lazy( ...args: any[] ): this {
+        this.ʘlazy = true;
+        args.length === 1 && ( this['ʘdefault'] = args[0] )
+        return this
+    }
+
+    /**
      * Get the value of the property on the given object, delegating or building
      * the property value as necessary
      * @param instance The object on which to act
