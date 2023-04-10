@@ -127,7 +127,7 @@ describe('deflate', () => {
         expect( d.foo ).toBeUndefined()
     })
 
-    xit('should not deflate unpopulated lazy properties', () => {
+    it('should not deflate unpopulated lazy properties', () => {
         class AClass {
             @lazy("bar")
             foo:string
@@ -147,6 +147,18 @@ describe('deflate', () => {
         o.foo
 
         d = deflate(o)
+        expect( d.foo ).toEqual("bar")
+    })
+
+    it('should deflate unpopulated lazy properties with lazy option', () => {
+        class AClass {
+            @lazy("bar")
+            foo:string
+        }
+
+        o = new AClass()
+
+        d = deflate(o, { lazy: true })
         expect( d.foo ).toEqual("bar")
     })
     it('should deflate unpopulated lazy properties with lazy option set', () => {

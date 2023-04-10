@@ -529,6 +529,8 @@ function lazyGetDispatcher( $this: PropertyDescriptor, instance: any ) {
         : $this.ʘdefault
 
     Object.defineProperty(instance, `ʘ${$this.name}`, { value: value, configurable: true, enumerable: false } )
+
+    return instance[`ʘ${$this.name}`]
 }
 
 /**
@@ -647,6 +649,7 @@ export class PropertyDescriptor {
         if ( ! ( from.ʘreadonly === undefined ) ) this.ʘreadonly = from.ʘreadonly
         // if ( ! ( from.ʘdelegate === undefined ) ) this.ʘdelegate = {...from.ʘdelegate}
         // if ( ! ( from.ʘephemeral === undefined ) ) this.ʘephemeral = from.ʘephemeral
+        // if ( ! ( from.ʘenumerable === undefined ) ) this.ʘenumerable = from.ʘenumerable
         // if ( ! ( from.ʘshadow === undefined ) ) this.ʘshadow = from.ʘshadow
         return this
     }
@@ -668,11 +671,8 @@ export class PropertyDescriptor {
      * @param value The default value for the property
      */
     lazy( value?:any ): this {
-        // this.ʘlazy = true;
-        console.log("---------LAZY", value, this['ʘdefault'] )
-        if ( value === undefined ) console.log("value is undefined")
-        value !== undefined && this['ʘdefault'] === undefined && ( this['ʘdefault'] = value )
-        console.log(this['ʘdefault'])
+        this.ʘlazy = true;
+        value !== undefined && ( this['ʘdefault'] = value )
         return this
     }
 
