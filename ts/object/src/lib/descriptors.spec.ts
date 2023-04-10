@@ -401,6 +401,144 @@ describe('PropertyDescriptor', () => {
         expect(o.ʘʘfoo).toEqual(true)
         expect(JSON.parse(JSON.stringify(o))).toEqual({foo: true})
     })
+
+    describe('include', () => {
+
+        it('should include the default option', () => {
+            o = {  }
+            b = new ObjectDescriptor( o )
+            d = new PropertyDescriptor(b, 'foo')
+            d.default('bar')
+    
+            o = {  }
+            b = new ObjectDescriptor( o )
+            let c = new PropertyDescriptor(b, 'foo')
+            c.include(d)
+    
+            /* test that the option is set */
+            expect(c.ʘdefault).toBe('bar')
+
+            /* test functionality */
+            expect( c.get(o) ).toBe('bar')
+        })
+
+        it('should include override definitions', () => {
+            o = {  }
+            b = new ObjectDescriptor( o )
+            d = new PropertyDescriptor(b, 'foo')
+            d.default( o => 'bar' ).override(true)
+            d.install_dispatcher()
+    
+            o = {  }
+            b = new ObjectDescriptor( o )
+            let c = new PropertyDescriptor(b, 'foo')
+            c.include(d)
+            c.install_dispatcher()
+    
+            /* test that the option is set */
+            expect(c.ʘoverride).toBeTrue()
+            
+            /* test functionality */
+            expect( c.get(o) ).toBe('bar')
+        })
+
+        it('should include readonly definitions', () => {
+            o = {  }
+            b = new ObjectDescriptor( o )
+            d = new PropertyDescriptor(b, 'foo')
+            d.default( o => 'bar' ).readonly(true)
+            d.install_dispatcher()
+
+            o = {  }
+            b = new ObjectDescriptor( o )
+            let c = new PropertyDescriptor(b, 'foo')
+            c.include(d)
+            c.install_dispatcher()
+    
+            /* test that the option is set */
+            expect(c.ʘreadonly).toBeTrue()
+            
+            /* test functionality */
+            expect( c.get(o) ).toBe('bar')
+        })
+
+       it('should include the delegate definitions', () => {
+            
+            const toObject = { foo: 'loco' }
+            
+            o = {  }
+            b = new ObjectDescriptor( o )
+            d = new PropertyDescriptor(b, 'foo')
+
+            const d1:PropertyDescriptor = d
+            d1.delegate(toObject, 'foo')
+            d1.install_dispatcher()
+    
+            o = {  }
+            b = new ObjectDescriptor( o )
+            let c = new PropertyDescriptor(b, 'foo')
+            c.include(d)
+            c.install_dispatcher()
+    
+            /* test that the option is set */
+            expect(c.ʘdelegate).toEqual({ to: toObject , property: 'foo'})
+            
+            /* test functionality */
+            expect( c.get(o) ).toBe('loco')
+        })
+
+        xit('should include enumerable definitions', () => {
+            o = {  }
+            b = new ObjectDescriptor( o )
+            d = new PropertyDescriptor(b, 'foo')
+            d.default( o => 'bar' ).enumerable(false)
+            d.install_dispatcher()
+
+            o = {  }
+            b = new ObjectDescriptor( o )
+            let c = new PropertyDescriptor(b, 'foo')
+            c.include(d)
+            c.install_dispatcher()
+            o.foo = 'bar'
+    
+            /* test that the option is set */
+            expect(c.ʘenumerable).toBeTrue()
+            
+            /* test functionality */
+            expect( JSON.parse(JSON.stringify(o)) ).toEqual({})
+        })
+
+        it('should include ephemeral definitions', () => {
+            // o = {  }
+            // b = new ObjectDescriptor( o )
+            // d = new PropertyDescriptor(b, 'foo')
+            // d.default( o => 'bar' ).readonly(true)
+    
+            // o = {  }
+            // b = new ObjectDescriptor( o )
+            // let c = new PropertyDescriptor(b, 'foo')
+            // c.include(d)
+    
+            
+            // expect( c.get(o) ).toBe('bar')
+        })
+
+        it('should include shadow definitions', () => {
+            // o = {  }
+            // b = new ObjectDescriptor( o )
+            // d = new PropertyDescriptor(b, 'foo')
+            // d.default( o => 'bar' ).readonly(true)
+    
+            // o = {  }
+            // b = new ObjectDescriptor( o )
+            // let c = new PropertyDescriptor(b, 'foo')
+            // c.include(d)
+    
+            
+            // expect( c.get(o) ).toBe('bar')
+        })
+
+    })
 })
 
 
