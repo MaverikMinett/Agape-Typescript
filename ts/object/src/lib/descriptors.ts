@@ -648,7 +648,7 @@ export class PropertyDescriptor {
         if ( ! ( from.ʘoverride === undefined ) ) this.ʘoverride = from.ʘoverride
         if ( ! ( from.ʘreadonly === undefined ) ) this.ʘreadonly = from.ʘreadonly
         if ( ! ( from.ʘdelegate === undefined ) ) this.ʘdelegate = {...from.ʘdelegate}
-        // if ( ! ( from.ʘephemeral === undefined ) ) this.ʘephemeral = from.ʘephemeral
+        if ( ! ( from.ʘephemeral === undefined ) ) this.ʘephemeral = from.ʘephemeral
         if ( ! ( from.ʘenumerable === undefined ) ) this.ʘenumerable = from.ʘenumerable
         // if ( ! ( from.ʘshadow === undefined ) ) this.ʘshadow = from.ʘshadow
         this.install_dispatcher()

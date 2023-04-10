@@ -123,7 +123,10 @@ function deflateObject<T>( item: T, params?:DeflateParams ): Pick<T, keyof T> {
             /* ignore ephemeral properties that have no value */
             if ( m.property(field)['ʘephemeral'] && ! params?.ephemeral && item['ʘ'+field] === undefined ) continue
 
+            /* ignore shadow properties that have no value */
             if ( m.property(field)['ʘshadow'] && ! params?.shadow && item['ʘ'+field] === undefined ) continue
+
+            /* non-enumerable properties are not included (javascript does not include them in for ... in ) */
 
             /* ignore unpopulated inherited properties with undefined value */
             if ( m.property(field)['ʘinherit']  ) {

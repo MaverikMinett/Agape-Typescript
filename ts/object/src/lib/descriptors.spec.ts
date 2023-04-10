@@ -502,27 +502,32 @@ describe('PropertyDescriptor', () => {
             b = new ObjectDescriptor( o )
             let c = new PropertyDescriptor(b, 'foo')
             c.include(d)
+            c.install_dispatcher()
 
             expect(d.ʘenumerable).toBeFalse()
             o.foo = 'hello'
-            // console.log("<<<<<<<<", o.foo)
+
             expect(o.foo).toBe('hello')
             expect( JSON.parse(JSON.stringify(o)) ).toEqual({})
         })
 
         it('should include ephemeral definitions', () => {
-            // o = {  }
-            // b = new ObjectDescriptor( o )
-            // d = new PropertyDescriptor(b, 'foo')
-            // d.default( o => 'bar' ).readonly(true)
+            o = {  }
+            b = new ObjectDescriptor( o )
+            d = new PropertyDescriptor(b, 'foo')
+            d.ephemeral('bar')
+            d.install_dispatcher()
     
-            // o = {  }
-            // b = new ObjectDescriptor( o )
-            // let c = new PropertyDescriptor(b, 'foo')
-            // c.include(d)
+            o = {  }
+            b = new ObjectDescriptor( o )
+            let c = new PropertyDescriptor(b, 'foo')
+            c.include(d)
     
-            
-            // expect( c.get(o) ).toBe('bar')
+            /* test that the option is set */
+            expect(c.ʘephemeral).toBe('bar')
+
+            /* test functionality */
+            expect( c.get(o) ).toBe('bar')
         })
 
         it('should include shadow definitions', () => {
