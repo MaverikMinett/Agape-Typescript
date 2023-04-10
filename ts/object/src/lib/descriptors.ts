@@ -649,8 +649,9 @@ export class PropertyDescriptor {
         if ( ! ( from.ʘreadonly === undefined ) ) this.ʘreadonly = from.ʘreadonly
         if ( ! ( from.ʘdelegate === undefined ) ) this.ʘdelegate = {...from.ʘdelegate}
         // if ( ! ( from.ʘephemeral === undefined ) ) this.ʘephemeral = from.ʘephemeral
-        // if ( ! ( from.ʘenumerable === undefined ) ) this.ʘenumerable = from.ʘenumerable
+        if ( ! ( from.ʘenumerable === undefined ) ) this.ʘenumerable = from.ʘenumerable
         // if ( ! ( from.ʘshadow === undefined ) ) this.ʘshadow = from.ʘshadow
+        this.install_dispatcher()
         return this
     }
 
@@ -742,7 +743,7 @@ export class PropertyDescriptor {
     install_dispatcher( ) {
         let descriptor = this
         let target = this.progenitor.target
-        
+
         Object.defineProperty( target, descriptor.name, {
             set: function(value:any) { return descriptor.set(this, value) },
             get: function() { return descriptor.get(this) },

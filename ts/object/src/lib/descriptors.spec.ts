@@ -487,24 +487,26 @@ describe('PropertyDescriptor', () => {
             expect( c.get(o) ).toBe('loco')
         })
 
-        xit('should include enumerable definitions', () => {
-            o = {  }
+        it('should include the enumeralble definition', () => {
+            let o: any = { }
             b = new ObjectDescriptor( o )
+    
             d = new PropertyDescriptor(b, 'foo')
-            d.default( o => 'bar' ).enumerable(false)
             d.install_dispatcher()
+            d.default(42).enumerable(false)
+            
+            expect(o.foo).toEqual(42)
+            expect(JSON.parse(JSON.stringify(o))).toEqual({})
 
-            o = {  }
+            o = {}
             b = new ObjectDescriptor( o )
             let c = new PropertyDescriptor(b, 'foo')
             c.include(d)
-            c.install_dispatcher()
-            o.foo = 'bar'
-    
-            /* test that the option is set */
-            expect(c.ʘenumerable).toBeTrue()
-            
-            /* test functionality */
+
+            expect(d.ʘenumerable).toBeFalse()
+            o.foo = 'hello'
+            // console.log("<<<<<<<<", o.foo)
+            expect(o.foo).toBe('hello')
             expect( JSON.parse(JSON.stringify(o)) ).toEqual({})
         })
 

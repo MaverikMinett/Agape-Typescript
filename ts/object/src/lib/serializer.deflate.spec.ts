@@ -126,7 +126,17 @@ describe('deflate', () => {
         let d = deflate(o)
         expect( d.foo ).toBeUndefined()
     })
+    it('should not deflate explicityly set nonenumerable properties', () => {
+        class AClass {
+            @nonenumerable
+            foo:string = "bar"
+        }
 
+        o = new AClass()
+        o.foo = "biz"
+        let d = deflate(o)
+        expect( d.foo ).toBeUndefined()
+    })
     it('should not deflate unpopulated lazy properties', () => {
         class AClass {
             @lazy("bar")
