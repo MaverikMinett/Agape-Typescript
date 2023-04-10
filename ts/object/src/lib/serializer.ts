@@ -81,13 +81,14 @@ export function deflate<T>( item: T, params?: any ): Pick<T, keyof T>
 export function deflate<T>( item: Array<T>, params?: any ):Array<Pick<T, keyof T>>
 export function deflate<T>( item: T|Array<T>, params?:any ): Pick<T, keyof T>|Array<Pick<T, keyof T>>  {
 
-    if ( item instanceof Object ) {
+    if ( item instanceof Array ) {
+        return deflateArray<T>(item as T[])
+    }
+    else if ( item instanceof Object ) {
         return deflateObject<T>( item as unknown as T )
     }
 
-    else if ( item instanceof Array ) {
-        return deflateArray<T>(item as T[])
-    }
+    // else 
 
     else return item
 }
@@ -99,7 +100,6 @@ function deflateObject<T>( item: T, params?:any ): Pick<T, keyof T> {
     let _item:any = item;
 
     let m:ObjectDescriptor = 'Δmeta' in _item? <ObjectDescriptor>_item['Δmeta'] : null
-
 
     for ( let field in item ) {
 
