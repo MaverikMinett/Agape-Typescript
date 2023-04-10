@@ -20,12 +20,64 @@ describe('deflate', () => {
     })
 
     it('should deflate an object', () => {
-        class SimpleObject{ foo: number = 43200 }
+        class SimpleObject{ foo: number }
+        o = new SimpleObject()
+        o.foo = 432000
+        d = deflate( o )
+        expect( d.foo ).toEqual(432000)
+    })
+    it('should deflate an object with a default value', () => {
+        class SimpleObject{ foo: number = 432000 }
         o = new SimpleObject()
         d = deflate( o )
-        expect( d.foo ).toEqual(43200)
+        expect( d.foo ).toEqual(432000)
     })
+    it('should deflate an object with a default value set in the constructor', () => {
+        class SimpleObject{ 
+            constructor ( public foo: number = 432000 ) {
 
+            }
+        }
+        o = new SimpleObject()
+        d = deflate( o )
+        console.log(o.foo)
+    })
+    it('should deflate an object with a constructor attribute', () => {
+        class SimpleObject{ 
+            constructor ( public foo: number ) {
+
+            }
+        }
+        o = new SimpleObject( 432000 )
+        d = deflate( o )
+        expect( d.foo ).toEqual(432000)
+    })
+    it('should deflate an object with a constructor attribute set explictily', () => {
+        class SimpleObject{ 
+            constructor ( foo?: number ) {
+
+            }
+        }
+        o = new SimpleObject( )
+        o.foo = 432000
+        d = deflate( o )
+        expect( d.foo ).toEqual(432000)
+    })
+    it('should deflate an array of objects', () => {
+        class SimpleObject { 
+            constructor ( public foo: number ) { 
+                
+            }
+        }
+        const o1 = new SimpleObject(43200)
+        const o2 = new SimpleObject(33333)
+        
+        d = deflate([o1,o2])
+        console.log(d)
+        expect(d).toEqual([{foo: 43200}, {foo: 33333}])
+
+        console.log( deflate(o1) )
+    })
     it('should deflate nested objects', () => {
 
         class AObject {
