@@ -159,31 +159,34 @@ describe('deflate', () => {
 
     })
 
-    it('should not deflate unset ephemeral properties', () => {
-
-        console.log("--------------------")
-
+    it('should deflate an object with no properties managed by agape', () => {
         class AObject { 
             @ephemeral( o => o.bar ) foo:number
         }
+    })
+
+    it('should not deflate unset ephemeral properties', () => {
+        class AObject { 
+            @ephemeral( o => 42 ) foo:number
+        }
 
         o = new AObject()
-        o.foo
         d = deflate(o)
 
         console.log(d)
-        // expect(d).toEqual({})
+        expect(d).toEqual({})
     })
+    
     it('should deflate ephemeral properties which have been explicitly set a value', () => {
         class AObject { 
-            @ephemeral( o => o.bar ) foo:number
+            @ephemeral( o => 42 ) foo:number
         }
 
         o = new AObject()
         o.foo = 32
         d = deflate(o)
 
-        // expect(d).toEqual({'foo': 32})
+        expect(d).toEqual({'foo': 32})
     })
 
     it('should not include methods', () => {

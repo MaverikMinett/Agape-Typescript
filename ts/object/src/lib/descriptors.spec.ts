@@ -374,7 +374,7 @@ describe('PropertyDescriptor', () => {
         expect(JSON.parse(JSON.stringify(o))).toEqual({})
     })
 
-    xit('should create an ephemeral property', () => {
+    it('should create an ephemeral property', () => {
         let o: any = { }
         b = new ObjectDescriptor( o )
 
@@ -384,7 +384,7 @@ describe('PropertyDescriptor', () => {
         
 
         expect(o.foo).toEqual(true)
-        expect(JSON.parse(JSON.stringify(o))).toEqual({})
+        expect(JSON.parse(JSON.stringify(o))).toEqual({foo: true})
     })
 
 })
