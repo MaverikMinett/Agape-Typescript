@@ -451,6 +451,19 @@ export class ObjectDescriptor {
 
 }
 
+
+/** 
+ * Property Initializer 
+ */
+
+function defaultInitializer( $this: PropertyDescriptor, instance: any ) {
+    let value = typeof $this.ʘdefault === "function" 
+        ? $this.ʘdefault.call(instance, instance)
+        : $this.ʘdefault
+
+    return value
+}
+
 /**
  * Property Dispatchers
  */
@@ -522,15 +535,8 @@ function shadowGetDispatcher( $this: PropertyDescriptor, instance: any ) {
  * @returns Value of the inheritied property if value is not set on the instance
  */
 function lazyGetDispatcher( $this: PropertyDescriptor, instance: any ) { 
-    // if ( instance[$this.name] !== undefined ) return instance[$this.name];
-
-    let value = typeof $this.ʘdefault === "function" 
-        ? $this.ʘdefault.call(instance, instance)
-        : $this.ʘdefault
-
-    Object.defineProperty(instance, `ʘ${$this.name}`, { value: value, configurable: true, enumerable: false } )
-
-    return instance[`ʘ${$this.name}`]
+    if ( instance['ʘ'+$this.name] !== undefined ) return instance['ʘ'+$this.name];
+    return $this.initializeValue( instance )
 }
 
 /**
@@ -668,6 +674,12 @@ export class PropertyDescriptor {
         return this
     }
 
+    initializeValue( instance: any ) {
+        const value = defaultInitializer(this, instance)
+        Object.defineProperty(instance, `ʘ${this.name}`, { value, configurable: true, enumerable: false } )
+        return value
+    }
+
     /**
      * A default value that will be instantiated the first time the property is accessed
      * @param value The default value for the property
@@ -703,19 +715,16 @@ export class PropertyDescriptor {
         /* delegate */
         if ( this.ʘdelegate && this.ʘdelegate.to ) return delegateGetDispatcher( this, instance )
 
-        if ( ! instance['ʘ' + this.name] ) {
+        if ( instance['ʘ' + this.name] !== undefined ) return instance['ʘ' + this.name]
 
-            /* inherit */
-            if ( this.ʘinherit )   return inheritGetDispatcher( this, instance )
-            if ( this.ʘlazy )      return lazyGetDispatcher( this, instance )
-            if ( this.ʘshadow )    return shadowGetDispatcher( this, instance )
-            if ( this.ʘephemeral ) return ephemeralGetDispatcher( this, instance )
+        /* inherit */
+        if ( this.ʘinherit )   return inheritGetDispatcher( this, instance )
+        if ( this.ʘlazy )      return lazyGetDispatcher( this, instance )
+        if ( this.ʘshadow )    return shadowGetDispatcher( this, instance )
+        if ( this.ʘephemeral ) return ephemeralGetDispatcher( this, instance )
 
-            /* default (lazy) */
-            lazyGetDispatcher(this, instance)
-        }
-
-        return instance['ʘ' + this.name]
+        /* default (lazy) */
+        return this.initializeValue(instance)
     }
 
     /**
