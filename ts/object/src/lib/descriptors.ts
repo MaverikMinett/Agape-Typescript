@@ -451,6 +451,32 @@ export class ObjectDescriptor {
 
 }
 
+/**
+ * Property Dispatchers
+ */
+function delegateGetDispatcher( $this:PropertyDescriptor, instance: any ) {
+    return typeof $this.ʘdelegate.to === "function"
+        ? $this.ʘdelegate.to.call(instance, instance)[$this.ʘdelegate.property || $this.name]
+        : ($this.ʘdelegate.to as any)[$this.ʘdelegate.property || $this.name]
+}
+
+function inheritGetDispatcher( $this: PropertyDescriptor, instance: any ) {
+    if ( typeof $this.ʘinherit.from === "function" ) {
+        let from = $this.ʘinherit.from.call(instance,instance)
+        return from !== undefined ? from[ $this.ʘinherit.property || $this.name ] : undefined
+    }
+    else {
+        return $this.ʘinherit.from ? ($this.ʘinherit.from as any)[ $this.ʘinherit.property || $this.name ] : undefined
+    }
+}
+
+function lazyGetDispatcher( $this: PropertyDescriptor, instance: any ) { 
+    let value = typeof $this.ʘdefault === "function" 
+        ? $this.ʘdefault.call(instance, instance)
+        : $this.ʘdefault
+
+    Object.defineProperty(instance, `ʘ${$this.name}`, { value: value, configurable: true, enumerable: false } )
+}
 
 /**
  * Describes the property of an object any associated modifiers. Provides
@@ -467,6 +493,8 @@ export class PropertyDescriptor {
     public ʘreadonly: boolean
     public ʘoverride: boolean
     public ʘinherit: { from?: Object|Function, property?: string }
+
+    public ʘlazy: boolean
 
     /**
      * @param progenitor The object to which the property belongs
@@ -564,6 +592,13 @@ export class PropertyDescriptor {
         return this
     }
 
+    lazy( value?:any ): this
+    lazy( ...args: any[] ): this {
+        this.ʘlazy = true;
+        args.length === 1 && this.default(args[0])
+        return this
+    }
+
     /**
      * Get the value of the property on the given object, delegating or building
      * the property value as necessary
@@ -571,32 +606,25 @@ export class PropertyDescriptor {
      */
     get( instance:any ) {
 
+
+
+
+
+
+
+
         /* delegate */
-        if ( this.ʘdelegate && this.ʘdelegate.to ) {
-            return typeof this.ʘdelegate.to === "function"
-            ? this.ʘdelegate.to.call(instance, instance)[this.ʘdelegate.property || this.name]
-            : (this.ʘdelegate.to as any)[this.ʘdelegate.property || this.name]
-        }
+        if ( this.ʘdelegate && this.ʘdelegate.to ) return delegateGetDispatcher( this, instance )
 
         if ( ! instance['ʘ' + this.name] ) {
 
             /* inherit */
-            if ( this.ʘinherit ) {
-                if ( typeof this.ʘinherit.from === "function" ) {
-                    let from = this.ʘinherit.from.call(instance,instance)
-                    return from !== undefined ? from[ this.ʘinherit.property || this.name ] : undefined
-                }
-                else {
-                    return this.ʘinherit.from ? (this.ʘinherit.from as any)[ this.ʘinherit.property || this.name ] : undefined
-                }
-            }
+            if ( this.ʘinherit ) return inheritGetDispatcher( this, instance )
+            if ( this.ʘlazy )    return lazyGetDispatcher( this, instance )
+            
 
             /* default (lazy) */
-            let value = typeof this.ʘdefault === "function" 
-                ? this.ʘdefault.call(instance, instance)
-                : this.ʘdefault
-
-            Object.defineProperty(instance, `ʘ${this.name}`, { value: value, configurable: true, enumerable: false } )
+            lazyGetDispatcher(this, instance)
         }
 
         return instance['ʘ' + this.name]
