@@ -117,10 +117,10 @@ function deflateObject<T>( item: T, params?:DeflateParams ): Pick<T, keyof T> {
             if ( m.property(field)['ʘdelegate'] ) continue
 
             /* ignore lazy properties that are not instantiated */
-            if ( m.property(field)['ʘephemeral'] && ! params?.ephemeral && item['ʘ'+field] === undefined ) continue
+            // if ( m.property(field)['ʘlazy'] && ! params?.lazy && item['ʘ'+field] === undefined ) continue
 
-            /* ignore lazy properties that have no value */
-            if ( m.property(field)['ʘlazy'] && ! params?.lazy && item['ʘ'+field] === undefined ) continue
+            /* ignore ephemeral properties that have no value */
+            if ( m.property(field)['ʘephemeral'] && ! params?.ephemeral && item['ʘ'+field] === undefined ) continue
 
             /* ignore unpopulated inherited properties with undefined value */
             if ( m.property(field)['ʘinherit']  ) {
