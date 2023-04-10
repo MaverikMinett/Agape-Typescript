@@ -374,6 +374,19 @@ describe('PropertyDescriptor', () => {
         expect(JSON.parse(JSON.stringify(o))).toEqual({})
     })
 
+    xit('should create an ephemeral property', () => {
+        let o: any = { }
+        b = new ObjectDescriptor( o )
+
+        d = new PropertyDescriptor(b, 'foo')
+        d.install_dispatcher()
+        d.ephemeral(true)
+        
+
+        expect(o.foo).toEqual(true)
+        expect(JSON.parse(JSON.stringify(o))).toEqual({})
+    })
+
 })
 
 

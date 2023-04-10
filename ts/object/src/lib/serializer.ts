@@ -107,6 +107,7 @@ function deflateObject<T>( item: T, params?:any ): Pick<T, keyof T> {
         if ( m && m.properties.has(field) ) {
             /* ignore delegated properties */
             if ( m.property(field)['ʘdelegate'] ) continue
+            if ( m.property(field)['ʘephemeral'] ) continue
             /* ignore unpopulated inherited properties with undefined value */
             if ( m.property(field)['ʘinherit']  ) {
                 if ( _item[`ʘ${field}`] === undefined ) {
@@ -149,3 +150,42 @@ function deflateArray<T>( items:Array<T>, params?: any ): Array<Pick<T, keyof T>
 
 
 
+
+
+
+// function deflateEphemeralproperty( outputObject: Dictionary, propertyName: string, value ) {
+//     // if the property has a value explicitly set
+// }
+
+// function safePropertyDeflate( outputObject: Dictionary, propertyName: string, value: any ) {
+//         /* get the deflated value, skip method definitions, this is required when exporting 
+//         to ES5, because method definitions show up in for .. in, however as of ES6 and later
+//         methods are consider enumerable. We will check if the value is a function here, if it
+//         is, the field will not be serialized */
+//         if ( typeof value != "function" )  outputObject[propertyName] = deflate( value )
+// }
+
+
+
+// if field is not managed by agape, just serialize it
+//  if ( ! m || ! m.properties.has(field) ) safePropertyDeflate(r, field, item[field] )
+
+// the field is managed by agape, account for inheritied, delegated, ephemeral, and shadow properties
+
+// if the field is inherited, ignore it
+
+
+    // 
+
+// if it is manage by agape
+    
+    // if the value is explicitly set
+
+        // just serialize it
+    
+    // if it is not explicitly set    
+
+        // and is ephemeral, take the ephemeral value
+
+
+// if ( m.property(field)['ʘephemeral'] ) continue

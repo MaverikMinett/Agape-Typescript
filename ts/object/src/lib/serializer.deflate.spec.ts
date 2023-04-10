@@ -8,6 +8,7 @@ import { lazy } from './decorators/lazy'
 import { delegate } from './decorators/delegate'
 import { inherit } from './decorators/inherit'
 import { nonenumerable } from './decorators/nonenumerable'
+import { ephemeral } from './decorators/ephemeral'
 
 let o:any, d:any
 describe('deflate', () => {
@@ -158,6 +159,32 @@ describe('deflate', () => {
 
     })
 
+    it('should not deflate unset ephemeral properties', () => {
+
+        console.log("--------------------")
+
+        class AObject { 
+            @ephemeral( o => o.bar ) foo:number
+        }
+
+        o = new AObject()
+        o.foo
+        d = deflate(o)
+
+        console.log(d)
+        // expect(d).toEqual({})
+    })
+    it('should deflate ephemeral properties which have been explicitly set a value', () => {
+        class AObject { 
+            @ephemeral( o => o.bar ) foo:number
+        }
+
+        o = new AObject()
+        o.foo = 32
+        d = deflate(o)
+
+        // expect(d).toEqual({'foo': 32})
+    })
 
     it('should not include methods', () => {
         class SimpleObject {

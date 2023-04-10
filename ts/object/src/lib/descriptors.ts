@@ -454,18 +454,38 @@ export class ObjectDescriptor {
 /**
  * Property Dispatchers
  */
+
+/**
+ * Delegate 'get' property access to another object
+ * @param $this PropertyDescriptor
+ * @param instance Instance of the object to act on
+ * @returns Value of the property on the delegated object
+ */
 function delegateGetDispatcher( $this: PropertyDescriptor, instance: any ) {
     return typeof $this.ʘdelegate.to === "function"
         ? $this.ʘdelegate.to.call(instance, instance)[$this.ʘdelegate.property || $this.name]
         : ($this.ʘdelegate.to as any)[$this.ʘdelegate.property || $this.name]
 }
 
+/**
+ * Delegate 'set' property access to another object
+ * @param $this PropertyDescriptor
+ * @param instance Instance of the object to act on
+ * @param value The new value of the property
+ * @returns Value of the property on the delegated object
+ */
 function delegateSetDispatcher( $this: PropertyDescriptor, instance: any, value: any ) {
     return typeof $this.ʘdelegate.to === "function"
         ? $this.ʘdelegate.to.call(instance, instance)[$this.ʘdelegate.property || $this.name] = value
         : ($this.ʘdelegate.to as any)[$this.ʘdelegate.property || $this.name] = value
 }
 
+/**
+ * Inherit 'get' property access to from another object
+ * @param $this PropertyDescriptor
+ * @param instance Instance of the object to act on
+ * @returns Value of the inheritied property if value is not set on the instance
+ */
 function inheritGetDispatcher( $this: PropertyDescriptor, instance: any ) {
     if ( typeof $this.ʘinherit.from === "function" ) {
         let from = $this.ʘinherit.from.call(instance,instance)
@@ -476,7 +496,15 @@ function inheritGetDispatcher( $this: PropertyDescriptor, instance: any ) {
     }
 }
 
+/**
+ * Initialize the value of the property the first time it is accessed
+ * @param $this PropertyDescriptor
+ * @param instance Instance of the object to act on
+ * @returns Value of the inheritied property if value is not set on the instance
+ */
 function lazyGetDispatcher( $this: PropertyDescriptor, instance: any ) { 
+    // if ( instance[$this.name] !== undefined ) return instance[$this.name];
+
     let value = typeof $this.ʘdefault === "function" 
         ? $this.ʘdefault.call(instance, instance)
         : $this.ʘdefault
@@ -484,7 +512,17 @@ function lazyGetDispatcher( $this: PropertyDescriptor, instance: any ) {
     Object.defineProperty(instance, `ʘ${$this.name}`, { value: value, configurable: true, enumerable: false } )
 }
 
-
+/**
+ * Provide a default value for a property which is unset
+ * @param $this PropertyDescriptor
+ * @param instance Instance of the object to act on
+ * @returns The ephemeral value
+ */
+function ephemeralGetDispatcher( $this: PropertyDescriptor, instance: any ) {
+    return typeof $this.ʘephemeral === "function" 
+        ? $this.ʘephemeral.call(instance, instance)
+        : $this.ʘephemeral
+}
 
 /**
  * Describes the property of an object any associated modifiers. Provides
@@ -503,6 +541,7 @@ export class PropertyDescriptor {
     public ʘinherit: { from?: Object|Function, property?: string }
 
     public ʘlazy: boolean
+    public ʘephemeral: any
 
     /**
      * @param progenitor The object to which the property belongs
@@ -612,6 +651,16 @@ export class PropertyDescriptor {
     }
 
     /**
+     * A default value that will be provided when the property is accessed if the property
+     * has not been set
+     * @param value The ephemeral value for the property
+     */
+    ephemeral( value: any ) {
+        if ( value === undefined ) delete this.ʘephemeral
+        else this.ʘephemeral = value
+    }
+
+    /**
      * Get the value of the property on the given object, delegating or building
      * the property value as necessary
      * @param instance The object on which to act
@@ -624,9 +673,9 @@ export class PropertyDescriptor {
         if ( ! instance['ʘ' + this.name] ) {
 
             /* inherit */
-            if ( this.ʘinherit ) return inheritGetDispatcher( this, instance )
-            if ( this.ʘlazy )    return lazyGetDispatcher( this, instance )
-            
+            if ( this.ʘinherit )   return inheritGetDispatcher( this, instance )
+            if ( this.ʘlazy )      return lazyGetDispatcher( this, instance )
+            if ( this.ʘephemeral ) return ephemeralGetDispatcher( this, instance )
 
             /* default (lazy) */
             lazyGetDispatcher(this, instance)
