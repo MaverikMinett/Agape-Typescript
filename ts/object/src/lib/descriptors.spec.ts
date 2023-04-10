@@ -541,9 +541,29 @@ describe('PropertyDescriptor', () => {
             b = new ObjectDescriptor( o )
             let c = new PropertyDescriptor(b, 'foo')
             c.include(d)
+            c.install_dispatcher()
     
             /* test that the option is set */
             expect(c.ʘshadow).toBe('bar')
+
+            /* test functionality */
+            expect( c.get(o) ).toBe('bar')
+        })
+
+        it('should include lazy definition', () => {
+            o = {  }
+            b = new ObjectDescriptor( o )
+            d = new PropertyDescriptor(b, 'foo')
+            d.lazy('bar')
+            d.install_dispatcher()
+    
+            o = {  }
+            b = new ObjectDescriptor( o )
+            let c = new PropertyDescriptor(b, 'foo')
+            c.include(d)
+    
+            /* test that the option is set */
+            expect(c.ʘlazy).toBe(true)
 
             /* test functionality */
             expect( c.get(o) ).toBe('bar')

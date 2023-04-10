@@ -646,6 +646,7 @@ export class PropertyDescriptor {
     include( from: PropertyDescriptor ) {
         if ( this.ʘdefault === undefined || from.ʘoverride === true ) this.ʘdefault = from.ʘdefault
         if ( ! ( from.ʘoverride === undefined ) ) this.ʘoverride = from.ʘoverride
+        if ( ! ( from.ʘlazy === undefined ) ) this.ʘlazy = from.ʘlazy
         if ( ! ( from.ʘreadonly === undefined ) ) this.ʘreadonly = from.ʘreadonly
         if ( ! ( from.ʘdelegate === undefined ) ) this.ʘdelegate = {...from.ʘdelegate}
         if ( ! ( from.ʘephemeral === undefined ) ) this.ʘephemeral = from.ʘephemeral
