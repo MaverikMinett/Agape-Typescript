@@ -77,23 +77,27 @@ export function inflateArray( to:Class|Serializer, from:Dictionary[] )
 /**
  * Deflate
  */
-export function deflate<T>( item: T, params?: any ): Pick<T, keyof T>
-export function deflate<T>( item: Array<T>, params?: any ):Array<Pick<T, keyof T>>
-export function deflate<T>( item: T|Array<T>, params?:any ): Pick<T, keyof T>|Array<Pick<T, keyof T>>  {
+export interface DeflateParams {
+    ephemeral: boolean
+}
+
+export function deflate<T>( item: T, params?: DeflateParams ): Pick<T, keyof T>
+export function deflate<T>( item: Array<T>, params?: DeflateParams ):Array<Pick<T, keyof T>>
+export function deflate<T>( item: T|Array<T>, params?: DeflateParams ): Pick<T, keyof T>|Array<Pick<T, keyof T>>  {
 
     if ( item instanceof Object ) {
-        return deflateObject<T>( item as unknown as T )
+        return deflateObject<T>( item as unknown as T, params )
     }
 
     else if ( item instanceof Array ) {
-        return deflateArray<T>(item as T[])
+        return deflateArray<T>(item as T[], params)
     }
 
     else return item
 }
 
 
-function deflateObject<T>( item: T, params?:any ): Pick<T, keyof T> {
+function deflateObject<T>( item: T, params?:DeflateParams ): Pick<T, keyof T> {
     let r:any = {}
 
     let _item:any = item;
@@ -112,7 +116,7 @@ function deflateObject<T>( item: T, params?:any ): Pick<T, keyof T> {
             if ( m.property(field)['ʘdelegate'] ) continue
 
             /* ignore ephemeral properties that have no value */
-            if ( m.property(field)['ʘephemeral'] && item['ʘ'+field] === undefined ) continue
+            if ( m.property(field)['ʘephemeral'] && ! params?.ephemeral && item['ʘ'+field] === undefined ) continue
 
             /* ignore unpopulated inherited properties with undefined value */
             if ( m.property(field)['ʘinherit']  ) {
@@ -135,8 +139,8 @@ function deflateObject<T>( item: T, params?:any ): Pick<T, keyof T> {
     return r
 }
 
-function deflateArray<T>( items:Array<T>, params?: any ): Array<Pick<T, keyof T>> {
-    return items.map( item => deflate(item) )
+function deflateArray<T>( items:Array<T>, params?: DeflateParams ): Array<Pick<T, keyof T>> {
+    return items.map( item => deflate(item, params) )
 }
 
 function safePropertyDeflate( outputObject: Dictionary, propertyName: string, item: any ) {
@@ -163,6 +167,3 @@ function coerceProperty( outputObject: Dictionary, field: string, instance: any 
     }
 }
 
-function coerceAndDeflateProperty() {
-
-}

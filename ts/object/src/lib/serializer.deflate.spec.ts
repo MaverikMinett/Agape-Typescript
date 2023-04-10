@@ -176,7 +176,7 @@ describe('deflate', () => {
         console.log(d)
         expect(d).toEqual({})
     })
-    
+
     it('should deflate ephemeral properties which have been explicitly set a value', () => {
         class AObject { 
             @ephemeral( o => 42 ) foo:number
@@ -187,6 +187,30 @@ describe('deflate', () => {
         d = deflate(o)
 
         expect(d).toEqual({'foo': 32})
+    })
+
+    it('should deflate ephemeral properties if the ephemeral option is set', () => {
+        class AObject { 
+            @ephemeral( o => 42 ) foo:number
+        }
+
+        o = new AObject()
+        d = deflate(o, { ephemeral: true })
+
+        console.log(d)
+        expect(d).toEqual({foo: 42})
+    })
+
+    xit('should deflate an array of objects where the ephemeral option is set', () => {
+        class AObject { 
+            @ephemeral( o => 42 ) foo:number
+        }
+
+        const [o1, o2] = [new AObject(), new AObject()]
+        d = deflate([o1,o2], { ephemeral: true })
+
+        console.log(d)
+        expect(d).toEqual([{foo: 42}, {foo:42}])
     })
 
     it('should not include methods', () => {
