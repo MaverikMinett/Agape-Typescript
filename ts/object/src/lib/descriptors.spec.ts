@@ -531,18 +531,22 @@ describe('PropertyDescriptor', () => {
         })
 
         it('should include shadow definitions', () => {
-            // o = {  }
-            // b = new ObjectDescriptor( o )
-            // d = new PropertyDescriptor(b, 'foo')
-            // d.default( o => 'bar' ).readonly(true)
+            o = {  }
+            b = new ObjectDescriptor( o )
+            d = new PropertyDescriptor(b, 'foo')
+            d.shadow('bar')
+            d.install_dispatcher()
     
-            // o = {  }
-            // b = new ObjectDescriptor( o )
-            // let c = new PropertyDescriptor(b, 'foo')
-            // c.include(d)
+            o = {  }
+            b = new ObjectDescriptor( o )
+            let c = new PropertyDescriptor(b, 'foo')
+            c.include(d)
     
-            
-            // expect( c.get(o) ).toBe('bar')
+            /* test that the option is set */
+            expect(c.ʘshadow).toBe('bar')
+
+            /* test functionality */
+            expect( c.get(o) ).toBe('bar')
         })
 
     })

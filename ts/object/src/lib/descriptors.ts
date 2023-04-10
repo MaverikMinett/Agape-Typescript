@@ -650,7 +650,7 @@ export class PropertyDescriptor {
         if ( ! ( from.ʘdelegate === undefined ) ) this.ʘdelegate = {...from.ʘdelegate}
         if ( ! ( from.ʘephemeral === undefined ) ) this.ʘephemeral = from.ʘephemeral
         if ( ! ( from.ʘenumerable === undefined ) ) this.ʘenumerable = from.ʘenumerable
-        // if ( ! ( from.ʘshadow === undefined ) ) this.ʘshadow = from.ʘshadow
+        if ( ! ( from.ʘshadow === undefined ) ) this.ʘshadow = from.ʘshadow
         this.install_dispatcher()
         return this
     }
