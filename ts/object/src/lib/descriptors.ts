@@ -454,10 +454,16 @@ export class ObjectDescriptor {
 /**
  * Property Dispatchers
  */
-function delegateGetDispatcher( $this:PropertyDescriptor, instance: any ) {
+function delegateGetDispatcher( $this: PropertyDescriptor, instance: any ) {
     return typeof $this.ʘdelegate.to === "function"
         ? $this.ʘdelegate.to.call(instance, instance)[$this.ʘdelegate.property || $this.name]
         : ($this.ʘdelegate.to as any)[$this.ʘdelegate.property || $this.name]
+}
+
+function delegateSetDispatcher( $this: PropertyDescriptor, instance: any, value: any ) {
+    return typeof $this.ʘdelegate.to === "function"
+        ? $this.ʘdelegate.to.call(instance, instance)[$this.ʘdelegate.property || $this.name] = value
+        : ($this.ʘdelegate.to as any)[$this.ʘdelegate.property || $this.name] = value
 }
 
 function inheritGetDispatcher( $this: PropertyDescriptor, instance: any ) {
@@ -477,6 +483,8 @@ function lazyGetDispatcher( $this: PropertyDescriptor, instance: any ) {
 
     Object.defineProperty(instance, `ʘ${$this.name}`, { value: value, configurable: true, enumerable: false } )
 }
+
+
 
 /**
  * Describes the property of an object any associated modifiers. Provides
@@ -592,26 +600,12 @@ export class PropertyDescriptor {
         return this
     }
 
-    lazy( value?:any ): this
-    lazy( ...args: any[] ): this {
-        this.ʘlazy = true;
-        args.length === 1 && this.default(args[0])
-        return this
-    }
-
     /**
      * Get the value of the property on the given object, delegating or building
      * the property value as necessary
      * @param instance The object on which to act
      */
     get( instance:any ) {
-
-
-
-
-
-
-
 
         /* delegate */
         if ( this.ʘdelegate && this.ʘdelegate.to ) return delegateGetDispatcher( this, instance )
@@ -641,12 +635,8 @@ export class PropertyDescriptor {
         if ( this.ʘreadonly ) throw new Error('Cannot write to read-only value')
 
         /* delegate */
-        if ( this.ʘdelegate && this.ʘdelegate.to ) {
-            return typeof this.ʘdelegate.to === "function"
-            ? this.ʘdelegate.to.call(instance, instance)[this.ʘdelegate.property || this.name] = value
-            : (this.ʘdelegate.to as any)[this.ʘdelegate.property || this.name] = value
-        }
-
+        if ( this.ʘdelegate && this.ʘdelegate.to ) return delegateSetDispatcher(this, instance, value)
+        
         Object.defineProperty(instance, `ʘ${this.name}`, { value: value, configurable: true, enumerable: false } )
     }
 
