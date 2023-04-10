@@ -497,6 +497,25 @@ function inheritGetDispatcher( $this: PropertyDescriptor, instance: any ) {
 }
 
 /**
+ * Retrieve cached default vaue if property is not initialized
+ * @param $this PropertyDescriptor
+ * @param instance Instance of the object to act on
+ * @returns Value of the inheritied property if value is not set on the instance
+ */
+function shadowGetDispatcher( $this: PropertyDescriptor, instance: any ) {
+    if ( instance['ʘ'+$this.name] !== undefined ) return instance['ʘ'+$this.name]
+    if ( instance['ʘʘ'+$this.name] !== undefined ) return instance['ʘʘ'+$this.name]
+
+    let value = typeof $this.ʘshadow === "function" 
+        ? $this.ʘshadow.call(instance, instance)
+        : $this.ʘshadow
+
+    Object.defineProperty(instance, `ʘʘ${$this.name}`, { value: value, configurable: true, enumerable: false } )
+    return value
+}
+
+
+/**
  * Initialize the value of the property the first time it is accessed
  * @param $this PropertyDescriptor
  * @param instance Instance of the object to act on
@@ -542,6 +561,7 @@ export class PropertyDescriptor {
 
     public ʘlazy: boolean
     public ʘephemeral: any
+    public ʘshadow: any
 
     /**
      * @param progenitor The object to which the property belongs
@@ -624,6 +644,9 @@ export class PropertyDescriptor {
         if ( this.ʘdefault === undefined || from.ʘoverride === true ) this.ʘdefault = from.ʘdefault
         if ( ! ( from.ʘoverride === undefined ) ) this.ʘoverride = from.ʘoverride
         if ( ! ( from.ʘreadonly === undefined ) ) this.ʘreadonly = from.ʘreadonly
+        // if ( ! ( from.ʘdelegate === undefined ) ) this.ʘdelegate = {...from.ʘdelegate}
+        // if ( ! ( from.ʘreadonly === undefined ) ) this.ʘephemeral = from.ʘephemeral
+        // if ( ! ( from.ʘreadonly === undefined ) ) this.ʘshadow = from.ʘshadow
         return this
     }
 
@@ -660,6 +683,11 @@ export class PropertyDescriptor {
         else this.ʘephemeral = value
     }
 
+    shadow(value: any) {
+        if ( value === undefined ) delete this.ʘshadow
+        else this.ʘshadow = value
+    }
+
     /**
      * Get the value of the property on the given object, delegating or building
      * the property value as necessary
@@ -675,6 +703,7 @@ export class PropertyDescriptor {
             /* inherit */
             if ( this.ʘinherit )   return inheritGetDispatcher( this, instance )
             if ( this.ʘlazy )      return lazyGetDispatcher( this, instance )
+            if ( this.ʘshadow )    return shadowGetDispatcher( this, instance )
             if ( this.ʘephemeral ) return ephemeralGetDispatcher( this, instance )
 
             /* default (lazy) */
