@@ -40,7 +40,7 @@ describe('deflate', () => {
         }
         o = new SimpleObject()
         d = deflate( o )
-        console.log(o.foo)
+        expect( d.foo ).toEqual(432000)
     })
     it('should deflate an object with a constructor attribute', () => {
         class SimpleObject{ 
@@ -73,10 +73,7 @@ describe('deflate', () => {
         const o2 = new SimpleObject(33333)
         
         d = deflate([o1,o2])
-        console.log(d)
         expect(d).toEqual([{foo: 43200}, {foo: 33333}])
-
-        console.log( deflate(o1) )
     })
     it('should deflate nested objects', () => {
 
@@ -129,23 +126,38 @@ describe('deflate', () => {
         expect( d.foo ).toBeUndefined()
     })
 
-    // xit('should not deflate unpopulated lazy properties', () => {
-    //     class AClass {
-    //         @lazy("bar")
-    //         foo:string
-    //     }
+    xit('should not deflate unpopulated lazy properties', () => {
+        class AClass {
+            @lazy("bar")
+            foo:string
+        }
 
-    //     o = new AClass()
-    //     let d = deflate(o)
-    //     expect( d.foo ).toBeUndefined()
+        o = new AClass()
+        let d = deflate(o)
+        expect( d.foo ).toBeUndefined()
+    })
+    it('should deflate populated lazy properties', () => {
+        class AClass {
+            @lazy("bar")
+            foo:string
+        }
 
-    //     o = new AClass()
-    //     o.foo
+        o = new AClass()
+        o.foo
 
-    //     d = deflate(o)
-    //     expect( d.foo ).toEqual("bar")
+        d = deflate(o)
+        expect( d.foo ).toEqual("bar")
+    })
+    it('should deflate unpopulated lazy properties with lazy option set', () => {
+        class AClass {
+            @lazy("bar")
+            foo:string
+        }
 
-    // })
+        o = new AClass()
+        let d = deflate(o, { lazy: true })
+        expect( d.foo ).toBe('bar')
+    })
 
     it('should not deflate inheritied properties', () => {
 
@@ -225,7 +237,6 @@ describe('deflate', () => {
         o = new AObject()
         d = deflate(o)
 
-        console.log(d)
         expect(d).toEqual({})
     })
 
@@ -249,11 +260,10 @@ describe('deflate', () => {
         o = new AObject()
         d = deflate(o, { ephemeral: true })
 
-        console.log(d)
         expect(d).toEqual({foo: 42})
     })
 
-    xit('should deflate an array of objects where the ephemeral option is set', () => {
+    it('should deflate an array of objects where the ephemeral option is set', () => {
         class AObject { 
             @ephemeral( o => 42 ) foo:number
         }
@@ -261,7 +271,6 @@ describe('deflate', () => {
         const [o1, o2] = [new AObject(), new AObject()]
         d = deflate([o1,o2], { ephemeral: true })
 
-        console.log(d)
         expect(d).toEqual([{foo: 42}, {foo:42}])
     })
 
