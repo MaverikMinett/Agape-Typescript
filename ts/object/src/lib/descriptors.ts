@@ -674,6 +674,11 @@ export class PropertyDescriptor {
         return this
     }
 
+    /**
+     * Initialize a property with the default value
+     * @param instance The instance to act on
+     * @returns 
+     */
     initializeValue( instance: any ) {
         const value = defaultInitializer(this, instance)
         Object.defineProperty(instance, `ʘ${this.name}`, { value, configurable: true, enumerable: false } )
@@ -692,7 +697,7 @@ export class PropertyDescriptor {
 
     /**
      * A default value that will be provided when the property is accessed if the property
-     * has not been set
+     * has not been set (ephemeral values are not cached)
      * @param value The ephemeral value for the property
      */
     ephemeral( value: any ) {
@@ -700,6 +705,11 @@ export class PropertyDescriptor {
         else this.ʘephemeral = value
     }
 
+    /**
+     * A default value that will be provided for the property if the property
+     * has not been set (shadowed value is cached)
+     * @param value The shadow value for the property
+     */
     shadow(value: any) {
         if ( value === undefined ) delete this.ʘshadow
         else this.ʘshadow = value
