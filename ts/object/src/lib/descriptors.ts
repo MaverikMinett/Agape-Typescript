@@ -716,6 +716,14 @@ export class PropertyDescriptor {
     }
 
     /**
+     * Clear the shadow value for a property
+     * @param instance The object instance to act on
+     */
+    clearShadow( instance: any ) {
+        delete instance[`ʘʘ${this.name}`]
+    }
+
+    /**
      * Get the value of the property on the given object, delegating or building
      * the property value as necessary
      * @param instance The object on which to act
@@ -776,6 +784,12 @@ export class PropertyDescriptor {
             configurable: true,
             writable: true
         } )
+    }
+
+    installDispatchers() {
+        let descriptor = this
+
+        
     }
 
 

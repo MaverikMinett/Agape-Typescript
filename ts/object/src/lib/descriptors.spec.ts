@@ -402,6 +402,26 @@ describe('PropertyDescriptor', () => {
         expect(JSON.parse(JSON.stringify(o))).toEqual({foo: true})
     })
 
+    describe('clearShadow', () => {
+        it('should clear the shadow value', () => {
+            let o: any = { }
+            b = new ObjectDescriptor( o )
+    
+            d = new PropertyDescriptor(b, 'foo')
+            d.install_dispatcher()
+            d.shadow(true)
+            
+            expect(o.foo).toEqual(true)
+            expect(o.ʘfoo).toEqual(undefined)
+            expect(o.ʘʘfoo).toEqual(true)
+
+            d.clearShadow(o)
+            expect(o.ʘʘfoo).toEqual(undefined)
+        })
+    })
+
+
+
     describe('include', () => {
 
         it('should include the default option', () => {
