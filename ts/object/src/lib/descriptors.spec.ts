@@ -639,13 +639,63 @@ describe('PropertyDescriptorSet', () => {
         })
     })
 
+    describe('has', () => {
+        it('should return true', () => {
+            o = {}
+            d = new ObjectDescriptor(o)
+            s = new PropertyDescriptorSet(d)
+    
+            const p = new PropertyDescriptor(d, 'foo')
+            s.set('foo', p)
+            expect(s.has('foo')).toBeTrue()
+        })
+        it('should return false', () => {
+            o = {}
+            d = new ObjectDescriptor(o)
+            s = new PropertyDescriptorSet(d)
+            expect(s.has('foo')).toBeFalse()
+        })
+    })
+
+    describe('add', () => {
+        it('should return true', () => {
+            o = {}
+            d = new ObjectDescriptor(o)
+            s = new PropertyDescriptorSet(d)
+    
+            const p = new PropertyDescriptor(d, 'foo')
+            s.add(p)
+            expect(s.has('foo')).toBeTrue()
+        })
+        it('should return false', () => {
+            o = {}
+            d = new ObjectDescriptor(o)
+            s = new PropertyDescriptorSet(d)
+            expect(s.has('foo')).toBeFalse()
+        })
+    })
+
+    describe('merge', () => {
+
+    })
+
     describe('names', () => {
         it('should retrieve all property names', () => {
 
         })
     })
 
+    describe('get', () => {
 
+    })
+
+    describe('set', () => {
+
+    })
+
+    describe('forEach', () => {
+
+    })
 
 })
 
