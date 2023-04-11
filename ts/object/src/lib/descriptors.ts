@@ -815,6 +815,24 @@ export class PropertyDescriptorSet {
     }
 
     /**
+     * Add a property to the set
+     * @param property 
+     */
+    add( property: PropertyDescriptor ) {
+        this.set(property.name, property)
+    }
+
+    /**
+     * Return all property descriptors in the set
+     * @returns Array of PropertyDescriptor objects
+     */
+    all(): PropertyDescriptor[] {
+        return Object.getOwnPropertyNames(this.ʘ).map( name => this.ʘ[name] )
+        // not supported in ES2015 - need to support ES2015?
+        // return Object.values(this.ʘ)
+    }
+
+    /**
      * Merge descriptors from another set into this set
      * @param from 
      */
@@ -845,12 +863,6 @@ export class PropertyDescriptorSet {
      */
     get names( ): Array<string> {
         return Object.getOwnPropertyNames(this.ʘ)
-    }
-
-    all(): PropertyDescriptor[] {
-        return Object.getOwnPropertyNames(this.ʘ).map( name => this.ʘ[name] )
-        // not supported in ES2015 - need to support ES2015?
-        // return Object.values(this.ʘ)
     }
 
     /**
