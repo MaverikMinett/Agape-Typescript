@@ -1,5 +1,4 @@
 import { } from 'jasmine'
-import { include } from './decorators/include';
 
 import { MethodDescriptor, MethodDescriptorSet, ObjectDescriptor, PropertyDescriptor, PropertyDescriptorSet  } from './descriptors'
 
@@ -593,6 +592,63 @@ describe('PropertyDescriptor', () => {
 })
 
 
+describe('PropertyDescriptorSet', () => {
+
+    let o: any
+    let s: PropertyDescriptorSet
+    let d: ObjectDescriptor
+
+    beforeEach( () => { 
+        s = undefined
+    })
+
+    it('should instantiate', () => {
+        o = {}
+        d = new ObjectDescriptor(o)
+        s = new PropertyDescriptorSet(d)
+        expect(s).toBeTruthy()
+    })
+
+    it('should have the properties', () => {
+        o = {}
+        d = new ObjectDescriptor(o)
+        s = new PropertyDescriptorSet(d)
+
+        const p1 = new PropertyDescriptor(d, 'foo');
+        (s as any).ʘ['foo'] = p1
+
+        expect(s.has('foo')).toBeTruthy()
+    })
+
+    describe('all', () => {
+        it('should retrieve all properties', () => {
+            o = {}
+            d = new ObjectDescriptor(o)
+            s = new PropertyDescriptorSet(d)
+    
+            const p1 = new PropertyDescriptor(d, 'foo');
+            (s as any).ʘ['foo'] = p1
+
+            const p2 = new PropertyDescriptor(d, 'bar');
+            (s as any).ʘ['bar'] = p2
+
+            expect(s.has('foo')).toBeTruthy()
+            expect(s.has('bar')).toBeTruthy()
+            expect(s.all().length).toBe(2)
+            expect(s.all()).toEqual([p1,p2])
+        })
+    })
+
+    describe('names', () => {
+        it('should retrieve all property names', () => {
+
+        })
+    })
+
+
+
+})
+
 
 describe('ObjectDescriptor', () => {
 
@@ -834,6 +890,47 @@ describe('ObjectDescriptor', () => {
             ac.Δmeta.include(BTrait)
 
             expect( ac.Δmeta.does(ATrait) ).toBeTrue()
+        })
+    })
+
+    describe('clearShadows', () => {
+        it('should clear the shadow value of each shadow property', () => {
+            let o: any = {}
+            let d = new ObjectDescriptor(o)
+
+            const p1 = d.property('foo')
+            d.property('foo').shadow('food')
+            p1.install_dispatcher()
+
+            let p2 = d.property('bar')
+            p2.shadow('bard')
+            p2.install_dispatcher()
+
+            let p3 = d.property('baz')
+
+            /* value and shadow value should be unset */
+            expect(p1.ʘshadow).toEqual('food')
+            expect(o.ʘfoo).toEqual(undefined)
+            expect(o.ʘʘfoo).toEqual(undefined)
+
+            /* access the value */
+            o.foo;
+
+            /* shadow value should now be set */
+            expect(o.ʘfoo).toEqual(undefined)
+            expect(o.ʘʘfoo).toEqual('food')
+
+            /* repeat for second property */
+            expect(p2.ʘshadow).toEqual('bard')
+            expect(o.ʘbar).toEqual(undefined)
+            expect(o.ʘʘbar).toEqual(undefined)
+
+            o.bar;
+
+            expect(o.ʘbar).toEqual(undefined)
+            expect(o.ʘʘbar).toEqual('bard')
+
+            d.clearShadows(o)
         })
     })
 

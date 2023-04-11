@@ -447,7 +447,13 @@ export class ObjectDescriptor {
         return targetConstructor
     }
 
+    clearShadows( instance: any ) {
+        const properties = this.properties.all().filter(p => p.ʘshadow !== undefined )
 
+        for ( let property of properties ) {
+            property.clearShadow(instance)
+        }
+    }
 
 }
 
@@ -839,6 +845,12 @@ export class PropertyDescriptorSet {
      */
     get names( ): Array<string> {
         return Object.getOwnPropertyNames(this.ʘ)
+    }
+
+    all(): PropertyDescriptor[] {
+        return Object.getOwnPropertyNames(this.ʘ).map( name => this.ʘ[name] )
+        // not supported in ES2015 - need to support ES2015?
+        // return Object.values(this.ʘ)
     }
 
     /**
